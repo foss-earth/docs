@@ -171,6 +171,11 @@ Create per-repo workflow callers pinned to a reviewed immutable CI revision,
 with component commands, explicit permissions and stable required check names.
 Coordinate pre-integration enforcement and final merge-commit checking with the
 coordinator. A post-push audit alone cannot reject a commit before integration.
+Every Earth destination runs the shared consumer-conformance command through
+its installed validation entry point, including docs, research, assets,
+installers, CI and `.github`. Hand off policy/caller pins and positive/negative
+attribution results for the coordinator's per-remote enforcement receipt.
+Do not duplicate the validator or skip metadata jobs with changed-path filters.
 Dirty legacy history may make the full audit fail: report it, and resolve it
 through the coordinated cutoff; do not weaken the check to get a green badge.
 

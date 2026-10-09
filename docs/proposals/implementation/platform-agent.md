@@ -38,6 +38,13 @@ prohibited. Legitimate human credit and technical discussion remain permitted.
 Templates are adopted explicitly; an organization `.github` repo does not
 install running workflows into all its repositories.
 
+Ship attribution enforcement as one independently usable common component in
+`foss-earth/ci`: canonical policy/identity data, validator, reusable workflow,
+regression fixtures and consumer-conformance command. Every consumer pins the
+reviewed component release. Organization-specific configuration may tighten
+the policy but must not permit AI attribution. Do not copy validators or fixture
+suites into `0sfs/ci`, installer wrappers or individual feature repositories.
+
 ## Authorship validator
 
 Implement a local executable with the same behavior in CI. Keep it independent
@@ -118,6 +125,31 @@ authorship, coauthorship and final-merge metadata failing through the actual
 configured merge path. Protect the validator repository itself, validate caller
 pins and document the update procedure. Deliver configurations to all primary
 owners; collect adoption receipts instead of assuming templates were installed.
+
+## Conformance in every repository
+
+Expose a versioned consumer-conformance command that every repository runs
+locally and in CI, including docs, research, content/assets, logo, installers,
+CI and `.github` policy repositories. It must verify the installed policy and
+trusted immutable caller pin, then exercise that consumer's validation entry
+point with shared positive and negative fixtures: permitted human attribution
+passes; AI author, committer and coauthor attribution each fail. Include Claude,
+Cursor and Codex aliases explicitly in the reviewed fixture matrix. Use the
+shared regression fixtures rather than copied per-consumer test implementations.
+
+Generate synthetic commits in isolated ignored fixture repositories; never
+add prohibited-attribution test commits to a real project's published history.
+Authorship jobs must run for documentation-only/content-only changes too: no
+changed-path filters, language-suite conditions or optional/manual triggers
+may silently skip them. A skipped job is not a successful policy audit.
+
+Provide the coordinator a per-repository conformance result plus the expected
+required-check identity and protection settings. The coordinator verifies each
+actual remote's caller pin, required admission path and bypass configuration;
+representative hosted negative tests alone do not prove adoption everywhere.
+Missing policy, caller, conformance result or remote enforcement evidence fails
+that repository's migration acceptance, even if its domain tests pass. Record
+the first trusted bootstrap exception only as specified by the coordinator.
 
 ## Developer installer
 
