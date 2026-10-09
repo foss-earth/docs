@@ -93,6 +93,13 @@ label follows the current image while its ID stays `panorama`.
 
 ## Proposed additions are separate from this current inventory
 
+**Deferred until a later task:** [`foss-earth/search`](search.md) will own a
+shared Search tab for finding content in registered tabs across Earth, UMN and
+flight. [`foss-earth/vr`](vr.md) will own shared VR used by all three hosts;
+flight-specific behavior belongs to `0sfs/vr`. VR's tab/settings presentation
+remains to be designed. Neither feature is implemented or provisioned by the
+repository split; they do not change the 13 current IDs.
+
 There is **no current shared Dev, Weather or Debug tab** in the 13-ID definition.
 
 `foss-earth/dev` is a proposed activation/contribution framework, including

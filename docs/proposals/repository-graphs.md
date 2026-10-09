@@ -7,6 +7,13 @@ extractions.
 The [exhaustive tab inventory](tab-inventory.md) records all 13 current shared
 tabs, host/context availability and the reason for every shared-owner exception.
 
+Execution is specified in the [Earth agent brief](implementation/earth-agent.md)
+and [shared CI/setup brief](implementation/platform-agent.md). The graph's
+**Deferred TODOs** group contains [`foss-earth/search`](search.md) and
+[`foss-earth/vr`](vr.md). Their arrows describe later integration only; neither
+is provisioned or implemented by the current migration. Shared VR also serves
+UMN and the flight-owned adapter without importing those applications.
+
 FOSS Earth owns the shared globe, sky/weather, scenes and 360 images, UI, renderer, toolbar,
 generic About viewer, developer contribution framework and generic CI/setup
 machinery. The proposed repositories are `foss-earth/engine`, `ui`, `renderer`,

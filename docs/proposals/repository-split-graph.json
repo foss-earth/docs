@@ -62,6 +62,11 @@
       "id": "knowledge",
       "title": "Earth docs, research & governance",
       "note": "Earth-owned records and generic tooling."
+    },
+    {
+      "id": "deferred",
+      "title": "Deferred TODOs · later work",
+      "note": "Search and VR are recorded for later. Do not provision or implement these repositories during the split; current tab counts are unchanged."
     }
   ],
   "nodes": [
@@ -276,6 +281,26 @@
       "tab": "Bottom HUD / toolbar",
       "detail": "Bottom HUD layout and display of registered callbacks/values. Hosts supply map, position, renderer, input and app-specific items through public contracts.",
       "note": "Consumes generic UI primitives. It does not import the implementations whose values/buttons it shows; each setting still has one tab home."
+    },
+    {
+      "id": "search",
+      "name": "foss-earth/search",
+      "owner": "foss-earth",
+      "group": "deferred",
+      "tab": "Search · deferred TODO",
+      "deferred": true,
+      "detail": "Deferred TODO: shared Search tab for finding registered tabs, settings, actions and feature content in each host. Results open their existing home. Not implemented or provisioned during this migration.",
+      "note": "Hosts supply feature metadata/providers; Search consumes UI contracts without importing every feature or downstream application. Excluded from current tab counts and migration acceptance."
+    },
+    {
+      "id": "earth-vr",
+      "name": "foss-earth/vr",
+      "owner": "foss-earth",
+      "group": "deferred",
+      "tab": "VR support · deferred TODO",
+      "deferred": true,
+      "detail": "Deferred TODO: shared immersive-session, tracked-view/input and UI/render integration for Earth, UMN and flight. Hosts supply scene/navigation ports. No implementation or provisioning in this migration.",
+      "note": "VR UI/tab presentation and concrete APIs remain later design work. Renderer must not import this adapter; shared VR never imports flight or campus. No current headset support is claimed."
     }
   ],
   "edges": [
@@ -908,6 +933,46 @@
       "to": "cubemap",
       "type": "code",
       "reason": "Consumes pure face conventions and cube geometry; no whole-cube acquisition or reverse format dependency."
+    },
+    {
+      "from": "site",
+      "to": "search",
+      "type": "code",
+      "deferred": true,
+      "label": "Future TODO dependency",
+      "reason": "Deferred; not a migration dependency. Host registers the shared Search tab and supplies feature metadata/providers."
+    },
+    {
+      "from": "search",
+      "to": "interface",
+      "type": "code",
+      "deferred": true,
+      "label": "Future TODO dependency",
+      "reason": "Deferred; not a migration dependency. Search uses shared tab navigation and UI registration contracts."
+    },
+    {
+      "from": "earth-vr",
+      "to": "renderer",
+      "type": "code",
+      "deferred": true,
+      "label": "Future TODO dependency",
+      "reason": "Deferred; not a migration dependency. Shared VR uses renderer resources and frame scheduling through public ports."
+    },
+    {
+      "from": "earth-vr",
+      "to": "interface",
+      "type": "code",
+      "deferred": true,
+      "label": "Future TODO dependency",
+      "reason": "Deferred; not a migration dependency. Shared VR presents shared UI through public contracts."
+    },
+    {
+      "from": "site",
+      "to": "earth-vr",
+      "type": "code",
+      "deferred": true,
+      "label": "Future TODO dependency",
+      "reason": "Deferred; not a migration dependency. Host composes shared VR with its scene/navigation/content ports."
     }
   ]
 }
