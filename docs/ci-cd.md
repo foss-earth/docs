@@ -224,6 +224,15 @@ pages as "App-Specific Tag 16" and PartitionAlloc's as "Tag 14".
   would force a garbage collection in headless Chrome. It would fail when the heap, or the counts
   of meshes, textures and JSBSim instances, keep growing after the first rounds. The harness
   would live here, and each app would add the operations it allocates in.
+- **The built pages.** `npm run ci` builds the app, and nothing loads what it built. On
+  2026-10-08 a bundler bug in Vite 8.0.13 broke every glTF load in 0sfs's built flight, its
+  aircraft's mesh and Google's 3D tiles, while every test passed. 0sfs's
+  `scripts/check-landing-page.mjs` loads a build's information page, flight and phone
+  controller in headless Chrome, with other hosts blocked. It fails when the flight's aircraft
+  has no mesh, when a page throws, and when the information page or the phone controller loads
+  Babylon. It took 3.6 s that day and is not part of `npm run ci`. What `test` does cover is
+  the import that set the bug off: 0sfs's `src/entryImports.test.ts` and FOSS Earth's
+  `src/diagnostics/index.test.ts` fail when code every page loads would load the engine.
 - **Typechecking the tests**, described [above](#typechecking).
 - **Triggers in FOSS Earth and the tour** for the files their tests read from disk, described
   [above](#choosing-tests).
