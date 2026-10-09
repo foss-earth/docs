@@ -1,6 +1,21 @@
 # CI/CD
 
-FOSS Earth, [0sfs](../../0sfs) and the [UMN tour](../../UMN-VR/UMN-VR.github.io) check and
+The current shared attribution/admission contract belongs to
+[foss-earth/ci](https://github.com/foss-earth/ci). Its pinned caller runs on every
+change, including documentation and content. The current owner source-only
+increment and common replacement qualification are described in
+[setup](../setup.md) and [migration](../migration.md). Hosted admission and the
+trusted witness/backend remain separate coordinator gates; no hosted green is
+claimed here.
+
+The pipeline and timings below retain the original 2026-10-08 single-checkout
+scope. They do not qualify independent owner builds or current-layout apps.
+Docs-only changes need no app typecheck or bundle build, but they always require
+the shared metadata gate and the owning document/content checks.
+
+## Historical pipeline and cost record
+
+FOSS Earth, [0sfs](../navigation.md#retained-local-and-host-evidence) and the [UMN tour](../navigation.md#retained-local-and-host-evidence) check and
 deploy their code the same way. This page lives here because FOSS Earth is the part the other two
 build on. There is no hosted CI, and nothing runs on a push. The checks are npm scripts from one
 Vite template, run on the developer's Mac by people and agents. A deploy is a build pushed to
@@ -12,7 +27,7 @@ GitHub Pages from that Mac.
 | --- | --- | --- | --- |
 | `npm run ci` | `lint`, `test`, `build` | the same | the same |
 | `npm run build` | `typecheck`, `vite build` | artifact checks, `typecheck`, `vite build`, checks of the built WASM | `typecheck`, `vite build` |
-| Deploy | `npm run deploy`: [deploying.md](deploying.md) | `npm run deploy`: [its deploying.md](../../0sfs/docs/deploying.md) | `npm run deploy:app`, `deploy:content` or `deploy:full` |
+| Deploy | `npm run deploy`: [deploying.md](deploying.md) | `npm run deploy`: [its deploying.md](../navigation.md#retained-local-and-host-evidence) | `npm run deploy:app`, `deploy:content` or `deploy:full` |
 
 - **`lint`** is ESLint with a content-hashed cache in `node_modules/.cache/eslint/`, so it reads
   only the files that changed.
@@ -28,13 +43,13 @@ GitHub Pages from that Mac.
   `npm run lint`.
 - **When the work is done:** `npm run ci`, once. A change to FOSS Earth also needs the checks of
   each app that uses it, since they import its source.
-- **Documentation only:** nothing.
+- **Documentation only:** shared metadata/conformance and owning document checks; no app typecheck or build.
 
 ## What each step costs
 
 These were measured on 2026-10-07 and 08, on an Apple M5 with 4 performance cores, 6 efficiency
 cores and 16 GB. The records, and how far each can be trusted, are in 0sfs's
-[validation/evidence/ci/2026-10-08](../../0sfs/validation/evidence/ci/2026-10-08/README.md).
+[validation/evidence/ci/2026-10-08](../navigation.md#retained-local-and-host-evidence).
 
 | Step | FOSS Earth | 0sfs | UMN tour |
 | --- | --- | --- | --- |
@@ -106,7 +121,7 @@ sooner. Split a file that takes much longer than the rest.
 
 **A fixture is built again for every test.** Each F-35B test creates a JSBSim instance, loads
 the aircraft and starts the F135. Each part was measured on one worker with
-[jsbsim-fixture.probe.ts](../../0sfs/scripts/validation/ci/jsbsim-fixture.probe.ts):
+[jsbsim-fixture.probe.ts](../navigation.md#retained-local-and-host-evidence):
 
 | Part | F-35B, coupled plant | F-35B, empirical engine | Cessna 172 |
 | --- | --- | --- | --- |
@@ -167,7 +182,7 @@ from 15 s to 39 s and transforms from 3.7 s to 9 s, though no change had touched
 one test went past Vitest's 5 s timeout and failed the run. The fixture probe, run while memory
 pressure was at warning, measured everything twice as slow, the Cessna included. Before reading a
 slow run as a regression, check memory pressure and what else is running: see
-[timing](validation/timing.md#memory).
+[timing](https://github.com/foss-earth/research/blob/main/docs/validation/timing.md#memory).
 
 ## The editor's share of memory
 

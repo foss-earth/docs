@@ -13,10 +13,10 @@ package; a similarly named proposed repository is a future extraction target.
 
 ## Every current 360 image structure
 
-The source of truth is the current [representation types](../../src/scenes/format.ts),
-[validator](../../src/scenes/validateScene.ts),
-[JSON Schema](../../src/scenes/foss-earth-scene-1.schema.json) and
-[format reference](../scenes/format.md). The schema accepting an unknown future
+The source of truth is the current [representation types](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/format.ts),
+[validator](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/validateScene.ts),
+[JSON Schema](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/foss-earth-scene-1.schema.json) and
+[format reference](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/scenes/format.md). The schema accepting an unknown future
 projection does not mean the renderer supports it: the loader skips it with a
 warning and can use a known representation of the same asset instead.
 
@@ -101,15 +101,15 @@ by responsibility, rather than assigned whole to whichever repo is named first.
 
 | Existing source | Proposed destination |
 | --- | --- |
-| [format.ts](../../src/scenes/format.ts), [schema](../../src/scenes/foss-earth-scene-1.schema.json), [validateScene.ts](../../src/scenes/validateScene.ts) | Scene envelope/entity/link records and reference checks to `scenes`; common image identity/interfaces to `images`; individual representation records/schema/validation to the representation owner; registry composition to `360`. Preserve the published version-1 contract. |
-| [panoramaMath.ts](../../src/scenes/panoramaMath.ts) | Equirectangular mapping to `equirectangular`; source/GPU cube conventions to `cubemap`; common vectors/image orientation to `images`; orb/view transitions to `360`; placement and geodetic adaptation to scene/host ports. |
-| [panoramaResources.ts](../../src/scenes/panoramaResources.ts), [budget.ts](../../src/scenes/budget.ts), [mediaStore.ts](../../src/scenes/mediaStore.ts), [imageHeaders.ts](../../src/scenes/imageHeaders.ts) | Common accounting/cache/header and transport machinery to `images`; structure estimates and acquisitions to each representation; selection/composition to `360`; sheet fetching/extraction/fallback to `preview-sheets`. |
-| [cubeTiling.ts](../../src/scenes/tiles/cubeTiling.ts), [tileSelection.ts](../../src/scenes/tiles/tileSelection.ts), [tileScheduler.ts](../../src/scenes/tiles/tileScheduler.ts), [tiledPanorama.ts](../../src/scenes/tiles/tiledPanorama.ts), [sphericalRegions.ts](../../src/scenes/tiles/sphericalRegions.ts) | `tiled-cubemap`, consuming pure face conventions from `cubemap/core` and shared reservations/cache from `images`. |
-| [panoramaTextures.ts](../../src/engine/babylon/panorama/panoramaTextures.ts), [panoramaWebGlTextures.ts](../../src/engine/babylon/panorama/panoramaWebGlTextures.ts) | Generic device/upload facilities to `renderer`; cube/equirectangular acquisition adapters to the representation owners. Upload budgets are granted by `images`, not independently multiplied per adapter. |
-| [panoramaTileAtlas.ts](../../src/engine/babylon/panorama/panoramaTileAtlas.ts), [WGSL shaders](../../src/engine/babylon/panorama/panoramaShaders.ts), [GLSL shaders](../../src/engine/babylon/panorama/panoramaShadersWebGL.ts) | Tile atlas/lookup to `tiled-cubemap`; source sampling fragments to their representation; orb/immersion draw composition and transition blending to `360`. All use renderer contracts. |
-| [panoramaRenderer.ts](../../src/engine/babylon/panorama/panoramaRenderer.ts), [panoramaFlight.ts](../../src/scenes/panoramaFlight.ts), [panoramaInput.ts](../../src/scenes/panoramaInput.ts) | `360` owns viewer drawing, camera handover/momentum and interaction, through supplied renderer/camera/input ports. The file called panoramaFlight describes viewer camera movement, not aircraft flight. |
-| [loadScene.ts](../../src/scenes/loadScene.ts), [sceneController.ts](../../src/scenes/sceneController.ts), [sceneHistory.ts](../../src/scenes/sceneHistory.ts), [sceneView.ts](../../src/scenes/sceneView.ts) | Scene selection/replacement/history, entity placement and link orchestration to `scenes`; image lifecycle and active-view state to `360`; resource work delegates to `images` and representations. |
-| [scenesPanel.ts](../../src/shell/scenesPanel.ts), [panoramaTabs.ts](../../src/shell/panoramaTabs.ts), [savedImagesSection.ts](../../src/shell/savedImagesSection.ts), [scene settings](../../src/settings/catalogue/scenes.ts) | Scenes panel to `scenes`; two active-view tabs to `360`; cache controls to `images`; structure settings to their owner, contributed to the existing home. |
+| [format.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/format.ts), [schema](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/foss-earth-scene-1.schema.json), [validateScene.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/validateScene.ts) | Scene envelope/entity/link records and reference checks to `scenes`; common image identity/interfaces to `images`; individual representation records/schema/validation to the representation owner; registry composition to `360`. Preserve the published version-1 contract. |
+| [panoramaMath.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaMath.ts) | Equirectangular mapping to `equirectangular`; source/GPU cube conventions to `cubemap`; common vectors/image orientation to `images`; orb/view transitions to `360`; placement and geodetic adaptation to scene/host ports. |
+| [panoramaResources.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaResources.ts), [budget.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/budget.ts), [mediaStore.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/mediaStore.ts), [imageHeaders.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/imageHeaders.ts) | Common accounting/cache/header and transport machinery to `images`; structure estimates and acquisitions to each representation; selection/composition to `360`; sheet fetching/extraction/fallback to `preview-sheets`. |
+| [cubeTiling.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/cubeTiling.ts), [tileSelection.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileSelection.ts), [tileScheduler.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileScheduler.ts), [tiledPanorama.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tiledPanorama.ts), [sphericalRegions.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/sphericalRegions.ts) | `tiled-cubemap`, consuming pure face conventions from `cubemap/core` and shared reservations/cache from `images`. |
+| [panoramaTextures.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaTextures.ts), [panoramaWebGlTextures.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaWebGlTextures.ts) | Generic device/upload facilities to `renderer`; cube/equirectangular acquisition adapters to the representation owners. Upload budgets are granted by `images`, not independently multiplied per adapter. |
+| [panoramaTileAtlas.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaTileAtlas.ts), [WGSL shaders](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaShaders.ts), [GLSL shaders](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaShadersWebGL.ts) | Tile atlas/lookup to `tiled-cubemap`; source sampling fragments to their representation; orb/immersion draw composition and transition blending to `360`. All use renderer contracts. |
+| [panoramaRenderer.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaRenderer.ts), [panoramaFlight.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaFlight.ts), [panoramaInput.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaInput.ts) | `360` owns viewer drawing, camera handover/momentum and interaction, through supplied renderer/camera/input ports. The file called panoramaFlight describes viewer camera movement, not aircraft flight. |
+| [loadScene.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/loadScene.ts), [sceneController.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneController.ts), [sceneHistory.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneHistory.ts), [sceneView.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneView.ts) | Scene selection/replacement/history, entity placement and link orchestration to `scenes`; image lifecycle and active-view state to `360`; resource work delegates to `images` and representations. |
+| [scenesPanel.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/scenesPanel.ts), [panoramaTabs.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/panoramaTabs.ts), [savedImagesSection.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/savedImagesSection.ts), [scene settings](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/settings/catalogue/scenes.ts) | Scenes panel to `scenes`; two active-view tabs to `360`; cache controls to `images`; structure settings to their owner, contributed to the existing home. |
 
 Tests move with these responsibilities. Mixed integration tests become consumer
 contract tests; they must still exercise the combination instead of disappearing
@@ -119,16 +119,16 @@ when the files move.
 
 | Current tool | Proposed routing |
 | --- | --- |
-| [prepare-panorama.mjs](../../scripts/prepare-panorama.mjs) | `360` provides the composition CLI, preserving its supported arguments. It decodes via `images`, obtains source sampling from `equirectangular`, and invokes the selected representation's preparation function. The CLI owns no duplicate projection implementation. |
-| [panoramaImage.mjs](../../scripts/lib/panoramaImage.mjs) | JPEG/PNG, metadata, orientation and linear-light helpers to `images`; equirectangular pyramid/sampling to `equirectangular`; cube-face output to `cubemap`; tiled face/gutter output to `tiled-cubemap`. Target preparation accepts a source sampler, so cube and equirectangular do not import each other's implementation. |
-| [previewSheet.mjs](../../scripts/lib/previewSheet.mjs), [build-preview-sheets.mjs](../../scripts/build-preview-sheets.mjs) | `preview-sheets` owns packing, extension records and verification. The scene-writing CLI composes this in `scenes`/`360` tool entry points; the packing library accepts records and never imports the scene loader. |
-| [check-scene.mjs](../../scripts/check-scene.mjs), [checkSceneFiles.ts](../../src/scenes/checkSceneFiles.ts) | `scenes` owns document/reference orchestration; representation hooks enumerate/check files, and `preview-sheets` supplies sheet-to-face equivalence validation. Header/codec checks come from `images`. |
-| [build-panorama-examples.mjs](../../scripts/build-panorama-examples.mjs) | `scenes` composes shared examples using the public preparation APIs. Representation-specific fixtures and tests live with the representation. Real application media and import scripts stay application-owned. |
+| [prepare-panorama.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/prepare-panorama.mjs) | `360` provides the composition CLI, preserving its supported arguments. It decodes via `images`, obtains source sampling from `equirectangular`, and invokes the selected representation's preparation function. The CLI owns no duplicate projection implementation. |
+| [panoramaImage.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/panoramaImage.mjs) | JPEG/PNG, metadata, orientation and linear-light helpers to `images`; equirectangular pyramid/sampling to `equirectangular`; cube-face output to `cubemap`; tiled face/gutter output to `tiled-cubemap`. Target preparation accepts a source sampler, so cube and equirectangular do not import each other's implementation. |
+| [previewSheet.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/previewSheet.mjs), [build-preview-sheets.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-preview-sheets.mjs) | `preview-sheets` owns packing, extension records and verification. The scene-writing CLI composes this in `scenes`/`360` tool entry points; the packing library accepts records and never imports the scene loader. |
+| [check-scene.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/check-scene.mjs), [checkSceneFiles.ts](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/checkSceneFiles.ts) | `scenes` owns document/reference orchestration; representation hooks enumerate/check files, and `preview-sheets` supplies sheet-to-face equivalence validation. Header/codec checks come from `images`. |
+| [build-panorama-examples.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-panorama-examples.mjs) | `scenes` composes shared examples using the public preparation APIs. Representation-specific fixtures and tests live with the representation. Real application media and import scripts stay application-owned. |
 
 CPU preparation and schema validation must be usable without constructing a
 renderer. Source orientation is applied once, color is resampled in linear
 light, and asset revisions change whenever generated files change, as the
-[current format](../scenes/format.md) requires. Existing public commands and
+[current format](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/scenes/format.md) requires. Existing public commands and
 package exports need compatibility entry points during migration.
 
 ## Behavior the split must preserve
@@ -152,34 +152,34 @@ package exports need compatibility entry points during migration.
 
 ## Experiments and other image families
 
-The [progressive-image prototype](../../benchmarks/eac-progressive-prototype/REPORT.md)
+The [progressive-image prototype](https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/REPORT.md)
 compared direct replacement, visiting intermediate levels and residual
 refinement. Production has adopted the complete-tile structure with both warps;
-the current [scheduler](../../src/scenes/tiles/tileScheduler.ts) requests needed
+the current [scheduler](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileScheduler.ts) requests needed
 levels directly. Residual reconstruction remains prototype code, not another
 supported version-1 representation. If adopted, its dependent residual data and
 reconstruction contract would require its own explicit ownership decision.
 
 KTX2/Basis, WebP and AVIF were discussed in
-[research](research/panorama-scenes-research.md); current scene representation
-types and [header decoding](../../src/scenes/imageHeaders.ts) accept JPEG and PNG.
+[research](https://github.com/foss-earth/research/blob/main/docs/proposals/research/panorama-scenes-research.md); current scene representation
+types and [header decoding](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/imageHeaders.ts) accept JPEG and PNG.
 Cropped, stereo, HDR, video and depth panoramas are outside the
-[current contract](panorama-scenes.md#2-proposed-data-contract). Point clouds,
+[current contract](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/panorama-scenes.md#2-proposed-data-contract). Point clouds,
 Gaussian splats and neural radiance representations are also not implemented
 by this scene loader. Their possible future repositories must be marked
 proposed until an implementation and contract exist.
 
-[Rendering experiments](../validation/panorama-experiments.md) change draw
+[Rendering experiments](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/validation/panorama-experiments.md) change draw
 bookkeeping, shader work, opacity or hidden-globe submission. They are renderer/
 viewer variants, not new image structures. The current
-[settings catalogue](../../src/settings/catalogue/scenes.ts) separately records
+[settings catalogue](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/settings/catalogue/scenes.ts) separately records
 unimplemented mesh-sphere, fisheye and output-cache choices; a repo graph must
 not present those as shipped formats.
 
 Geographic map imagery is an additional implemented family outside this 360
-split: [XYZ source descriptors](../../src/terrain/imagery/imagerySources.ts),
-[map selection](../../src/terrain/imagery/imagerySelector.ts) and
-[paged GPU atlas](../../src/engine/babylon/imagery/imageryAtlasLayout.ts).
+split: [XYZ source descriptors](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/terrain/imagery/imagerySources.ts),
+[map selection](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/terrain/imagery/imagerySelector.ts) and
+[paged GPU atlas](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/imagery/imageryAtlasLayout.ts).
 It remains under the Map/terrain boundary decision in the
 [tab inventory](tab-inventory.md); it must not be assigned to `tiled-cubemap`
 merely because both fetch image tiles. Geographic coverage/height integration,

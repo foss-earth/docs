@@ -1,5 +1,10 @@
 # Manual QA checklist
 
+These retained behavior cases describe the original app. The current independent
+owner setup is in [setup](../setup.md). Apply relevant cases to an actual built
+split application after its package and automated consumer gates; retaining this
+list supplies no current browser/device qualification or publication approval.
+
 Exercise these by hand before publishing a build. See [Development](development.md) for the
 automated checks (`npm run ci`).
 

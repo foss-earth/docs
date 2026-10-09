@@ -1,5 +1,14 @@
 # Development
 
+Current split checkout/bootstrap guidance is in [setup](../setup.md) and the
+[globe application owner](https://github.com/foss-earth/foss-earth.github.io).
+The single-checkout instructions below are retained from the original Earth
+source revision. Their sibling source link and build commands are historical;
+they are not the independent split application's setup contract. No current
+bootstrap or device qualification is established by retaining them.
+
+## Historical application setup
+
 This page is for people who want to change the code. If you just want to use FOSS Earth, open
 [the live site](https://foss-earth.github.io/) — it is the same build, always current,
 and needs no setup.
@@ -67,7 +76,7 @@ npm run dev -- --host        # or: npm run build && npm run preview -- --host
 npm run qr                   # in another terminal
 ```
 
-`npm run qr` ([scripts/lan-qr.mjs](../scripts/lan-qr.mjs)) draws the code in the terminal. The
+`npm run qr` ([scripts/lan-qr.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lan-qr.mjs)) draws the code in the terminal. The
 code opens this computer's Wi-Fi or Ethernet address, at the port of whichever server answers
 there: 5173 for dev, 4173 for preview. It includes your Google key, which the app saves on the
 phone as it would from any `?key=`. The code is made on this computer, with nothing sent
@@ -94,10 +103,10 @@ application installed before the command existed needs `npm rebuild foss-earth` 
 
 The log's first line says which version the phone runs: the build's time and its commits. A
 phone that comes back to a tab may show its own copy of an older page; a page built with the
-`appFiles` plugin notices and reloads itself ([app-files.md](app-files.md#the-page-and-a-browsers-copy-of-it)).
+`appFiles` plugin notices and reloads itself ([app-files.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it)).
 When something goes wrong on the phone, Settings → Diagnostics → Copy report gives what the app
 knows as text, and `?report` in the address shows it when the app does not stay open:
-[diagnostics.md](diagnostics.md), which also says how to attach a browser's inspector to a phone.
+[diagnostics.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/diagnostics.md), which also says how to attach a browser's inspector to a phone.
 
 ## Quality checks
 
@@ -138,15 +147,15 @@ npx vite preview
 `vite.config.ts` matches the path it is served from. For GitHub Pages specifically, see
 [Deploying to GitHub Pages](deploying.md).
 
-Note the license terms in [NOTICE](../NOTICE) before publishing a modified copy: FOSS Earth is
+Note the license terms in [NOTICE](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/NOTICE) before publishing a modified copy: FOSS Earth is
 AGPL-3.0-only, so a network-accessible deployment must offer its users the corresponding source.
 
 ## Architecture notes
 
-- [Streamed terrain and visible-surface queries](streamed-terrain.md)
-- [Compass height model](compass-height-model.md)
-- [Airport locations](airport-locations.md)
-- [Design proposals](proposals/)
+- [Streamed terrain and visible-surface queries](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/streamed-terrain.md)
+- [Compass height model](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/compass-height-model.md)
+- [Airport locations](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/airport-locations.md)
+- [Design proposals](../navigation.md#retained-local-and-host-evidence)
 
 ## Asset sources
 

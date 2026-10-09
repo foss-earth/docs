@@ -1,10 +1,10 @@
 # Shared CI and developer setup: implementation agent
 
 Implement `foss-earth/ci` and `foss-earth/dev_installer` for the
-[parallel migration](../../../../0sfs/docs/proposals/implementation/README.md).
+[parallel migration](../../../navigation.md#retained-local-and-host-evidence).
 The coordinator provisions the destinations and records their sole writer.
-Read this checkout's [AGENTS.md](../../../AGENTS.md), [CI/CD](../../ci-cd.md)
-and the [split specification](../../../../0sfs/docs/proposals/repository-split.md).
+Read this checkout's [AGENTS.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/AGENTS.md), [CI/CD](../../ci-cd.md)
+and the [split specification](../../../navigation.md#retained-local-and-host-evidence).
 These are generic FOSS Earth tools: they must work without 0sfs or UMN installed.
 
 You own the two new repositories and generic policy/scaffold templates. You

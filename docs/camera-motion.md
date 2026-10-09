@@ -15,7 +15,7 @@ cut it short until the user lifted and swiped again, which was "very frustrating
 The version that follows these rules is the one the user called "so real, so
 intuitive, so physical": "the camera really feels like a physical thing with mass
 and momentum". The history and the tests are in
-[panorama-scenes.md](proposals/panorama-scenes.md) under "Flying in and out".
+[panorama-scenes.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/panorama-scenes.md) under "Flying in and out".
 
 ## The rules
 

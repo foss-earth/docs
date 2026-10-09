@@ -10,7 +10,7 @@ constant outside the registry. [Implementation](#implementation)
 says what exists, how a host uses it, and where it differs from this spec.
 Owner: FOSS Earth. Applications built on it, 0sfs included, register their own
 settings through the same system. 0sfs's catalogue:
-[`0sfs/docs/proposals/flight-settings.md`](../../../0sfs/docs/proposals/flight-settings.md).
+[`0sfs/docs/proposals/flight-settings.md`](../../navigation.md#retained-local-and-host-evidence).
 
 ## Why
 
@@ -327,7 +327,7 @@ implementation marked as starting values.
 
 Implemented on 2026-10-06 in Renderer → Lighting and exposure, and moved on
 2026-10-07, ids and saved values kept, to the **Sky** tab, whose parameters and
-their meaning are in [Sky](sky.md#settings):
+their meaning are in [Sky](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#settings):
 
 | Parameter | Unit / bounds / default | Behavior |
 | --- | --- | --- |
@@ -397,8 +397,8 @@ file they came from.
 | `foss-earth.inputSensitivity`, `.inputMode`, `.hudButtons`, `.theme`, `.performanceMetricVisibility`, `.panelSectionsOpen`, `.globeAnchorRotation`, compass and POI keys | Parameters under `input.`, `interface.` and `visualization.` |
 | `foss-earth-map-source`, `foss-earth-elevation-source` | `map.source.*` |
 | `?rasterImagery` | `map.detail.imageryPath` |
-| Renderer → Lighting and exposure (`renderer.exposureEV`, `renderer.ambientFillMultiplier`) | The same ids and values in the Sky tab; exposure is compensation under a sky model ([Sky](sky.md#migration)) |
-| Sky → Time and location (`sky.time.mode`, `sky.time.date`, `sky.time.utcHours`) | The same ids and values in the Date and time tab, set on its two dials ([Sky](sky.md#date-and-time)) |
+| Renderer → Lighting and exposure (`renderer.exposureEV`, `renderer.ambientFillMultiplier`) | The same ids and values in the Sky tab; exposure is compensation under a sky model ([Sky](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#migration)) |
+| Sky → Time and location (`sky.time.mode`, `sky.time.date`, `sky.time.utcHours`) | The same ids and values in the Date and time tab, set on its two dials ([Sky](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#date-and-time)) |
 
 ## Acceptance
 
@@ -781,7 +781,7 @@ Where stage 1 differs from this spec:
 
 1. Registry, record, migration, export/import and URL, with the existing
    settings moved into it unchanged in behaviour. Remove 0sfs's Settings tab
-   ([flight settings](../../../0sfs/docs/proposals/flight-settings.md)).
+   ([flight settings](../../navigation.md#retained-local-and-host-evidence)).
 2. Loading and memory parameters, replacing `IMAGERY_RESOURCE_PROFILES` and the
    profile budgets; atlas reallocation on change.
 3. Detail focus modes on the raster runtime, then on Google 3D Tiles.

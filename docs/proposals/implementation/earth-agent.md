@@ -5,8 +5,8 @@ claim that extraction or repository creation has happened. Assign one primary
 agent to the current FOSS Earth checkout. That agent is the sole integration
 writer for it and owns the FOSS Earth extraction lane.
 
-Start from the [parallel execution index](../../../../0sfs/docs/proposals/implementation/README.md).
-The [coordinator](../../../../0sfs/docs/proposals/implementation/coordinator-agent.md)
+Start from the [parallel execution index](../../../navigation.md#retained-local-and-host-evidence).
+The [coordinator](../../../navigation.md#retained-local-and-host-evidence)
 assigns destinations and release gates. The separate
 [platform agent](platform-agent.md) owns generic CI, installer and scaffold
 implementation; this lane owns their use in Earth components.
@@ -19,12 +19,12 @@ Publish small dependency-ordered component releases through the coordinator's
 repository and history cutover procedure. Complete the shared contracts first
 so the flight and UMN agents can integrate against concrete artifacts.
 
-Read the current [AGENTS.md](../../../AGENTS.md),
+Read the current [AGENTS.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/AGENTS.md),
 [tab inventory](../tab-inventory.md),
 [image repository specification](../image-repositories.md),
 [graph ownership notes](../repository-graphs.md),
 [graph data](../repository-split-graph.json), and the cross-project
-[split specification](../../../../0sfs/docs/proposals/repository-split.md).
+[split specification](../../../navigation.md#retained-local-and-host-evidence).
 The image specification replaces the old single-panorama-repository proposal:
 the top-level viewer is `foss-earth/360`.
 
@@ -54,7 +54,7 @@ or push old refs into a new repository.
   untracked `src/diagnostics/drawing.ts` contained existing changes; recheck
   rather than assuming their content or staging them with this work.
 - A child agent may implement an assigned destination after its interface is
-  fixed, following the [component assignment template](../../../../0sfs/docs/proposals/implementation/component-agent.md).
+  fixed, following the [component assignment template](../../../navigation.md#retained-local-and-host-evidence).
   Record one writer per checkout, branch and shared integration file.
   Child agents cannot all edit the old package's `package.json`, barrels,
   settings catalogue, app composition or lockfile. The primary agent integrates
@@ -268,7 +268,7 @@ For weather, agree a minimal shared field/settings contract with the flight
 agent, then transfer the existing manual-wind definitions and shared panel to
 this owner. The flight agent retains conversion to JSBSim and accepted-step
 application. The current
-[weather specification](../weather.md) contains separate future functionality
+[weather specification](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/weather.md) contains separate future functionality
 and validation stages; clouds, live providers, humidity qualification, hazards
 and new turbulence are outside this extraction. If shared weather has only a
 small implemented subset, label it explicitly and test that subset. Preserve

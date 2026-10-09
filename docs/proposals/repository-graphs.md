@@ -48,8 +48,8 @@ The generic About viewer receives host-owned data without importing the runtimes
 that its graph describes.
 
 The shared prototype presentation source is
-[repository-graph-template.html](repository-graph-template.html), and the
-generator is [build-repository-graph.mjs](../../scripts/build-repository-graph.mjs).
+[repository-graph-template.html](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/repository-graph-template.html), and the
+generator is [build-repository-graph.mjs](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-repository-graph.mjs).
 Each application owns its JSON; generated HTML is a self-contained artifact of
 that JSON and this shared template. Do not edit the generated HTML directly.
 Arrows mean consumer → dependency. Code, content/metadata and

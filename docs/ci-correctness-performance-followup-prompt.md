@@ -27,7 +27,7 @@ The review found additional work worth doing:
    cannot establish a controlled speedup or equivalent initialization.
 
 Read the retained records in
-[`0sfs/validation/evidence/ci/2026-10-08`](../../0sfs/validation/evidence/ci/2026-10-08/README.md).
+[`0sfs/validation/evidence/ci/2026-10-08`](../navigation.md#retained-local-and-host-evidence).
 The ~56 s normal-pressure and ~98 s disturbed suite runs are observations under
 different conditions, not a before/after optimization result. Some typecheck
 invalidation observations lack retained raw results. Do not upgrade those claims

@@ -1,5 +1,15 @@
 # Deploying to GitHub Pages
 
+This page retains the original app's deployment procedure and prototype-path
+record. The current split globe app owns its build/deployment manifest in
+[foss-earth.github.io](https://github.com/foss-earth/foss-earth.github.io); Docs
+has no application bundle or deployment command. Release requires exact split
+packages, actual consumer qualification and reviewed current production/rollback
+scope. The commands and old `build/` paths below are historical records, not
+current-layout prerequisites or permission to publish.
+
+## Historical deployment procedure
+
 Redeploying the live site is one command:
 
 ```sh
@@ -32,7 +42,7 @@ npx gh-pages -d build/benchmarks/eac-progressive-prototype/package -e eac-protot
 ```
 
 The package is kept in this checkout's `build/`. If it is gone, `export-package.mjs` makes it
-again ([the prototype's README](../benchmarks/eac-progressive-prototype/README.md#testing-by-hand)).
+again ([the prototype's README](https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/README.md#testing-by-hand)).
 On 2026-10-04 the prototype was missing from the site for the 30 seconds between the two
 pushes, and the branch then held the same 6,144 files as before the deploy.
 
@@ -74,7 +84,7 @@ In a browser, the log's first line says the same: "App built 2026-10-04 20:32 UT
 d538bfa." A browser can still show a page it kept from before the deploy. A page from
 2026-10-04 on asks the site which version is published, and reloads itself into the new one,
 or says so with a button once it has been touched
-([app-files.md](app-files.md#the-page-and-a-browsers-copy-of-it)). A hard refresh still
+([app-files.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it)). A hard refresh still
 works for a page from before then.
 
 ## Troubleshooting

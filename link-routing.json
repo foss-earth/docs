@@ -1,0 +1,2119 @@
+{
+  "schemaVersion": 1,
+  "owner": "foss-earth/docs",
+  "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+  "status": "source-only portable independent-owner navigation; network/fragment/publication qualification pending",
+  "links": [
+    {
+      "document": "docs/camera-motion.md",
+      "originalTarget": "proposals/panorama-scenes.md",
+      "resolvedOriginalPath": "docs/proposals/panorama-scenes.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/scenes",
+      "destinationPath": "docs/proposals/panorama-scenes.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/panorama-scenes.md"
+    },
+    {
+      "document": "docs/camera-motion.md",
+      "originalTarget": "proposals/settings.md",
+      "resolvedOriginalPath": "docs/proposals/settings.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/settings.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "proposals/settings.md"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "../../0sfs",
+      "resolvedOriginalPath": "../0sfs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "../../UMN-VR/UMN-VR.github.io",
+      "resolvedOriginalPath": "../UMN-VR/UMN-VR.github.io",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "deploying.md",
+      "resolvedOriginalPath": "docs/deploying.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/deploying.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "deploying.md"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "../../0sfs/docs/deploying.md",
+      "resolvedOriginalPath": "../0sfs/docs/deploying.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "../../0sfs/validation/evidence/ci/2026-10-08/README.md",
+      "resolvedOriginalPath": "../0sfs/validation/evidence/ci/2026-10-08/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "../../0sfs/scripts/validation/ci/jsbsim-fixture.probe.ts",
+      "resolvedOriginalPath": "../0sfs/scripts/validation/ci/jsbsim-fixture.probe.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "validation/README.md",
+      "resolvedOriginalPath": "docs/validation/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/validation/README.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "validation/README.md"
+    },
+    {
+      "document": "docs/ci-cd.md",
+      "originalTarget": "validation/timing.md#memory",
+      "resolvedOriginalPath": "docs/validation/timing.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "docs/validation/timing.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/docs/validation/timing.md#memory",
+      "priorPreparedTarget": "../../research/docs/validation/timing.md#memory"
+    },
+    {
+      "document": "docs/ci-correctness-performance-followup-prompt.md",
+      "originalTarget": "ci-cd.md",
+      "resolvedOriginalPath": "docs/ci-cd.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/ci-cd.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "ci-cd.md"
+    },
+    {
+      "document": "docs/ci-correctness-performance-followup-prompt.md",
+      "originalTarget": "../../0sfs/validation/evidence/ci/2026-10-08/README.md",
+      "resolvedOriginalPath": "../0sfs/validation/evidence/ci/2026-10-08/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/deploying.md",
+      "originalTarget": "../benchmarks/eac-progressive-prototype/README.md#testing-by-hand",
+      "resolvedOriginalPath": "benchmarks/eac-progressive-prototype/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/eac-progressive-prototype/README.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/README.md#testing-by-hand",
+      "priorPreparedTarget": "../../research/benchmarks/eac-progressive-prototype/README.md#testing-by-hand"
+    },
+    {
+      "document": "docs/deploying.md",
+      "originalTarget": "development.md#running-locally",
+      "resolvedOriginalPath": "docs/development.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/development.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "development.md#running-locally"
+    },
+    {
+      "document": "docs/deploying.md",
+      "originalTarget": "app-files.md#the-page-and-a-browsers-copy-of-it",
+      "resolvedOriginalPath": "docs/app-files.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/app-files.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it"
+    },
+    {
+      "document": "docs/deploying.md",
+      "originalTarget": "development.md",
+      "resolvedOriginalPath": "docs/development.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/development.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "development.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "../scripts/lan-qr.mjs",
+      "resolvedOriginalPath": "scripts/lan-qr.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lan-qr.mjs"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "app-files.md#the-page-and-a-browsers-copy-of-it",
+      "resolvedOriginalPath": "docs/app-files.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/app-files.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "diagnostics.md",
+      "resolvedOriginalPath": "docs/diagnostics.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/diagnostics.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/diagnostics.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "ci-cd.md",
+      "resolvedOriginalPath": "docs/ci-cd.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/ci-cd.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "ci-cd.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "manual-qa.md",
+      "resolvedOriginalPath": "docs/manual-qa.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/manual-qa.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "manual-qa.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "deploying.md",
+      "resolvedOriginalPath": "docs/deploying.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/deploying.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "deploying.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "../NOTICE",
+      "resolvedOriginalPath": "NOTICE",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/NOTICE"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "streamed-terrain.md",
+      "resolvedOriginalPath": "docs/streamed-terrain.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/engine",
+      "destinationPath": "docs/streamed-terrain.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/streamed-terrain.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "compass-height-model.md",
+      "resolvedOriginalPath": "docs/compass-height-model.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/engine",
+      "destinationPath": "docs/compass-height-model.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/compass-height-model.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "airport-locations.md",
+      "resolvedOriginalPath": "docs/airport-locations.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/engine",
+      "destinationPath": "docs/airport-locations.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/airport-locations.md"
+    },
+    {
+      "document": "docs/development.md",
+      "originalTarget": "proposals/",
+      "resolvedOriginalPath": "docs/proposals",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/manual-qa.md",
+      "originalTarget": "development.md",
+      "resolvedOriginalPath": "docs/development.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/development.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "development.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "tab-inventory.md",
+      "resolvedOriginalPath": "docs/proposals/tab-inventory.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/tab-inventory.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "tab-inventory.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "repository-split-graph.html",
+      "resolvedOriginalPath": "docs/proposals/repository-split-graph.html",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-split-graph.html",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-split-graph.html"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/format.ts",
+      "resolvedOriginalPath": "src/scenes/format.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/format.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/validateScene.ts",
+      "resolvedOriginalPath": "src/scenes/validateScene.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/validateScene.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/foss-earth-scene-1.schema.json",
+      "resolvedOriginalPath": "src/scenes/foss-earth-scene-1.schema.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/foss-earth-scene-1.schema.json"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../scenes/format.md",
+      "resolvedOriginalPath": "docs/scenes/format.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/scenes/format.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/format.ts",
+      "resolvedOriginalPath": "src/scenes/format.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/format.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/foss-earth-scene-1.schema.json",
+      "resolvedOriginalPath": "src/scenes/foss-earth-scene-1.schema.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/foss-earth-scene-1.schema.json"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/validateScene.ts",
+      "resolvedOriginalPath": "src/scenes/validateScene.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/validateScene.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/panoramaMath.ts",
+      "resolvedOriginalPath": "src/scenes/panoramaMath.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaMath.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/panoramaResources.ts",
+      "resolvedOriginalPath": "src/scenes/panoramaResources.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaResources.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/budget.ts",
+      "resolvedOriginalPath": "src/scenes/budget.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/budget.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/mediaStore.ts",
+      "resolvedOriginalPath": "src/scenes/mediaStore.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/mediaStore.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/imageHeaders.ts",
+      "resolvedOriginalPath": "src/scenes/imageHeaders.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/imageHeaders.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/cubeTiling.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/cubeTiling.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/cubeTiling.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/tileSelection.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/tileSelection.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileSelection.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/tileScheduler.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/tileScheduler.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileScheduler.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/tiledPanorama.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/tiledPanorama.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tiledPanorama.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/sphericalRegions.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/sphericalRegions.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/sphericalRegions.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaTextures.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaTextures.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaTextures.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaWebGlTextures.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaWebGlTextures.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaWebGlTextures.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaTileAtlas.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaTileAtlas.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaTileAtlas.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaShaders.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaShaders.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaShaders.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaShadersWebGL.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaShadersWebGL.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaShadersWebGL.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/panorama/panoramaRenderer.ts",
+      "resolvedOriginalPath": "src/engine/babylon/panorama/panoramaRenderer.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/panorama/panoramaRenderer.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/panoramaFlight.ts",
+      "resolvedOriginalPath": "src/scenes/panoramaFlight.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaFlight.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/panoramaInput.ts",
+      "resolvedOriginalPath": "src/scenes/panoramaInput.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/panoramaInput.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/loadScene.ts",
+      "resolvedOriginalPath": "src/scenes/loadScene.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/loadScene.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/sceneController.ts",
+      "resolvedOriginalPath": "src/scenes/sceneController.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneController.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/sceneHistory.ts",
+      "resolvedOriginalPath": "src/scenes/sceneHistory.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneHistory.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/sceneView.ts",
+      "resolvedOriginalPath": "src/scenes/sceneView.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/sceneView.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/shell/scenesPanel.ts",
+      "resolvedOriginalPath": "src/shell/scenesPanel.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/scenesPanel.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/shell/panoramaTabs.ts",
+      "resolvedOriginalPath": "src/shell/panoramaTabs.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/panoramaTabs.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/shell/savedImagesSection.ts",
+      "resolvedOriginalPath": "src/shell/savedImagesSection.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/savedImagesSection.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/settings/catalogue/scenes.ts",
+      "resolvedOriginalPath": "src/settings/catalogue/scenes.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/settings/catalogue/scenes.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/prepare-panorama.mjs",
+      "resolvedOriginalPath": "scripts/prepare-panorama.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/prepare-panorama.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/lib/panoramaImage.mjs",
+      "resolvedOriginalPath": "scripts/lib/panoramaImage.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/panoramaImage.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/lib/previewSheet.mjs",
+      "resolvedOriginalPath": "scripts/lib/previewSheet.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/previewSheet.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/build-preview-sheets.mjs",
+      "resolvedOriginalPath": "scripts/build-preview-sheets.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-preview-sheets.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/check-scene.mjs",
+      "resolvedOriginalPath": "scripts/check-scene.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/check-scene.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/checkSceneFiles.ts",
+      "resolvedOriginalPath": "src/scenes/checkSceneFiles.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/checkSceneFiles.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../scripts/build-panorama-examples.mjs",
+      "resolvedOriginalPath": "scripts/build-panorama-examples.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-panorama-examples.mjs"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../scenes/format.md",
+      "resolvedOriginalPath": "docs/scenes/format.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/scenes/format.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "tab-inventory.md",
+      "resolvedOriginalPath": "docs/proposals/tab-inventory.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/tab-inventory.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "tab-inventory.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../benchmarks/eac-progressive-prototype/REPORT.md",
+      "resolvedOriginalPath": "benchmarks/eac-progressive-prototype/REPORT.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/eac-progressive-prototype/REPORT.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/REPORT.md",
+      "priorPreparedTarget": "../../../research/benchmarks/eac-progressive-prototype/REPORT.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/tiles/tileScheduler.ts",
+      "resolvedOriginalPath": "src/scenes/tiles/tileScheduler.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/tiles/tileScheduler.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "research/panorama-scenes-research.md",
+      "resolvedOriginalPath": "docs/proposals/research/panorama-scenes-research.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "docs/proposals/research/panorama-scenes-research.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/docs/proposals/research/panorama-scenes-research.md",
+      "priorPreparedTarget": "../../../research/docs/proposals/research/panorama-scenes-research.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/scenes/imageHeaders.ts",
+      "resolvedOriginalPath": "src/scenes/imageHeaders.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/scenes/imageHeaders.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "panorama-scenes.md#2-proposed-data-contract",
+      "resolvedOriginalPath": "docs/proposals/panorama-scenes.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/scenes",
+      "destinationPath": "docs/proposals/panorama-scenes.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/panorama-scenes.md#2-proposed-data-contract"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../validation/panorama-experiments.md",
+      "resolvedOriginalPath": "docs/validation/panorama-experiments.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/validation/panorama-experiments.md"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/settings/catalogue/scenes.ts",
+      "resolvedOriginalPath": "src/settings/catalogue/scenes.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/settings/catalogue/scenes.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/terrain/imagery/imagerySources.ts",
+      "resolvedOriginalPath": "src/terrain/imagery/imagerySources.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/terrain/imagery/imagerySources.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/terrain/imagery/imagerySelector.ts",
+      "resolvedOriginalPath": "src/terrain/imagery/imagerySelector.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/terrain/imagery/imagerySelector.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "../../src/engine/babylon/imagery/imageryAtlasLayout.ts",
+      "resolvedOriginalPath": "src/engine/babylon/imagery/imageryAtlasLayout.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/engine/babylon/imagery/imageryAtlasLayout.ts"
+    },
+    {
+      "document": "docs/proposals/image-repositories.md",
+      "originalTarget": "tab-inventory.md",
+      "resolvedOriginalPath": "docs/proposals/tab-inventory.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/tab-inventory.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "tab-inventory.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/implementation/README.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/implementation/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/implementation/coordinator-agent.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/implementation/coordinator-agent.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "platform-agent.md",
+      "resolvedOriginalPath": "docs/proposals/implementation/platform-agent.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/implementation/platform-agent.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "platform-agent.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../../../AGENTS.md",
+      "resolvedOriginalPath": "AGENTS.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/AGENTS.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../tab-inventory.md",
+      "resolvedOriginalPath": "docs/proposals/tab-inventory.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/tab-inventory.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../tab-inventory.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../image-repositories.md",
+      "resolvedOriginalPath": "docs/proposals/image-repositories.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/image-repositories.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../image-repositories.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../repository-graphs.md",
+      "resolvedOriginalPath": "docs/proposals/repository-graphs.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-graphs.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../repository-graphs.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../repository-split-graph.json",
+      "resolvedOriginalPath": "docs/proposals/repository-split-graph.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-split-graph.json",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../repository-split-graph.json"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/repository-split.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/repository-split.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/implementation/component-agent.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/implementation/component-agent.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../vr.md",
+      "resolvedOriginalPath": "docs/proposals/vr.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/vr.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../vr.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../search.md",
+      "resolvedOriginalPath": "docs/proposals/search.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/search.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../search.md"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../image-repositories.md#current-files-to-split",
+      "resolvedOriginalPath": "docs/proposals/image-repositories.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/image-repositories.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../image-repositories.md#current-files-to-split"
+    },
+    {
+      "document": "docs/proposals/implementation/earth-agent.md",
+      "originalTarget": "../weather.md",
+      "resolvedOriginalPath": "docs/proposals/weather.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/weather",
+      "destinationPath": "docs/proposals/weather.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/weather.md"
+    },
+    {
+      "document": "docs/proposals/implementation/platform-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/implementation/README.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/implementation/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/implementation/platform-agent.md",
+      "originalTarget": "../../../AGENTS.md",
+      "resolvedOriginalPath": "AGENTS.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/AGENTS.md"
+    },
+    {
+      "document": "docs/proposals/implementation/platform-agent.md",
+      "originalTarget": "../../ci-cd.md",
+      "resolvedOriginalPath": "docs/ci-cd.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/ci-cd.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../../ci-cd.md"
+    },
+    {
+      "document": "docs/proposals/implementation/platform-agent.md",
+      "originalTarget": "../../../../0sfs/docs/proposals/repository-split.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/repository-split.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "repository-split-graph.html",
+      "resolvedOriginalPath": "docs/proposals/repository-split-graph.html",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-split-graph.html",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-split-graph.html"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "repository-split-graph.json",
+      "resolvedOriginalPath": "docs/proposals/repository-split-graph.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-split-graph.json",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-split-graph.json"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "tab-inventory.md",
+      "resolvedOriginalPath": "docs/proposals/tab-inventory.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/tab-inventory.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "tab-inventory.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "implementation/earth-agent.md",
+      "resolvedOriginalPath": "docs/proposals/implementation/earth-agent.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/implementation/earth-agent.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "implementation/earth-agent.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "implementation/platform-agent.md",
+      "resolvedOriginalPath": "docs/proposals/implementation/platform-agent.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/implementation/platform-agent.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "implementation/platform-agent.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "search.md",
+      "resolvedOriginalPath": "docs/proposals/search.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/search.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "search.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "vr.md",
+      "resolvedOriginalPath": "docs/proposals/vr.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/vr.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "vr.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "image-repositories.md",
+      "resolvedOriginalPath": "docs/proposals/image-repositories.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/image-repositories.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "image-repositories.md"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "repository-graph-template.html",
+      "resolvedOriginalPath": "docs/proposals/repository-graph-template.html",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/about",
+      "destinationPath": "docs/proposals/repository-graph-template.html",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/repository-graph-template.html"
+    },
+    {
+      "document": "docs/proposals/repository-graphs.md",
+      "originalTarget": "../../scripts/build-repository-graph.mjs",
+      "resolvedOriginalPath": "scripts/build-repository-graph.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/build-repository-graph.mjs"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "../../../0sfs/docs/proposals/flight-settings.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/flight-settings.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "../ui-layout.md",
+      "resolvedOriginalPath": "docs/ui-layout.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/ui-layout.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../ui-layout.md"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "sky.md#settings",
+      "resolvedOriginalPath": "docs/proposals/sky.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/sky",
+      "destinationPath": "docs/proposals/sky.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#settings"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "sky.md#migration",
+      "resolvedOriginalPath": "docs/proposals/sky.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/sky",
+      "destinationPath": "docs/proposals/sky.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#migration"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "sky.md#date-and-time",
+      "resolvedOriginalPath": "docs/proposals/sky.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/sky",
+      "destinationPath": "docs/proposals/sky.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md#date-and-time"
+    },
+    {
+      "document": "docs/proposals/settings.md",
+      "originalTarget": "../../../0sfs/docs/proposals/flight-settings.md",
+      "resolvedOriginalPath": "../0sfs/docs/proposals/flight-settings.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "repository-split-graph.json",
+      "resolvedOriginalPath": "docs/proposals/repository-split-graph.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-split-graph.json",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-split-graph.json"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "repository-graphs.md",
+      "resolvedOriginalPath": "docs/proposals/repository-graphs.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/repository-graphs.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-graphs.md"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L31",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L31"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L181",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L181"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L189",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L189"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L189",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L189"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L419",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L419"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L181",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L181"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L740",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L740"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L181",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L181"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L752",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L752"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L181",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L181"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L762",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L762"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L953",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L953"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L769",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L769"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L784",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L784"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L785",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L785"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/settings/catalogue/sky.ts#L3",
+      "resolvedOriginalPath": "src/settings/catalogue/sky.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/settings/catalogue/sky.ts#L3"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L799",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L799"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "image-repositories.md",
+      "resolvedOriginalPath": "docs/proposals/image-repositories.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/image-repositories.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "image-repositories.md"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L738",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L738"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L733",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L733"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/panoramaTabs.ts#L213",
+      "resolvedOriginalPath": "src/shell/panoramaTabs.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/panoramaTabs.ts#L213"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "image-repositories.md",
+      "resolvedOriginalPath": "docs/proposals/image-repositories.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/image-repositories.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "image-repositories.md"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L183",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L183"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/panoramaTabs.ts#L149",
+      "resolvedOriginalPath": "src/shell/panoramaTabs.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/panoramaTabs.ts#L149"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/main.tsx#L9",
+      "resolvedOriginalPath": "src/main.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/main.tsx#L9"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/mountGlobeApp.tsx#L31",
+      "resolvedOriginalPath": "src/app/mountGlobeApp.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/mountGlobeApp.tsx#L31"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L38",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L38"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/WindowOverlay.tsx#L324",
+      "resolvedOriginalPath": "src/shell/WindowOverlay.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/WindowOverlay.tsx#L324"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L768",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L768"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L704",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L704"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L512",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L512"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/createGlobeApp.ts#L762",
+      "resolvedOriginalPath": "src/app/createGlobeApp.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/createGlobeApp.ts#L762"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/shell/scenesPanel.ts#L1",
+      "resolvedOriginalPath": "src/shell/scenesPanel.ts",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/shell/scenesPanel.ts#L1"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "../../src/app/mountGlobeApp.tsx#L17",
+      "resolvedOriginalPath": "src/app/mountGlobeApp.tsx",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/src/app/mountGlobeApp.tsx#L17"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "search.md",
+      "resolvedOriginalPath": "docs/proposals/search.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/search.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "search.md"
+    },
+    {
+      "document": "docs/proposals/tab-inventory.md",
+      "originalTarget": "vr.md",
+      "resolvedOriginalPath": "docs/proposals/vr.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/vr.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "vr.md"
+    },
+    {
+      "document": "docs/ui-layout.md",
+      "originalTarget": "proposals/settings.md#implementation",
+      "resolvedOriginalPath": "docs/proposals/settings.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/proposals/settings.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "proposals/settings.md#implementation"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/lib/headlessChrome.mjs",
+      "resolvedOriginalPath": "scripts/lib/headlessChrome.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/lib/headlessChrome.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/lib/headlessChrome.mjs",
+      "priorPreparedTarget": "../../../research/scripts/lib/headlessChrome.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/lib/headlessPage.mjs",
+      "resolvedOriginalPath": "scripts/lib/headlessPage.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/headlessPage.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/lib/headlessFirefox.mjs",
+      "resolvedOriginalPath": "scripts/lib/headlessFirefox.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/lib/headlessFirefox.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/panorama-webgl.mjs",
+      "resolvedOriginalPath": "scripts/validation/panorama-webgl.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/panorama-webgl.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "panorama-webgl.md",
+      "resolvedOriginalPath": "docs/validation/panorama-webgl.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/validation/panorama-webgl.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/panorama-campus.mjs",
+      "resolvedOriginalPath": "scripts/validation/panorama-campus.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/panorama-campus.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/panorama-input.mjs",
+      "resolvedOriginalPath": "scripts/validation/panorama-input.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/panorama-input.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/panorama-tiles.mjs",
+      "resolvedOriginalPath": "scripts/validation/panorama-tiles.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/panorama-tiles.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/scene-revisit.mjs",
+      "resolvedOriginalPath": "scripts/validation/scene-revisit.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/scene-revisit.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/app-files.mjs",
+      "resolvedOriginalPath": "scripts/validation/app-files.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/app-files.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../app-files.md",
+      "resolvedOriginalPath": "docs/app-files.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/app-files.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/diagnostics.mjs",
+      "resolvedOriginalPath": "scripts/validation/diagnostics.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/diagnostics.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../diagnostics.md",
+      "resolvedOriginalPath": "docs/diagnostics.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/diagnostics.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/diagnostics.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/published-version.mjs",
+      "resolvedOriginalPath": "scripts/validation/published-version.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/published-version.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../app-files.md#the-page-and-a-browsers-copy-of-it",
+      "resolvedOriginalPath": "docs/app-files.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/ui",
+      "destinationPath": "docs/app-files.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/about-and-controls.mjs",
+      "resolvedOriginalPath": "scripts/validation/about-and-controls.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/about-and-controls.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../ui-layout.md#a-control-uses-its-input-or-passes-it-on",
+      "resolvedOriginalPath": "docs/ui-layout.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/ui-layout.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "../ui-layout.md#a-control-uses-its-input-or-passes-it-on"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/preview-sheet.mjs",
+      "resolvedOriginalPath": "scripts/validation/preview-sheet.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/preview-sheet.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/scene-ab/run.mjs",
+      "resolvedOriginalPath": "benchmarks/scene-ab/run.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/benchmarks/scene-ab/run.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/benchmarks/scene-ab/run.mjs",
+      "priorPreparedTarget": "../../../research/scripts/benchmarks/scene-ab/run.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/scene-ab/README.md",
+      "resolvedOriginalPath": "benchmarks/scene-ab/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/scene-ab/README.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/scene-ab/README.md",
+      "priorPreparedTarget": "../../../research/benchmarks/scene-ab/README.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/map-detail/README.md",
+      "resolvedOriginalPath": "benchmarks/map-detail/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/map-detail/README.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/map-detail/README.md",
+      "priorPreparedTarget": "../../../research/benchmarks/map-detail/README.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/depth-precision.mjs",
+      "resolvedOriginalPath": "scripts/validation/depth-precision.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/depth-precision.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "map-quality-recovery.md",
+      "resolvedOriginalPath": "docs/validation/map-quality-recovery.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/validation/map-quality-recovery.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/imagery-continuity.mjs",
+      "resolvedOriginalPath": "scripts/validation/imagery-continuity.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/imagery-continuity.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "map-quality-recovery.md#browser-check",
+      "resolvedOriginalPath": "docs/validation/map-quality-recovery.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/validation/map-quality-recovery.md#browser-check"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/mesh-inspector.mjs",
+      "resolvedOriginalPath": "scripts/validation/mesh-inspector.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/mesh-inspector.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/spherical-image-representation/run-gpu.mjs",
+      "resolvedOriginalPath": "benchmarks/spherical-image-representation/run-gpu.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/benchmarks/spherical-image-representation/run-gpu.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/benchmarks/spherical-image-representation/run-gpu.mjs",
+      "priorPreparedTarget": "../../../research/scripts/benchmarks/spherical-image-representation/run-gpu.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/spherical-image-representation/README.md",
+      "resolvedOriginalPath": "benchmarks/spherical-image-representation/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/spherical-image-representation/README.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/spherical-image-representation/README.md",
+      "priorPreparedTarget": "../../../research/benchmarks/spherical-image-representation/README.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/eac-progressive-prototype/run-gpu-checks.mjs",
+      "resolvedOriginalPath": "benchmarks/eac-progressive-prototype/run-gpu-checks.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/benchmarks/eac-progressive-prototype/run-gpu-checks.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/benchmarks/eac-progressive-prototype/run-gpu-checks.mjs",
+      "priorPreparedTarget": "../../../research/scripts/benchmarks/eac-progressive-prototype/run-gpu-checks.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/eac-progressive-prototype/README.md",
+      "resolvedOriginalPath": "benchmarks/eac-progressive-prototype/README.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "benchmarks/eac-progressive-prototype/README.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/README.md",
+      "priorPreparedTarget": "../../../research/benchmarks/eac-progressive-prototype/README.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../benchmarks/eac-progressive-prototype/run-http.mjs",
+      "resolvedOriginalPath": "benchmarks/eac-progressive-prototype/run-http.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/benchmarks/eac-progressive-prototype/run-http.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/benchmarks/eac-progressive-prototype/run-http.mjs",
+      "priorPreparedTarget": "../../../research/scripts/benchmarks/eac-progressive-prototype/run-http.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/check-shell-layout.mjs",
+      "resolvedOriginalPath": "scripts/check-shell-layout.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/check-shell-layout.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/check-hud-layout.mjs",
+      "resolvedOriginalPath": "scripts/check-hud-layout.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/check-hud-layout.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/check-map-detail-marker.mjs",
+      "resolvedOriginalPath": "scripts/check-map-detail-marker.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/check-map-detail-marker.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../validation/evidence/map-detail/2026-10-05-loaded-detail/report.json",
+      "resolvedOriginalPath": "validation/evidence/map-detail/2026-10-05-loaded-detail/report.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "validation/evidence/map-detail/2026-10-05-loaded-detail/report.json",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/validation/evidence/map-detail/2026-10-05-loaded-detail/report.json",
+      "priorPreparedTarget": "../../../research/validation/evidence/map-detail/2026-10-05-loaded-detail/report.json"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../validation/evidence/map-detail/2026-10-05-loaded-detail/dark.png",
+      "resolvedOriginalPath": "validation/evidence/map-detail/2026-10-05-loaded-detail/dark.png",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "validation/evidence/map-detail/2026-10-05-loaded-detail/dark.png",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/validation/evidence/map-detail/2026-10-05-loaded-detail/dark.png",
+      "priorPreparedTarget": "../../../research/validation/evidence/map-detail/2026-10-05-loaded-detail/dark.png"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/sky-model.mjs",
+      "resolvedOriginalPath": "scripts/validation/sky-model.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/sky-model.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../proposals/sky.md",
+      "resolvedOriginalPath": "docs/proposals/sky.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/sky",
+      "destinationPath": "docs/proposals/sky.md",
+      "status": "immutable compatibility reference; component transfer/publication pending",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/proposals/sky.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../validation/evidence/sky/2026-10-07-sky-model/sky-model.json",
+      "resolvedOriginalPath": "validation/evidence/sky/2026-10-07-sky-model/sky-model.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "validation/evidence/sky/2026-10-07-sky-model/sky-model.json",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/validation/evidence/sky/2026-10-07-sky-model/sky-model.json",
+      "priorPreparedTarget": "../../../research/validation/evidence/sky/2026-10-07-sky-model/sky-model.json"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../scripts/validation/sky-render.mjs",
+      "resolvedOriginalPath": "scripts/validation/sky-render.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "immutable retained implementation/source reference; ownership index gives the new public boundary",
+      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/scripts/validation/sky-render.mjs"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "../../validation/evidence/sky/2026-10-07-sky-render/report.json",
+      "resolvedOriginalPath": "validation/evidence/sky/2026-10-07-sky-render/report.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "validation/evidence/sky/2026-10-07-sky-render/report.json",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/validation/evidence/sky/2026-10-07-sky-render/report.json",
+      "priorPreparedTarget": "../../../research/validation/evidence/sky/2026-10-07-sky-render/report.json"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "timing.md",
+      "resolvedOriginalPath": "docs/validation/timing.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "docs/validation/timing.md",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/docs/validation/timing.md",
+      "priorPreparedTarget": "../../../research/docs/validation/timing.md"
+    },
+    {
+      "document": "docs/validation/README.md",
+      "originalTarget": "chrome-code-sign-clones.md",
+      "resolvedOriginalPath": "docs/validation/chrome-code-sign-clones.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "destinationPath": "docs/validation/chrome-code-sign-clones.md",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "chrome-code-sign-clones.md"
+    },
+    {
+      "document": "docs/validation/chrome-code-sign-clones.md",
+      "originalTarget": "../../scripts/lib/headlessChrome.mjs",
+      "resolvedOriginalPath": "scripts/lib/headlessChrome.mjs",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/research",
+      "destinationPath": "scripts/lib/headlessChrome.mjs",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/scripts/lib/headlessChrome.mjs",
+      "priorPreparedTarget": "../../../research/scripts/lib/headlessChrome.mjs"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "navigation.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "source-routing.json"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "migration.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/camera-motion.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/ci-cd.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/ci-correctness-performance-followup-prompt.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/deploying.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/development.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/manual-qa.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/image-repositories.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/implementation/earth-agent.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/implementation/platform-agent.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/repository-graphs.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/repository-split-graph.html"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/search.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/settings.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/tab-inventory.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/vr.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/render-on-demand.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/ui-layout.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/validation/README.md"
+    },
+    {
+      "document": "README.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/validation/chrome-code-sign-clones.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/development.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/ui-layout.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/camera-motion.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/render-on-demand.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/tab-inventory.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "docs/proposals/image-repositories.md"
+    },
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/docs",
+      "status": "authored source navigation; checks pending",
+      "newTarget": "component-transfers.json"
+    },
+    {
+      "document": "docs/proposals/repository-split-graph.html",
+      "originalTarget": "../../../0sfs/docs/proposals/repository-split-graph.html",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/repository-split-graph.html",
+      "originalTarget": "../../../UMN-VR/UMN-VR.github.io/docs/proposals/repository-split-graph.html",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "status": "unresolved original local/host evidence; retained original target and explicit blocker, no fabricated source URL",
+      "newTarget": "../../navigation.md#retained-local-and-host-evidence"
+    },
+    {
+      "document": "docs/proposals/repository-split-graph.html",
+      "originalTarget": "repository-graphs.md",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-graphs.md"
+    },
+    {
+      "document": "docs/proposals/repository-split-graph.html",
+      "originalTarget": "repository-split-graph.json",
+      "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+      "owner": "foss-earth/docs",
+      "status": "routed-local-source-navigation; checks pending",
+      "newTarget": "repository-split-graph.json"
+    }
+  ],
+  "priorAuthoredLinks": [
+    {
+      "document": "navigation.md",
+      "originalTarget": null,
+      "sourceRevision": null,
+      "owner": "foss-earth/research",
+      "status": "routed-public-owner-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/research/blob/main/README.md",
+      "priorPreparedTarget": "../research/README.md",
+      "destinationPath": "README.md"
+    }
+  ]
+}

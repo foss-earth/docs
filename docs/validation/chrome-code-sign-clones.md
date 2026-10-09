@@ -45,7 +45,7 @@ the middle of the shutdown, and Chrome dies before it starts the cleanup helper.
 
 ## Rules for a script that launches Chrome
 
-- Drive Chrome through [scripts/lib/headlessChrome.mjs](../../scripts/lib/headlessChrome.mjs)
+- Drive Chrome through [scripts/lib/headlessChrome.mjs](https://github.com/foss-earth/research/blob/main/scripts/lib/headlessChrome.mjs)
   (in 0sfs, `scripts/headless-chrome.mjs`) and `await chrome.close()` on every path, in a
   `finally`. `close()` sends `Browser.close` and waits up to 10 seconds for Chrome to exit
   before it signals; a normal exit takes about 100 ms.

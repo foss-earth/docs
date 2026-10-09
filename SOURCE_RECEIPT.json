@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 1,
+  "owner": "foss-earth/docs",
+  "preparedAtUtc": "2026-10-09T22-32-19Z",
+  "status": "Current source seal; individual retained check receipts define qualification. Installed archive and application/remote adoption separately recorded in external release descriptor.",
+  "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
+  "priorSourceReceipt": "build/source-only/local-layout-2026-10-09T22-23-46Z/SOURCE_RECEIPT.json.before",
+  "priorSourceReceiptSha256": "10ae778a1dab81df2e80a87896544bbe7d27b98f7e2b16610a0ab8fdff77d9b0",
+  "priorQualificationScope": "Retained prior receipts/archives are unchanged evidence only; this receipt claims no current-layout qualification.",
+  "sourceManifestPath": "build/source-only/local-layout-2026-10-09T22-23-46Z/source-manifest.json",
+  "sourceManifestEncoding": "UTF-8 sorted path JSON array, indent2, trailing LF; .git/build/node_modules/dist and receipt excluded",
+  "sourceManifestSha256": "aaa2b9ce265930c1eec39aaad82b112b5b470329b022c52d7b5ae778ce81ebe0",
+  "sourceFileCount": 45,
+  "sourceFiles": [
+    {
+      "path": ".attribution-release.json",
+      "sha256": "c5324ea9476d99afbc5f63e9d5a15d597dd7ee27546499c392046b55fc361131",
+      "bytes": 2045
+    },
+    {
+      "path": ".attribution.json",
+      "sha256": "e4493f3031a5051398339cf9649a8e18efb8ece96f512761d8d145daf8347f7a",
+      "bytes": 491
+    },
+    {
+      "path": ".github/workflows/attribution-check.yml",
+      "sha256": "63349507da9d004752bb0e43c681089dfd9fd6c26bf8047738cb19025f15135e",
+      "bytes": 406
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "834d979cc7709461fb4bec2f9a9627fe9501e52bdc073ad62e5d1f8df3cbb466",
+      "bytes": 21
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "85eda2b7ca0f62daec6a079df415d34b02e90e38e69d792640033afcb7aac09b",
+      "bytes": 572
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "c3a907b9e659a0f5a4c701be1b34a7d416526c3a99f129bf4d3b9db09c7ffa9d",
+      "bytes": 3442
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "ae17c446b45bb7819aa2f12775c1acaf1a2626affbb49a8b0e578dccecadd69c",
+      "bytes": 2613
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "bytes": 34523
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "323da85db96d02ed0cf48db889efa184037f538f002e868aeeff396ebb44a993",
+      "bytes": 359
+    },
+    {
+      "path": "README.md",
+      "sha256": "f0e27fb41580ab1c2a641f725bb738012474192e01580678894284ec3daa0185",
+      "bytes": 2965
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "6baf6d3c1755360f5d902275c893074fd17af2fc10c140fe932b8a90d77d9942",
+      "bytes": 791
+    },
+    {
+      "path": "SOURCE_PROVENANCE.json",
+      "sha256": "ab6010824860f46ef03ba85f76711ca2428cee8846c0a3a64df773aa33ec769f",
+      "bytes": 35191
+    },
+    {
+      "path": "component-transfers.json",
+      "sha256": "86a9e0a22f96b9223c82cc8d6a8cfef37821458b03dc282caaebc366aa138861",
+      "bytes": 17730
+    },
+    {
+      "path": "docs/camera-motion.md",
+      "sha256": "8ec2b5bf4ff75190e21d4f313386026d7c83dfe63f476efb46b1f57bf7211052",
+      "bytes": 9759
+    },
+    {
+      "path": "docs/ci-cd.md",
+      "sha256": "3158c7abbfa336c90ac63da653cf46fcd7fb58207d8cf30a2e55f3976b1776d2",
+      "bytes": 14948
+    },
+    {
+      "path": "docs/ci-correctness-performance-followup-prompt.md",
+      "sha256": "f3b0ec8a5882eec8b65014500df6c94632f3e20ac7a67c5cb83b27add6ae91d3",
+      "bytes": 10178
+    },
+    {
+      "path": "docs/deploying.md",
+      "sha256": "bc011c450852433382ad84c653f0c164dfce69d655eaf7efa74046d433840d60",
+      "bytes": 5613
+    },
+    {
+      "path": "docs/development.md",
+      "sha256": "2c1e9bec555177ec2f6a330636c7f52a19e3e0e26e1631fcb25f81e5aa413257",
+      "bytes": 7854
+    },
+    {
+      "path": "docs/manual-qa.md",
+      "sha256": "1366ee184059bfd7bafbdcdc20764861c39b1847326b7d88c77eb2a380cd789e",
+      "bytes": 2424
+    },
+    {
+      "path": "docs/proposals/image-repositories.md",
+      "sha256": "6fada64251caf49794a83f38eb2da51e919803ab44e225b7dab43ac1f9247e26",
+      "bytes": 21820
+    },
+    {
+      "path": "docs/proposals/implementation/earth-agent.md",
+      "sha256": "4f2f1cf5dbb9a50914fc153d70abdfec173ebc73e84ae0c0c05a9105c3d92571",
+      "bytes": 24857
+    },
+    {
+      "path": "docs/proposals/implementation/platform-agent.md",
+      "sha256": "1714d74d43ff77c3a012a3574fe0e8fe983f3f944b6862f4f465cfb399508d17",
+      "bytes": 12900
+    },
+    {
+      "path": "docs/proposals/repository-graphs.md",
+      "sha256": "82aba3a89f43a33aa1e60591dabdefa6c1308adbb862814a6da4e8dc9a03b578",
+      "bytes": 4478
+    },
+    {
+      "path": "docs/proposals/repository-split-graph.html",
+      "sha256": "4fa87dc906e48b6ea882513246003f45154621290230c55e03f8fe9d1625dd68",
+      "bytes": 64576
+    },
+    {
+      "path": "docs/proposals/repository-split-graph.json",
+      "sha256": "9685e2c871f8080902fd82331877584a5b8f2eb359f9792faae6e3cb5a25fd9b",
+      "bytes": 35143
+    },
+    {
+      "path": "docs/proposals/search.md",
+      "sha256": "3b8d0d0ab04dd7460ae45a61f3d5247cd2fe8c05bb0544e237258a527ff63bbf",
+      "bytes": 2443
+    },
+    {
+      "path": "docs/proposals/settings.md",
+      "sha256": "5d4bed9549070ff42b2b34ff9acb4cb5c3a08d65f08dc2388d731a60437ec382",
+      "bytes": 50556
+    },
+    {
+      "path": "docs/proposals/tab-inventory.md",
+      "sha256": "01956ea2983d643f41d9a89c797d12aee8825b39bb58595348903ecfda29225c",
+      "bytes": 15766
+    },
+    {
+      "path": "docs/proposals/vr.md",
+      "sha256": "6b831e3184304861c89ba5dde8cfe772a2a0e8290aa7e92ec64b3c49a16e7ced",
+      "bytes": 2446
+    },
+    {
+      "path": "docs/render-on-demand.md",
+      "sha256": "bba57adfdfc7e90e6258a5dfe09d6d3a16abaef2a251e335b8b54429f83f2b8d",
+      "bytes": 5280
+    },
+    {
+      "path": "docs/ui-layout.md",
+      "sha256": "07e9cfb448f76f5cdea700ebf24f3b9fbb990029bf4aa25801fcf9af0a2a9bf7",
+      "bytes": 26162
+    },
+    {
+      "path": "docs/validation/README.md",
+      "sha256": "e37ca9e5596590ff0586a68da1ed9561aaedd4a87c1cfd72ec387506f8da166d",
+      "bytes": 25877
+    },
+    {
+      "path": "docs/validation/chrome-code-sign-clones.md",
+      "sha256": "d37ddfa28c3485136b1dfafac7356881274cee836e3f8971852ae7de6bbff3c6",
+      "bytes": 4923
+    },
+    {
+      "path": "fixtures/communityDocuments.test.mjs",
+      "sha256": "c57dc79504b7dfceae724ba327045ec5883ba32da353d587d9fa8e537953ba56",
+      "bytes": 1485
+    },
+    {
+      "path": "fixtures/documentLinks.test.mjs",
+      "sha256": "03d66911a4887e4c9c54108ffd462dacc9362e02793f073749e2b84627eac8cb",
+      "bytes": 3018
+    },
+    {
+      "path": "link-routing.json",
+      "sha256": "a260b9fcea8c5bd1c6afa51e7fb1f718dff5e00f1776dab4a141d3b2f4d1a787",
+      "bytes": 119579
+    },
+    {
+      "path": "migration.md",
+      "sha256": "acba34e7af3f17273c7cdced645a6ae0b2517d6ab972fcb8b48858903c187b24",
+      "bytes": 5034
+    },
+    {
+      "path": "navigation.md",
+      "sha256": "f9517b3a58ea91fd475e2ebfbd08e6e704f7e30ca31bc5d645e2057ea8dea164",
+      "bytes": 4589
+    },
+    {
+      "path": "package.json",
+      "sha256": "d6a2646accb5ffadbb389e30079e4d611da76bed338e2bebc9e108ea32c8b879",
+      "bytes": 1693
+    },
+    {
+      "path": "scripts/check-links.mjs",
+      "sha256": "68b54b584ab945b749058db77ebb55d0f7e2badfae2983b622a0d26379410b3b",
+      "bytes": 3771
+    },
+    {
+      "path": "scripts/check-public-consumer.mjs",
+      "sha256": "d046b63f93beda9c1b0e979ea2512939c8998bff330fd61fa55cc84990e8d9ba",
+      "bytes": 9261
+    },
+    {
+      "path": "scripts/lib/communityDocuments.mjs",
+      "sha256": "1900690bfd57a6eb05ffc78e97714bacef161b7d4518fd643722ee734be516ff",
+      "bytes": 1682
+    },
+    {
+      "path": "scripts/lib/documentLinks.mjs",
+      "sha256": "3def9e0efc59beeba2fed1023917cb57473b8edf7743c845f3589ed2f5f1bbd9",
+      "bytes": 2682
+    },
+    {
+      "path": "setup.md",
+      "sha256": "f0d99157adaf6018b1117e43fc8a746eb542e22ed7f4bb5c056c0fbd034879c0",
+      "bytes": 3910
+    },
+    {
+      "path": "source-routing.json",
+      "sha256": "f854b19baf002124ddbe24f65da7ed95f1d9f2e75f98a77fa6db855540649aca",
+      "bytes": 121439
+    }
+  ],
+  "provenancePath": "SOURCE_PROVENANCE.json",
+  "provenanceSha256": "ab6010824860f46ef03ba85f76711ca2428cee8846c0a3a64df773aa33ec769f",
+  "changeMapPath": "build/source-only/local-layout-2026-10-09T22-23-46Z/change-map.json",
+  "changeMapSha256": "fbd3a7614179fa2e5d760ff306b8e7b6b659b63524f45641ec997491b1e635f4",
+  "publicExports": {},
+  "bins": {},
+  "sharedCi": {
+    "revision": "9e046dd482e0229dc7c7b2d71b079d5905664656",
+    "archiveSha256": "450ede699f55f9b9c78146eadb73de7c6297e56553e7d7f9e5b164786a7beb24",
+    "policySha256": "9ca88bf5861685e22e65e5f39fa65b05faaf9c218875fccbecce1b9f2dca5bd3",
+    "callerSha256": "63349507da9d004752bb0e43c681089dfd9fd6c26bf8047738cb19025f15135e",
+    "installedConformance": null,
+    "fullIntendedRefAudit": null,
+    "actualRemoteAdmissionVerified": false,
+    "docsOnlyMetadataSkipped": false,
+    "replacementPolicyStatus": "pending checked sentence-case CI replacement; old immutable caller/descriptor retained"
+  },
+  "policySentence": "You cannot have AI as a co-author, or your contributions will be rejected.",
+  "communityDirectiveAcknowledged": true,
+  "communityDocuments": [
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "c3a907b9e659a0f5a4c701be1b34a7d416526c3a99f129bf4d3b9db09c7ffa9d",
+      "bytes": 3442,
+      "mandatorySentenceLines": [],
+      "readmeTarget": "CODE_OF_CONDUCT.md",
+      "observation": "actual owner file bytes; source presentation check queued"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "ae17c446b45bb7819aa2f12775c1acaf1a2626affbb49a8b0e578dccecadd69c",
+      "bytes": 2613,
+      "mandatorySentenceLines": [
+        32
+      ],
+      "readmeTarget": "CONTRIBUTING.md",
+      "observation": "actual owner file bytes; source presentation check queued"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "bytes": 34523,
+      "mandatorySentenceLines": [],
+      "readmeTarget": "LICENSE",
+      "observation": "actual owner file bytes; source presentation check queued"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "6baf6d3c1755360f5d902275c893074fd17af2fc10c140fe932b8a90d77d9942",
+      "bytes": 791,
+      "mandatorySentenceLines": [],
+      "readmeTarget": "SECURITY.md",
+      "observation": "actual owner file bytes; source presentation check queued"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "85eda2b7ca0f62daec6a079df415d34b02e90e38e69d792640033afcb7aac09b",
+      "bytes": 572,
+      "mandatorySentenceLines": [
+        3
+      ],
+      "readmeTarget": null,
+      "observation": "actual owner file bytes; source presentation check queued"
+    }
+  ],
+  "childWriters": [],
+  "checksExecuted": [],
+  "currentArtifact": null,
+  "acceptedArtifacts": [],
+  "actualConsumerAdoption": null,
+  "remainingQualification": [
+    "granted source/navigation/community fixture checks",
+    "exact checked common CI replacement adoption and shared conformance",
+    "complete intended heads/tags attribution audit after primary-owned clean history/transformation",
+    "exact resealed archive/hash/size/full file map",
+    "independent installed archive consumer with retained input pins and negative controls",
+    "actual app/tool caller adoption where required",
+    "coordinator public transport, remote URLs/fragments and actual admission settings"
+  ],
+  "researchExperimentQualification": "none; optional experiments, native/browser/GPU/media/network calls excluded",
+  "compatibility": "Historical source/version citations and original rights/source hashes retained; independent public owner navigation replaces adjacent checkout assumptions; no app runtime was switched.",
+  "rollback": "Restore only reviewed increment using retained before/ source bytes/change map. Keep archives, previous receipts, dirty inputs and ignored evidence; no reset/clean/delete authorized.",
+  "consumerContract": {
+    "command": "DOCS_CONSUMER_ARCHIVES=<reviewed closure.json> npm run test:consumer",
+    "closure": {
+      "version": 1,
+      "packages": [
+        {
+          "name": "@foss-earth/docs",
+          "version": "0.1.0",
+          "archive": "<relative exact resealed .tgz>",
+          "sha256": "<64 hex>",
+          "bytes": "<positive integer>"
+        }
+      ]
+    },
+    "prerequisites": "exact reviewed common CI for source/conformance/ref audit; Docs archive consumer has no runtime dependency/TypeScript/build",
+    "status": "prepared source only; UNRUN"
+  },
+  "verifiedAtUtc": "2026-10-09T23:37:53.574054+00:00",
+  "currentSourceManifest": {
+    "path": "/Users/felg/gh/foss-earth/foss-earth.github.io/build/repository-split/checks/2026-10-09-granted-verification/docs-sealed-source-files.json",
+    "sha256": "5e6eab33157b9bfd3aa5f98b53c7a8e3232ad40da5f0ae62bb98038d0ee8ed7e",
+    "fileCount": 47
+  },
+  "currentSharedCi": {
+    "revision": "1db73d1ddb342e348a2c9e8387f7bbc7ebb3225e",
+    "policySha256": "cdcda3c5d2968fe115e61627fca95ec744637de533750f1ee680c2a5ede49606",
+    "artifactSha256": "bd884d925b8a7339b15fa61a477cf652bb73d41cc68addf50a050ab6cb151611",
+    "descriptorSha256": "d60ee5067185a768f0890da2ed87d82dbfa08f28282e4d05a35e823c70307122",
+    "callerSha256": "b9fdfbf4bd61ed727abaef4fd9990b92714a6d2c1388feec600dc16337436b2c",
+    "fullIntendedRefs": "external release descriptor; mandatory complete nonempty audit after this commit",
+    "remoteAdmissionVerifiedByOwner": false
+  },
+  "currentChecks": [
+    {
+      "receipt": "/Users/felg/gh/foss-earth/foss-earth.github.io/build/repository-split/checks/2026-10-09-granted-verification/docs-causal-source.json",
+      "sha256": "53ade372b7b349227589b2d5e1612f6da2c06f950886630d6f62639de97bc9c1",
+      "exitCode": 0
+    },
+    {
+      "receipt": "/Users/felg/gh/foss-earth/foss-earth.github.io/build/repository-split/checks/2026-10-09-granted-verification/docs-ci-install.json",
+      "sha256": "aaff1621a4f9f44a85d641a04231143a5df164a2806d7246fe3cf262d1ab22a1",
+      "exitCode": 0
+    },
+    {
+      "receipt": "/Users/felg/gh/foss-earth/foss-earth.github.io/build/repository-split/checks/2026-10-09-granted-verification/docs-source-lineage.json",
+      "sha256": "60396037b5391d761e549b2e16c24b74a747bd1325fd1f464b13e77d12a5b261",
+      "exitCode": 0
+    }
+  ]
+}
