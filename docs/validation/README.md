@@ -196,5 +196,5 @@ a software one; on a GPU the check has not been run.
   whole image's on the same pixels.
 - Close Chrome on every path, with `await chrome.close()` or Playwright's `browser.close()`
   in a `finally`. A Chrome that is killed leaves a 1.4 GB clone of itself under
-  `/private/var/folders` until the Mac restarts.
+  macOS temporary storage until the Mac restarts.
   [Chrome's code-sign clones](chrome-code-sign-clones.md) says why and how to check.
