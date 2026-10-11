@@ -69,5 +69,5 @@ source input from its recorded original revision/blob if necessary; do not reset
 or clean an archive, overwrite dirty source, or discard ignored evidence.
 
 - [Migration state](migration.md)
-- [Contributing](CONTRIBUTING.md)
+- [Contributing](https://github.com/foss-earth/.github/blob/main/CONTRIBUTING.md)
 - [Public owner navigation](navigation.md)
