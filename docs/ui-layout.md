@@ -4,41 +4,74 @@ Rules for panels, tabs, menus and the HUD in FOSS Earth and in the applications
 built on it, 0sfs included. Read them before adding or changing any on-screen
 control.
 
-## Windows and log share one layout
+## Windows, the log, and the world
 
-The shell has exactly two arrangements: a window on each side with the log
-centered on the viewport, or the log on the left with one window on
-the right. The left launcher belongs to the left window and is absent in the
-second arrangement. Both arrangements keep the log 12 px below the top safe
-area; switching sides never reserves space for a missing launcher above it.
+The shell has three arrangements, chosen from the requested sizes rather than a
+fixed breakpoint:
 
-`resolveDockLayout` allocates the windows, log and gaps together. `WindowOverlay`
-uses that allocation for both slots and publishes the log geometry before paint.
-The log has no separate viewport breakpoint or saved absolute position. Its
-startup placeholder stays on the left until the shell takes over.
+- **Dual**, the widest: a window on each side and the log floating in the center,
+  12 px below the top safe area. This is the only arrangement that shows the log
+  all the time.
+- **Columns**: a window on each side and no floating log. The log is a tab. A
+  wider window keeps its size and the other takes the rest, down to 160 px.
+- **Stacked**, a phone: one window, full width, touching the top and side edges.
+  The other window's tabs fold into it. The log is a tab. Which window fills the
+  phone follows the last window the user widened; otherwise it is the right one.
+
+`resolveDockLayout` allocates the windows and, in the dual arrangement, the log.
+`WindowOverlay` publishes that allocation before paint. The log has no saved
+absolute position. Its startup placeholder stays on the left until the shell
+takes over.
 
 The most recent manual resize gets priority. Growing the log shrinks each window
-as needed, down to 160 px. If its requested width still does not fit with both
-windows, the layout switches to the log on the left and one window on the right.
-Shrinking the log brings both windows back as soon as they fit. The tabs temporarily
-collected on the right return to their former sides; tabs closed or newly opened
-in the meantime keep the user's changes.
+as needed, down to 160 px. If the requested log still does not fit between both
+windows, the layout becomes columns: both windows stay, and the log moves into
+a tab. It comes back to the center only once the requested width fits there
+again, so a log the user widened does not flicker back as soon as the windows
+have 160 px of room. Tabs stay on the sides they were on.
 
-Growing a window shrinks the log when they meet. In the two-window layout the
-log's center stays at half the viewport width, even with unequal windows. Each
-half of the log must clear its neighboring window and a 12 px gap. Window resize
-handles stop when the log reaches its 160 px minimum so the handle being dragged
-does not disappear. In the one-window layout, resizing the right window squeezes
-the left log; it does not force a wide log back to the center just to restore a
-second window.
+Growing a window shrinks the log when they meet. The log's center stays at half
+the viewport width, even with unequal windows. Each half of the log must clear
+its neighboring window and a 12 px gap. Window resize handles stop when the log
+reaches its 160 px minimum. If a window grows until the centered log would be
+under 160 px, the layout becomes columns and both windows remain.
 
-These are space constraints based on requested sizes, not a fixed screen-width
-breakpoint. Preferences survive fitting, and taking over a resize starts from
-the displayed sizes. A log drag keeps the same width calculation across mode
-changes so it can reverse through the transition without oscillating. Ordinary
-log messages never take resize priority. Minimizing releases the log's requested
-space; restoring reapplies its preference. Collapsed tab strips also fit their
-allocated widths.
+Preferences survive fitting, and taking over a resize starts from the displayed
+sizes. A log drag keeps the same width calculation across the dual and columns
+arrangements so it can reverse through the transition without oscillating.
+Ordinary log messages never take resize priority. Minimizing releases the log's
+requested space; restoring reapplies its preference. Collapsed tab strips also
+fit their allocated widths.
+
+### What the world draws under the windows
+
+On dual and columns the windows float over the full-screen world, so they can
+be resized freely. The world still shades only the pixels those opaque windows
+do not cover: a depth mask is drawn over each window (and over the floating
+log) before the globe, and later fragments fail the depth test there.
+
+On a phone the window is a band across the top and the world is drawn only in
+the area under it, so the drawing buffer itself is smaller. The resize grip
+sits on the edge where the window meets the world, in front of the toolbar. Interface → **Toolbar**
+chooses where that bar sits: above the tabs, at the bottom of the window, or
+auto, which is the top on a phone and the bottom when two windows fit. Bottom
+is the default. A solid strip behind the toolbar is the default; Interface →
+**Tabs behind the toolbar** lets the window show through it. Dragging the grip
+gives the world less or more of the screen. A collapsed window leaves the
+toolbar in a strip only as tall as the bar. Interface → **World size** chooses
+when the drawing buffer follows. Release, the default, keeps that buffer while
+the split window is dragged and while the browser window changes shape, then
+resizes it once when the drag ends. Live resizes it on every movement.
+
+When split is on and only one side has a tab, that window uses the full width.
+The empty side stays a launcher. The world starts under whichever window or
+launcher reaches lowest, so moving a tab to the other side keeps the split.
+
+Interface → **Windows and the world** is a two-way switch, overlay or split.
+Until it is moved, a phone uses split and a wider screen uses overlay. Holding
+a tab still, or holding the resize grip still, opens the same switch beside
+the press, below it when the press is at the top of the screen. Moving during
+the press drags the tab or resizes the window, as before.
 
 Clicking a log message copies its text and appends `(copied 2 clipboard)` after
 the clipboard write succeeds. The message is also a keyboard button. Panorama
