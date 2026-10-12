@@ -49,6 +49,20 @@ interrupting it: a swipe goes on panning, and a press becomes a drag from where
 the pointer is. The person never has to lift and start again because the program
 was busy.
 
+A drag grabs the ground. A mouse press or a finger takes hold of the displayed
+surface under it (the terrain, not the ellipsoid beneath it) and the camera
+keeps that point under the pointer. Heading, tilt and distance stay as they are.
+The same marker as a zoom or a turn shows the grabbed point from the press until
+the glide after release has stopped. `camera.grabFollowMs`, Controls → Camera →
+Grab follow time, is 0 by default, which holds the point on the pointer. A longer
+time brings it there as a critically damped spring that never overshoots. When
+the pointer lets go, the grab carries on at the speed it was moving, in screen
+pixels per second, and slows by `camera.inertiaDecay` once per 60 Hz frame, so
+the same flick covers about the same ground on a faster display. A drag that
+starts on the sky, or on a point of interest, does not grab. A second finger
+landing ends the grab: the pair zooms and turns, and the finger left takes a
+grab of its own.
+
 ### 4. Only the person's input is input
 
 A trackpad's glide after the fingers lift is the system's: a stream of wheel
@@ -144,6 +158,7 @@ travel. It cuts with a short fade, and nothing glides.
 | Swipes and pinches over the controls that none of them uses, handed to the canvas | `passUnusedInputToWorld` in `src/input/passToWorld.ts`, started by the runtime |
 | Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
 | Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
+| Grabbing the ground: the point held under the pointer, its marker, and the glide on letting go | `CameraController.beginAnchorPan`, `stepAnchorPan` and `endAnchorPan` in `src/babylon/cameraState.ts`, stepped each frame by `createGlobeInertia` in `globeInertia.ts`; the ground from `NavigationAnchorService.groundAt`; the marker in `src/browser/navigationAnchorMarkers.ts` |
 | Zoom and rotation about a point, keeping it on screen | `CameraController.zoomAbout` and `orbitAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
 | Each glide keeping the point its gesture chose | the per-channel anchors in `createInertialCameraController` |
 | Easing onto a tracked point | `createPoiTracking` in `src/layers/poiTracking.ts` |
