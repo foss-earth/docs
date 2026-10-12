@@ -100,6 +100,15 @@ needs no correction. For example, a camera handed back orbits the point where it
 line of sight comes down to the height the globe keeps its orbit target at, so
 ground following has nothing to fix.
 
+Starting to track a point is a correction too: the centre eases onto the tracked
+point at the glide's pace (`camera.inertiaDecay`) rather than jumping to it.
+Choosing where zoom and rotation act (`input.*.zoomAnchor`, `input.*.orbitPivot`)
+never moves the camera by itself. A zoom or a turn about a picked or pinned point
+keeps that point where it is on screen, and the camera's centre stays the point
+where its line of sight comes down to the orbit target's height, so the compass
+does not jump either. A point picked nearer or farther than the zoom limits allow
+is left there; the camera may move back toward the limits, not further past them.
+
 ### 8. Motion reads as steady
 
 Motion should look like one object moving, not like several animations running
@@ -133,7 +142,11 @@ travel. It cuts with a short fade, and nothing glides.
 | A closer zoom limit after a handback, until the camera is back outside it | `CameraController.allowNearer` in `src/camera/cameraState.ts` |
 | Which wheel event begins a gesture, and when | `watchWheelGestures` in `src/input/wheelController.ts` |
 | Swipes and pinches over the controls that none of them uses, handed to the canvas | `passUnusedInputToWorld` in `src/input/passToWorld.ts`, started by the runtime |
-| Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/input/createInputController.ts`, `heldPress` in `mouseController.ts` |
+| Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
+| Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
+| Zoom and rotation about a point, keeping it on screen | `CameraController.zoomAbout` and `orbitAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
+| Each glide keeping the point its gesture chose | the per-channel anchors in `createInertialCameraController` |
+| Easing onto a tracked point | `createPoiTracking` in `src/layers/poiTracking.ts` |
 | A flight's velocity where it got to, and the glide's settling curve | `flightMotion` and `glideSettling` in `src/scenes/panoramaFlight.ts` |
 | The flights, their cuts and the orb's return | `enter`, `leave`, `handBack` and `fadeSphere` in `src/scenes/loadScene.ts` |
 
@@ -144,7 +157,7 @@ where a unit test can express it:
 
 1. **Cut short at any moment:** what happens if the person interrupts at 10 %, 50 % and 90 %? The camera stays where it got to, and the first pose after the handover equals the last pose before it.
 2. **Momentum:** the camera carries the velocity and turn it had, in direction and size, and slows by `camera.inertiaDecay`.
-3. **Input:** a swipe or a mouse drag that interrupts acts on the camera at once and keeps acting; Escape leaves it gliding. Touch should carry on too; see "Known gaps".
+3. **Input:** a swipe, a mouse drag or the fingers that interrupt act on the camera at once and keep acting; Escape leaves it gliding.
 4. **Momentum is not input:** a trackpad glide still arriving from before neither interrupts the animation nor moves the camera after a handover.
 5. **Nothing snaps:** check field of view, roll, tilt, distance limits and the orbit target's height across every handover. List any snap that cannot be avoided in the feature's docs.
 6. **Clicks:** the press that stopped something did not also activate what was under it.
@@ -153,8 +166,10 @@ where a unit test can express it:
 
 ## Known gaps
 
-- **Touch.** A touch that interrupts a flight does not carry on as a globe gesture;
-  only wheel gestures and mouse presses do.
+- **Touch, on devices.** A touch that interrupts a flight carries on as the globe
+  gesture it is: one finger pans and two pinch and turn from where they are, about
+  the point under their midpoint when they landed. This is covered by unit tests
+  with synthetic touch events; it has not yet been checked on a phone or tablet.
 - **Looking up.** The globe camera cannot look above the horizon. An exit from a
   360 image cut short in its first moments, from a view looking up, snaps the tilt
   to the horizon.
