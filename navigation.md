@@ -15,7 +15,7 @@ This index describes the independent owner layout. Exact admitted release/docume
 
 ## Component owners
 
-The [component transfer plan](component-transfers.json) names each actual owner, proposed destination and immutable original blob. It writes no owner implementation. Engine owns geography/camera/input/terrain/map/surface queries; renderer owns the supplied device/backend/frame authority; UI owns the shared registry/windowing; toolbar owns HUD layout; About owns graph/provenance presentation; Dev owns host contributions with `?dev=1`; Sky owns current astronomy/atmosphere/lighting; Weather currently owns manual wind/contracts and its staged proposal; scenes owns envelope/placements/navigation; 360 owns the top viewer; images owns common services; equirectangular, cubemap, tiled-cubemap and preview-sheets retain their distinct structures. Flight and campus own their application composition and content. Search and both VR lanes remain deferred.
+Engine owns geography/camera/input/terrain/map/surface queries; renderer owns the supplied device/backend/frame authority; UI owns the shared registry/windowing; toolbar owns HUD layout; About owns graph/provenance presentation; Dev owns host contributions with `?dev=1`; Sky owns current astronomy/atmosphere/lighting; Weather currently owns manual wind/contracts and its staged proposal; scenes owns envelope/placements/navigation; 360 owns the top viewer; images owns common services; equirectangular, cubemap, tiled-cubemap and preview-sheets retain their distinct structures. Flight and campus own their application composition and content. Search and both VR lanes remain deferred.
 
 ## Retained local and host evidence
 

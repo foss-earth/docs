@@ -13,7 +13,7 @@ See the other repositories at https://github.com/foss-earth.
 Start here:
 
 - [Follow-ups](docs/todo.md): work across the Earth repositories that isn't done yet, including WebAssembly builds.
-- [npm install looped forever in `about` (2026-10-11)](docs/incidents/2026-10-11-npm-install-loop.md): why an npm install never finished.
+- [Incident reports](docs/incidents/README.md): failures, observed evidence, recovery actions and unresolved causes.
 - [Repository navigation](navigation.md)
 - [Checkout setup](setup.md)
 - [Migration notes](migration.md)

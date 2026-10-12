@@ -1855,7 +1855,7 @@
       "sourceRevision": null,
       "owner": "foss-earth/docs",
       "status": "authored source navigation; checks pending",
-      "newTarget": "source-routing.json"
+      "newTarget": "link-routing.json"
     },
     {
       "document": "README.md",
@@ -2064,14 +2064,6 @@
       "owner": "foss-earth/docs",
       "status": "authored source navigation; checks pending",
       "newTarget": "docs/proposals/image-repositories.md"
-    },
-    {
-      "document": "navigation.md",
-      "originalTarget": null,
-      "sourceRevision": null,
-      "owner": "foss-earth/docs",
-      "status": "authored source navigation; checks pending",
-      "newTarget": "component-transfers.json"
     },
     {
       "document": "docs/proposals/repository-split-graph.html",
