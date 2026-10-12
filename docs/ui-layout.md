@@ -66,9 +66,13 @@ paragraph.
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
 }
 ```
+
+Tab wrappers use 6 px padding. Section headings use 5 px vertically and 6 px
+horizontally; section bodies use 6 px at the sides and bottom. Compact padding
+keeps control minimum sizes and text sizes unchanged.
 
 The HUD bar is the reference (`.hud-bar` in `src/styles/hud.css`): its items
 sit side by side at their own widths, with default visibility fitted to one row
@@ -326,22 +330,28 @@ or a key meant for the camera or the vehicle.
 
 ## A panorama's tabs
 
-A panorama has no controls floating over it. Entering one opens a tab titled
-"360: <title>" (`createPanoramaTabs` in `src/shell/panoramaTabs.ts`, given to
+Inside a panorama, a large **Return to map** button sits at the bottom centre,
+just above the HUD bar. Entering one opens a tab titled
+"360: <title>" (`createViewerTabs` in `360/src/panels.ts`, given to
 `WindowOverlay` as `panoramaTabs`), selected and in front. While the camera
 flies in, or the entry fades in, its panel is minimized, out of the way of the
 map the camera flies over. It shows once the panorama is on screen (`onScreen`
 in the tabs' snapshot), unless the person showed it or picked another tab in
-that panel meanwhile. The tab holds:
+that panel meanwhile. Its window fits the photograph content, with the same
+compact padding as the other tabs. Short or empty descriptions leave enough
+space to show a section heading when scrolling. The tab holds:
 
-- **Photograph:** its title and description, the groups it is in, where it was
-  taken and to what accuracy, its pose and whether its north is set, and its
-  credit and licence with a link to the source.
-- **Links:** a button for each link, as in the view.
-- **Image detail:** which image is on screen, why no larger one is (the detail
+- The photograph's description and the groups it is in. This content has no
+  section header or repeated title. Capture, accuracy, pose, north alignment
+  and attribution stay in the scene metadata; attribution also appears in
+  the HUD bar.
+- **Links**, collapsed by default: a button for each link, as in the view.
+- **Image detail**, collapsed by default: which image is on screen, why no
+  larger one is (the detail
   asked for, the device's texture limit or a memory budget, each named, or a
   load that failed), the images the panorama offers, and
-  `scene.panorama.immersionWidth`, whose one home this is.
+  `scene.panorama.immersionWidth`, whose one home this is. These sections are
+  available by scrolling; a manual resize takes precedence for this visit.
 
 A failure also goes to the log as an error line, since a tab can be closed: the
 scene file, entering a panorama, a larger image of the one on screen, and orb
@@ -352,14 +362,14 @@ failures and are not logged.
 
 Following a link retitles the same tab. Closing it leaves the panorama, exactly
 as Escape does; while a panorama is still being entered, closing it cancels.
-These are the only ways out: there is no close button in the bar.
+The **Return to map** button leaves it too.
 
 Tabs belong to a context, the globe or a panorama, and the overlay shows those
 of the context on screen:
 
 | Tab | On the globe | In a panorama | Why |
 | --- | --- | --- | --- |
-| Location | yes | hidden | It moves the globe camera, which the panorama holds; the photograph's place is in its tab |
+| Location | yes | yes | Place search and coordinate fields stay available in a tour |
 | Map | yes | hidden | The map is not drawn |
 | Renderer | yes | yes | The panorama is drawn by the same renderer, at its resolution and frame-rate cap |
 | Controls | yes | yes | The input method and controller bindings drive the panorama's look too |
