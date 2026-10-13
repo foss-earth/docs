@@ -17,6 +17,13 @@ The first two could be static builds of each library hosted at fixed URLs (for
 example on GitHub Pages, one per LTS release and one for `main`), which the app
 loads through an import map instead of from `node_modules`.
 
+## Performance
+
+The JavaScript speedups, the proof they match the shipped pixels, the
+frame-budget streamgraphs, and the remaining app, sky and capture work are
+in [Performance](performance.md). WebAssembly is still the section below,
+and it waits on that work.
+
 ## WebAssembly builds
 
 Every component where it makes sense should eventually have a WebAssembly (WASM)

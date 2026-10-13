@@ -11,7 +11,8 @@ claimed here.
 The pipeline and timings below retain the original 2026-10-08 single-checkout
 scope. They do not qualify independent owner builds or current-layout apps.
 Docs-only changes need no app typecheck or bundle build, but they always require
-the shared metadata gate and the owning document/content checks.
+the shared metadata gate and the owning document/content checks. The live globe
+is published with the steps in [deploying.md](deploying.md).
 
 ## Historical pipeline and cost record
 

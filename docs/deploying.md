@@ -1,119 +1,77 @@
 # Deploying to GitHub Pages
 
-This page retains the original app's deployment procedure and prototype-path
-record. The current split globe app owns its build/deployment manifest in
-[foss-earth.github.io](https://github.com/foss-earth/foss-earth.github.io); Docs
-has no application bundle or deployment command. Release requires exact split
-packages, actual consumer qualification and reviewed current production/rollback
-scope. The commands and old `build/` paths below are historical records, not
-current-layout prerequisites or permission to publish.
+The live site is https://foss-earth.github.io/. `/` is the landing page.
+`/app/` is the Earth app. Publishing is a manual build from a side-by-side
+checkout of the Earth repositories. Pushing `main` does not publish the site.
+There is no GitHub Actions workflow for it.
 
-## Historical deployment procedure
+The landing repository is
+[foss-earth/foss-earth.github.io](https://github.com/foss-earth/foss-earth.github.io).
+Its `scripts/deploy.mjs` is the publisher. This docs repository has no app
+bundle and no deploy command of its own.
 
-Redeploying the live site is one command:
+## Publish
 
-```sh
-npm run deploy
-```
+The app links each library with `file:../…`, so the build compiles the sibling
+checkouts as they are on disk.
 
-That's it. A minute or so later, https://foss-earth.github.io/ serves the new build.
-
-## What the command does
-
-`npm run deploy` runs `deploy:gh-pages`, which is two steps:
-
-1. `npm run build` — typechecks (`npm run typecheck`), then builds with Vite. This repository,
-   `foss-earth/foss-earth.github.io`, is the organization's Pages site, which GitHub serves from
-   the domain root. So the build keeps Vite's default base of `/`, and every asset URL in the
-   bundle starts with `/assets/`.
-2. `gh-pages -d dist` — commits the contents of `dist/` to the `gh-pages` branch and pushes it.
-   GitHub Pages serves that branch directly. Nothing on `main` is touched.
-
-The command does not run lint or tests; run `npm run ci` first.
-
-## Put the prototype back after each deploy
-
-`gh-pages -d dist` replaces the whole branch, and with it the progressive 360° prototype's
-phone package, which is published beside the app at `/eac-prototype/`. Put it back straight
-after every deploy:
+Run these from any directory. The second command continues from `app/`:
 
 ```sh
-npx gh-pages -d build/benchmarks/eac-progressive-prototype/package -e eac-prototype --add -m "Publish the prototype's phone package"
+cd ~/gh/foss-earth/app && npm run build
+cd ../foss-earth.github.io && npm run build && npm run deploy
 ```
 
-The package is kept in this checkout's `build/`. If it is gone, `export-package.mjs` makes it
-again ([the prototype's README](https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/README.md#testing-by-hand)).
-On 2026-10-04 the prototype was missing from the site for the 30 seconds between the two
-pushes, and the branch then held the same 6,144 files as before the deploy.
+`npm run build` in `app/` typechecks, then writes `app/dist/` with Vite's base
+`/app/`. `npm run build` in `foss-earth.github.io` copies that directory to
+`dist/app/` and adds the landing page (`index.html`, `landing.css`,
+`foss-earth-sw.js`). `npm run deploy` fetches `origin/gh-pages`, replaces that
+branch with `dist/`, and leaves `eac-prototype/` and `examples/` in place. The
+deploy commit records the short SHA of the `app` checkout. GitHub Pages serves
+the `gh-pages` branch from the repository root. `main` is not changed.
 
-The deploy is manual and runs from your machine. There is no GitHub Actions workflow in this
-repository, so pushing to `main` does **not** republish the site — you have to run the command.
-
-## Before the first deploy on a new machine
+## Before the first deploy on a machine
 
 - Node.js 22 or newer.
-- The built gamepad-tools checkout beside this one, as described in
-  [Development](development.md#running-locally). Both `npm ci` and the build need it.
-- `npm ci` at least once, so the `gh-pages` CLI is installed.
-- Push access to `origin`, with git credentials already working (the command pushes as you).
+- The Earth repositories checked out side by side, and `gamepad-tools` beside
+  them, as in the [app README](https://github.com/foss-earth/app/blob/main/README.md).
+- `npm install` in `app/` at least once.
+- Push access to `foss-earth/foss-earth.github.io`, with git credentials already
+  working. The deploy pushes as you.
 
-## Repository settings
+Pages is set to the `gh-pages` branch, folder `/ (root)`, under **Settings →
+Pages** on `foss-earth/foss-earth.github.io`.
 
-Pages must be set to deploy from the `gh-pages` branch, folder `/ (root)`, under
-**Settings → Pages** in GitHub. This is already configured; you only need it when setting up a
-fresh fork. The `gh-pages` branch is created automatically by the first deploy.
+## Check
 
-## Verifying
-
-A blank page can still return `200`, so check the main script as well as the page:
+A blank page can still return `200`. Check the app page and its script:
 
 ```sh
-curl -o /dev/null -w '%{http_code}\n' https://foss-earth.github.io/
-curl -s https://foss-earth.github.io/ | grep -o 'src="[^"]*"'
+curl -o /dev/null -w '%{http_code}\n' https://foss-earth.github.io/app/
+curl -s https://foss-earth.github.io/app/ | grep -o 'src="[^"]*"'
+curl -s https://foss-earth.github.io/app/ | grep -o '<meta name="foss-earth[^>]*>'
 ```
 
-The script path should start with `/assets/`, and requesting it on `https://foss-earth.github.io`
-should also return `200`. The page also says which build it is; the time and commit should be
-the build you just made:
+The script URL starts with `/app/assets/`. The meta tags name the build time and
+the app commit. GitHub can take a minute to serve the new `gh-pages` commit. A
+browser may still show a page it kept; a hard refresh loads the published one.
+
+## The campus tour
+
+The University of Minnesota tour is a second site,
+https://umn-vr.github.io/tour/. It is built from `~/gh/UMN-VR/tour` against
+these same sibling checkouts (`foss-earth` and `@foss-earth/ui` are `file:`
+links), so a globe change is not on the tour until the tour is published too.
+`npm run deploy` there builds and pushes the tour repository's own `gh-pages`
+branch. It keeps the photographs already published. The club homepage is a
+different repository and this command does not publish it.
 
 ```sh
-curl -s -A foss-earth-check/1.0 https://foss-earth.github.io/ | grep -o '<meta name="foss-earth[^>]*>'
+cd ~/gh/UMN-VR/tour && npm run deploy
 ```
 
-In a browser, the log's first line says the same: "App built 2026-10-04 20:32 UTC from
-d538bfa." A browser can still show a page it kept from before the deploy. A page from
-2026-10-04 on asks the site which version is published, and reloads itself into the new one,
-or says so with a button once it has been touched
-([app-files.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it)). A hard refresh still
-works for a page from before then.
+## When the page is blank
 
-## Troubleshooting
-
-**The page loads blank and the console shows 404s for its scripts.** The build went out with a base
-path that does not match where Pages serves it. This site is served from the root, so
-`dist/index.html` must load `/assets/…`. Check `deploy:gh-pages` in `package.json` for a `--base`
-flag, and `vite.config.ts` for the `base` it chooses.
-
-**The deploy reports success but nothing changes.** The `gh-pages` package keeps a cache in
-`node_modules/.cache/gh-pages` that can get out of sync with the remote branch. Clear it and retry:
-
-```sh
-npx gh-pages-clean
-npm run deploy
-```
-
-**Renaming or moving the repository.** Where Pages serves the site depends on the repository name.
-A repository named `<owner>.github.io` is served from the domain root and builds with `/`. Any other
-name is served from `/<repository>/`, so the build needs `--base=/<repository>/`, otherwise every
-asset 404s.
-
-## Deploying your own fork
-
-A fork named `<your-user>.github.io` is served from the root, so `npm run deploy` works unchanged.
-
-Any other fork is served from `https://<your-user>.github.io/<your-repo>/` and needs that path as its
-base. Change the build step of `deploy:gh-pages` in `package.json` to
-`npm run build -- --base=/<your-repo>/`, then run `npm run deploy`. If you add a GitHub Actions
-build instead, `vite.config.ts` picks the same base from the repository name.
-
-See [Development](development.md) for what running a fork involves.
+Asset URLs in `app/dist/index.html` must start with `/app/`. That base is set
+in `app/vite.config.ts`. The landing build refuses a bundle whose page does not
+load `/app/assets/`.

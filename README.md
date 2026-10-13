@@ -13,6 +13,7 @@ See the other repositories at https://github.com/foss-earth.
 Start here:
 
 - [Follow-ups](docs/todo.md): work across the Earth repositories that isn't done yet, including WebAssembly builds.
+- [Performance](docs/performance.md): the bit-identical JavaScript speedups, the frame-budget streamgraphs, and what is left.
 - [Incident reports](docs/incidents/README.md): failures, observed evidence, recovery actions and unresolved causes.
 - [Repository navigation](navigation.md)
 - [Checkout setup](setup.md)
