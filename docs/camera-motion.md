@@ -116,12 +116,22 @@ ground following has nothing to fix.
 
 Starting to track a point is a correction too: the centre eases onto the tracked
 point at the glide's pace (`camera.inertiaDecay`) rather than jumping to it.
-Choosing where zoom and rotation act (`input.*.zoomAnchor`, `input.*.orbitPivot`)
-never moves the camera by itself. A zoom or a turn about a picked or pinned point
-keeps that point where it is on screen, and the camera's centre stays the point
-where its line of sight comes down to the orbit target's height, so the compass
-does not jump either. A point picked nearer or farther than the zoom limits allow
-is left there; the camera may move back toward the limits, not further past them.
+Choosing where zoom acts (`input.*.zoomAnchor`) never moves the camera by itself.
+A zoom about a picked or pinned point keeps that point where it is on screen, and
+the camera's centre stays the point where its line of sight comes down to the
+orbit target's height, so the compass does not jump either. A point picked nearer
+or farther than the zoom limits allow is left there; the camera may move back
+toward the limits, not further past them.
+
+Turning and tilting always go around the compass, and the compass stays where it
+is on the ground. Turning about the point under the pointer kept that point on
+screen, but the centre then had to be worked out again from the new line of sight.
+Tilted toward the horizon, the new centre ran out tens of kilometres, jumped between
+hills, and changed height (October 2026). The user tried keeping the compass a
+fixed distance ahead, sliding it there at the ground-following speed, and leaving
+it on the ground it had at 20° of tilt, and said none worked well: "i wish it just
+did not move, that would make the most sense". With the compass still, "rotation
+is perfect now".
 
 ### 8. Motion reads as steady
 
@@ -157,9 +167,10 @@ travel. It cuts with a short fade, and nothing glides.
 | Which wheel event begins a gesture, and when | `watchWheelGestures` in `src/input/wheelController.ts` |
 | Swipes and pinches over the controls that none of them uses, handed to the canvas | `passUnusedInputToWorld` in `src/input/passToWorld.ts`, started by the runtime |
 | Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
-| Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
+| Where zoom acts, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
+| Turning and tilting about the compass, which keeps its latitude and longitude | `CameraController.orbitBy` without an anchor, in `src/babylon/cameraState.ts`; the service gives every rotation the compass target |
 | Grabbing the ground: the point held under the pointer, its marker, and the glide on letting go | `CameraController.beginAnchorPan`, `stepAnchorPan` and `endAnchorPan` in `src/babylon/cameraState.ts`, stepped each frame by `createGlobeInertia` in `globeInertia.ts`; the ground from `NavigationAnchorService.groundAt`; the marker in `src/browser/navigationAnchorMarkers.ts` |
-| Zoom and rotation about a point, keeping it on screen | `CameraController.zoomAbout` and `orbitAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
+| Zoom about a point, keeping it on screen | `CameraController.zoomAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
 | Each glide keeping the point its gesture chose | the per-channel anchors in `createInertialCameraController` |
 | Easing onto a tracked point | `createPoiTracking` in `src/layers/poiTracking.ts` |
 | A flight's velocity where it got to, and the glide's settling curve | `flightMotion` and `glideSettling` in `src/scenes/panoramaFlight.ts` |
@@ -182,8 +193,8 @@ where a unit test can express it:
 ## Known gaps
 
 - **Touch, on devices.** A touch that interrupts a flight carries on as the globe
-  gesture it is: one finger pans and two pinch and turn from where they are, about
-  the point under their midpoint when they landed. This is covered by unit tests
+  gesture it is: one finger pans, and two pinch about the point under their
+  midpoint when they landed and turn about the compass. This is covered by unit tests
   with synthetic touch events; it has not yet been checked on a phone or tablet.
 - **Looking up.** The globe camera cannot look above the horizon. An exit from a
   360 image cut short in its first moments, from a view looking up, snaps the tilt
