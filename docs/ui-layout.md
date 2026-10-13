@@ -392,13 +392,27 @@ space to show a section heading when scrolling. The tab holds:
   available by scrolling; a manual resize takes precedence for this visit.
 - **Placement**, only in local `vite dev` with exactly one `?dev=1`. A
   right-click on that photograph's orb arms it and stays on the map; a left
-  click is what enters. While it is armed, this tab is open on the map. A
-  click on the ground, or closing the tab, leaves editing. Hovering a red or
-  blue arrow lengthens it. Clicking it shows a short arc on both sides of that
-  arrow; sliding the arc turns those two. Arrow heading sets the same turn,
-  and its reset puts them back on east and north. Inside, the gizmo sits in
-  the center of the view, and the controls are at the bottom of this same tab.
-  The published site does not include it.
+  click is what enters. While it is armed, this tab is open on the map, and
+  the map's own tabs stay. A click on the ground, or closing the tab, leaves
+  editing. The red arrow is east and the blue arrow is north; the green one
+  is up. Hovering a red or blue arrow lengthens it, and it stays that long
+  while its turn arc is open. Clicking it shows an arc of one eighth of a
+  circle on both sides of that arrow, turning about up. Slide the arc to
+  turn the red and blue pair together. That turn is only how those two
+  arrows drag: it is not the photograph's heading, and Save does not write
+  it. Arrow heading sets the same turn. The circular arrow at that field's
+  corner puts the pair back on east and north; the big Reset restores the
+  place and leaves the arrow turn alone. Dragging a shaft still moves the
+  photograph along the way that arrow points. The heading and pitch rings
+  stay on the geographic axes. See through is not saved. Save, on the dev
+  server only (`POST /__foss-earth/pose`, plugin `apply: "serve"`), writes
+  the existing scene file and leaves roll as it was. Reload afterward: the
+  status bar still shows the place it read from the file. The number fields
+  shrink to the text in them. Inside, the gizmo sits in the center of the
+  view, and the controls are at the bottom of this same tab. The published
+  site does not include the editor. The campus tour's local server uses
+  this checkout, so the same `?dev=1` works there; the published tour does
+  not.
 
 A failure also goes to the log as an error line, since a tab can be closed: the
 scene file, entering a panorama, a larger image of the one on screen, and orb
