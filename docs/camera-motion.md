@@ -116,22 +116,14 @@ ground following has nothing to fix.
 
 Starting to track a point is a correction too: the centre eases onto the tracked
 point at the glide's pace (`camera.inertiaDecay`) rather than jumping to it.
-Choosing where zoom acts (`input.*.zoomAnchor`) never moves the camera by itself.
-A zoom about a picked or pinned point keeps that point where it is on screen, and
-the camera's centre stays the point where its line of sight comes down to the
-orbit target's height, so the compass does not jump either. A point picked nearer
-or farther than the zoom limits allow is left there; the camera may move back
-toward the limits, not further past them.
-
-Turning and tilting always go around the compass, and the compass stays where it
-is on the ground. Turning about the point under the pointer kept that point on
-screen, but the centre then had to be worked out again from the new line of sight.
-Tilted toward the horizon, the new centre ran out tens of kilometres, jumped between
-hills, and changed height (October 2026). The user tried keeping the compass a
-fixed distance ahead, sliding it there at the ground-following speed, and leaving
-it on the ground it had at 20° of tilt, and said none worked well: "i wish it just
-did not move, that would make the most sense". With the compass still, "rotation
-is perfect now".
+Choosing where zoom acts (`input.zoomCenter`, and `input.*.zoomAnchor` while that
+is the ground anchor) never moves the camera by itself. A turn stays on the
+compass: the centre does not run out to where a shallow look meets the ground.
+A zoom toward a ground point keeps that point where it is on screen, and the
+centre stays where the line of sight comes down to the orbit target's height.
+A zoom toward the view centre keeps the compass where it is. A point picked
+nearer or farther than the zoom limits allow is left there; the camera may move
+back toward the limits, not further past them.
 
 ### 8. Motion reads as steady
 
