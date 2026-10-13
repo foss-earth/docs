@@ -230,6 +230,11 @@ changing number does not shift what follows.
 
 Every setting lives in exactly one place, a section of a tab.
 
+- A new control is a new tab, unless the person asked to add it to a tab that
+  already exists. Do not invent a floating plate, a corner overlay, or a second
+  copy of the controls beside the windows. A gizmo drawn in the world (axes
+  on a photograph, for example) is not a tab: the controls that read and save
+  what it changes still live in a tab.
 - A toolbar button is a shortcut that toggles its tab: it shows the tab, and
   closes it when the tab is already the one showing. ⚙ toggles Settings, the
   input-method button Controls, the position readout Location, the renderer chip
@@ -385,6 +390,15 @@ space to show a section heading when scrolling. The tab holds:
   load that failed), the images the panorama offers, and
   `scene.panorama.immersionWidth`, whose one home this is. These sections are
   available by scrolling; a manual resize takes precedence for this visit.
+- **Placement**, only in local `vite dev` with exactly one `?dev=1`. A
+  right-click on that photograph's orb arms it and stays on the map; a left
+  click is what enters. While it is armed, this tab is open on the map. A
+  click on the ground, or closing the tab, leaves editing. Hovering a red or
+  blue arrow lengthens it. Clicking it shows a short arc on both sides of that
+  arrow; sliding the arc turns those two. Arrow heading sets the same turn,
+  and its reset puts them back on east and north. Inside, the gizmo sits in
+  the center of the view, and the controls are at the bottom of this same tab.
+  The published site does not include it.
 
 A failure also goes to the log as an error line, since a tab can be closed: the
 scene file, entering a panorama, a larger image of the one on screen, and orb
