@@ -16,17 +16,17 @@ The check lists of Stages A and B keep the names used when they ran.
 
 | Repository directory | Package before | Package now |
 | --- | --- | --- |
-| `360` | `@foss-earth/360` | `@foss-earth/image-viewer` |
-| `cubemap` | `@foss-earth/cubemap` | `@foss-earth/sphere-cubemap` |
-| `equirectangular` | `@foss-earth/equirectangular` | `@foss-earth/sphere-equirectangular` |
-| `tiled-cubemap` | `@foss-earth/tiled-cubemap` | `@foss-earth/sphere-tiled-cubemap` |
+| `sphere-image` | `@foss-earth/360` | `@foss-earth/sphere-image` |
+| `sphere-cubemap` | `@foss-earth/cubemap` | `@foss-earth/sphere-cubemap` |
+| `sphere-equirectangular` | `@foss-earth/equirectangular` | `@foss-earth/sphere-equirectangular` |
+| `sphere-tiled-cubemap` | `@foss-earth/tiled-cubemap` | `@foss-earth/sphere-tiled-cubemap` |
 | `rectangle-image` (new) | none | `@foss-earth/rectangle-image` |
 
 - No package is kept under an old name. Stage A first added `compat` packages
   under the old names that re-exported the new ones; they were removed, and the
   consumers moved to the new names instead (see
   [Consumers of the old names](#consumers-of-the-old-names)). The
-  `foss-earth-prepare-panorama` command comes from `@foss-earth/image-viewer`.
+  `foss-earth-prepare-panorama` command comes from `@foss-earth/sphere-image`.
 - `rectangle-image` is a new local Git repository (`main`, no commits yet). It owns
   the rectangle representation record, its validator and schema, plane and texel
   conventions, the size estimate, the native-size loader, the 2D upload adapter
@@ -39,7 +39,7 @@ The check lists of Stages A and B keep the names used when they ran.
   the `engine` composition fixture and the documentation in each. `app`'s
   lockfile was regenerated with `npm install`. No other repository has a
   lockfile naming these packages.
-- `@foss-earth/image-viewer`'s root and `./core` entries reach no DOM,
+- `@foss-earth/sphere-image`'s root and `./core` entries reach no DOM,
   Babylon, renderer, ui or engine import at any depth, and import in plain
   Node.
 
@@ -86,18 +86,20 @@ describe packages that are now removed.
   The harness is `build/harness/consumer-check.mjs` in the local org checkout.
   Its receipts stay under the gitignored `build/`.
 
-### Hosted migration: not started
+### Hosted migration: repositories renamed, unpublished
 
-Stage E did not change this. Hosted renames and publication remain a separate
-owner step.
+The hosted repositories and local directories now use the sphere and rectangle
+names. Nothing was published or attached to a release.
 
-- No hosted repository has been renamed. The repositories `foss-earth/360`,
-  `foss-earth/cubemap`, `foss-earth/equirectangular` and
-  `foss-earth/tiled-cubemap` keep their names, and every `repository.url` still
-  points at them. Renaming them is a repository-administration step for an
-  owner. Afterwards, the local directories, `repository.url` fields and
-  `file:../` paths can follow.
-- `foss-earth/rectangle-image` does not exist on the host.
+- `foss-earth/360` is `foss-earth/sphere-image`. Its directory is `sphere-image`,
+  its package is `@foss-earth/sphere-image`, and `repository.url` points at
+  `https://github.com/foss-earth/sphere-image.git`.
+- `foss-earth/cubemap` is `foss-earth/sphere-cubemap`.
+- `foss-earth/equirectangular` is `foss-earth/sphere-equirectangular`.
+- `foss-earth/tiled-cubemap` is `foss-earth/sphere-tiled-cubemap`.
+- `foss-earth/rectangle-image` exists. Its directory is `rectangle-image`.
+- Each renamed repository's `repository.url` and the app's `file:../` paths
+  follow those names. GitHub redirects the old repository names.
 - Nothing was published or attached to a release.
 
 ### Consumers of the old names
@@ -342,7 +344,7 @@ UMN-VR's `app` was not edited. It pins archives named by foss-earth commit,
 so these changes land together with the rebuilt archives:
 
 - **Package names.** In `app/package.json` and every import, change
-  `@foss-earth/360` to `@foss-earth/image-viewer`, `@foss-earth/cubemap` to
+  `@foss-earth/360` to `@foss-earth/sphere-image`, `@foss-earth/cubemap` to
   `@foss-earth/sphere-cubemap`, `@foss-earth/equirectangular` to
   `@foss-earth/sphere-equirectangular`, and `@foss-earth/tiled-cubemap` to
   `@foss-earth/sphere-tiled-cubemap`. The imports are in:
@@ -570,7 +572,7 @@ Nothing here shows sphere comparison (Stage D).
 ### Done in the working trees, uncommitted
 
 The shared sphere camera and the comparison surface are in
-`@foss-earth/image-viewer`. Nothing here is committed. Stage E is not started.
+`@foss-earth/sphere-image`. Nothing here is committed. Stage E is not started.
 The Open-image rectangle path is unchanged, and no product file picker opens a
 sphere source.
 
@@ -688,7 +690,7 @@ Ad hoc, headless Chrome 155.0.8059.80 through CDP, 1280×800 then 390×844, devi
 
 ### Artifact adoption
 
-UMN-VR `app` now pins rebuilt archives. The old hash-named files are still in `app/deps` and their recorded sha256 values are unchanged. Nothing was published and no hosted repository was renamed.
+UMN-VR `app` now pins rebuilt archives. The old hash-named files are still in `app/deps` and their recorded sha256 values are unchanged. Nothing was published. The archive names below are the names those packs were built under.
 
 | Package | Archive | sha256 | bytes |
 | --- | --- | --- | --- |
@@ -744,7 +746,7 @@ Campus arrival records, route fields, tab ids `panorama` and `panorama-settings`
 
 ### Left for an owner
 
-- Rename the hosted repositories `foss-earth/360`, `cubemap`, `equirectangular`, and `tiled-cubemap`, then point `repository.url`, local directories, and `file:` paths at the new names. Create `foss-earth/rectangle-image` only as that same administration step. Do not publish or attach a release from this work.
+- The hosted repositories are renamed: `sphere-image`, `sphere-cubemap`, `sphere-equirectangular`, `sphere-tiled-cubemap`, and `rectangle-image`. Do not publish or attach a release from this work.
 - Research keeps its pre-rename `@foss-earth/cubemap` and `equirectangular` installs. It imports `equirectDirection`, `equirectCoordinates`, `CUBE_FACE_NAMES`, `SOURCE_CUBE_FACES`, `createCubeUploadAdapter`, and `createEquirectUploadAdapter`. It was not edited or run. Moving it is its owner's work.
 - UMN-VR `tour` and 0sfs `fly` install the local `foss-earth` app and were not rebuilt for Stage E. The tour dev server is `npm run dev` in `UMN-VR/tour`, which serves `http://localhost:5173/tour/` from that app's source.
 - The Stage C browser gate's compact check still expects the removed "only one window fits" limitation. Leave `app/build/stage-c` and `360/build/stage-d` as the pinned records.

@@ -38,9 +38,9 @@ provider selections, never an archived application's source tree.
 | Generic build provenance and graph presentation | [about](https://github.com/foss-earth/about) |
 | Development shell with injected host contributions | [dev](https://github.com/foss-earth/dev) |
 | Scene envelope, placement and navigation | [scenes](https://github.com/foss-earth/scenes) |
-| Top-level image viewer | [360](https://github.com/foss-earth/360) |
+| Top-level image viewer | [sphere-image](https://github.com/foss-earth/sphere-image) |
 | Common image contracts, services and resource policy | [images](https://github.com/foss-earth/images) |
-| Distinct representation structures | [equirectangular](https://github.com/foss-earth/equirectangular), [cubemap](https://github.com/foss-earth/cubemap), [tiled-cubemap](https://github.com/foss-earth/tiled-cubemap), [preview-sheets](https://github.com/foss-earth/preview-sheets) |
+| Distinct representation structures | [sphere-equirectangular](https://github.com/foss-earth/sphere-equirectangular), [sphere-cubemap](https://github.com/foss-earth/sphere-cubemap), [sphere-tiled-cubemap](https://github.com/foss-earth/sphere-tiled-cubemap), [rectangle-image](https://github.com/foss-earth/rectangle-image), [preview-sheets](https://github.com/foss-earth/preview-sheets) |
 | Astronomy, atmosphere and lighting | [sky](https://github.com/foss-earth/sky) |
 | Current manual wind and staged weather contracts | [weather](https://github.com/foss-earth/weather) |
 | Broad guidance and experimental evidence | [docs](https://github.com/foss-earth/docs), [research](https://github.com/foss-earth/research) |

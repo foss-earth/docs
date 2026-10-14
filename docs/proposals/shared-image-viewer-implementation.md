@@ -47,7 +47,7 @@ The interaction reference is [360-Side-By-Side at the audited revision](https://
 
 | Current repository/package | Target repository/package | Responsibility |
 | --- | --- | --- |
-| `360` / `@foss-earth/360` | `image-viewer` / `@foss-earth/image-viewer` | Documents, viewing sessions, surface composition, rectangle/sphere cameras, common input, viewer controls, optional globe integration |
+| `360` / `@foss-earth/360` | `sphere-image` / `@foss-earth/sphere-image` | Documents, viewing sessions, surface composition, rectangle/sphere cameras, common input, viewer controls, optional globe integration |
 | `equirectangular` | `sphere-equirectangular` / `@foss-earth/sphere-equirectangular` | Equirectangular representation records, validation, preparation, coordinate conventions, loading and sampling |
 | `cubemap` | `sphere-cubemap` / `@foss-earth/sphere-cubemap` | Six-face representation records, geometry, preparation, loading and sampling |
 | `tiled-cubemap` | `sphere-tiled-cubemap` / `@foss-earth/sphere-tiled-cubemap` | Tile layout, selection, streaming, residency and sampling |
