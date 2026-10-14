@@ -401,8 +401,8 @@ or a key meant for the camera or the vehicle.
 ## A panorama's tabs
 
 Inside a panorama, a large **Return to map** button sits at the bottom centre,
-just above the HUD bar. Entering one opens a tab titled
-"360: <title>" (`createViewerTabs` in `360/src/panels.ts`, given to
+just above the HUD bar. Entering one opens a tab titled with the panorama's
+title, after a sphere mark (`createViewerTabs` in `360/src/panels.ts`, given to
 `WindowOverlay` as `sphereTabs`), selected and in front. While the camera
 flies in, or the entry fades in, its panel is minimized, out of the way of the
 map the camera flies over. It shows once the panorama is on screen (`onScreen`
@@ -469,7 +469,7 @@ of the context on screen:
 | Interface, Settings | yes | yes | The toolbar, log, search, presets and saved settings apply anywhere |
 | About | yes | yes | Which version runs is the same anywhere |
 | Scenes | yes | yes | Its list enters any other panorama of the scene, and its budgets hold the image on screen |
-| 360: <title> | no | yes | The panorama on screen |
+| The panorama's title | no | yes | The panorama on screen |
 | 360 image settings | no | yes | What matters only inside a panorama |
 
 A tab hidden by a context comes back where it was, and selected if it was, when
