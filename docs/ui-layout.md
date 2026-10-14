@@ -14,7 +14,8 @@ fixed breakpoint:
   all the time.
 - **Columns**: a window on each side and no floating log. The log is a tab. A
   wider window keeps its size and the other takes the rest, down to 160 px.
-- **Stacked**, a phone: one window, full width, touching the top and side edges.
+- **Stacked**, a phone: one window, full width. In split it touches the top and
+  side edges; in overlay it floats 6 px in and can be narrowed (see below).
   The other window's tabs fold into it. The log is a tab. Which window fills the
   phone follows the last window the user widened; otherwise it is the right one.
   While an image tab is selected on an expanded side, that fold does not run:
@@ -92,6 +93,26 @@ layout a wide window on the globe would show: tabs folded onto the right are
 saved on their own sides, and inside a panorama the map's tabs are saved where
 they were and the panorama's own tabs not at all. A saved tab the application no
 longer offers is dropped.
+
+### What a window's grip changes
+
+A grip's arrows show exactly what dragging it changes. The layout says once,
+in `windowWidthFixed`, whether a window's requested width is used, and the
+grip takes its axes from that alone, so it never offers a width the layout
+would throw away. `WindowOverlay.grip.test.tsx` drags every grip at phone,
+threshold and desktop widths, in each presentation and with tabs on either or
+both sides, and fails if the icon's sideways arrows and the width change ever
+disagree.
+
+- **Corner**, wherever two windows fit: width and height, from the free bottom
+  corner, with arrows along the two edges it moves.
+- **Middle of the bottom edge, both ways**: a phone in overlay. The window
+  starts full width, where a corner grip would sit on the screen's edge, hard
+  to grab and where a phone's back gesture starts. Dragging toward the side
+  the window is anchored on narrows it, down to 160 px. The width chosen is
+  that window's own, kept on a reload and when two windows fit again.
+- **Middle of the bottom edge, height only**: a split window that spans the
+  width, on a phone or as the one open window on a wider screen.
 
 ## Paragraph grids, never fixed columns
 
