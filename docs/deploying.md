@@ -15,19 +15,21 @@ bundle and no deploy command of its own.
 The app links each library with `file:../…`, so the build compiles the sibling
 checkouts as they are on disk.
 
-Run these from any directory. The second command continues from `app/`:
-
 ```sh
-cd ~/gh/foss-earth/app && npm run build
-cd ../foss-earth.github.io && npm run build && npm run deploy
+cd ~/gh/foss-earth/foss-earth.github.io && npm run deploy
 ```
 
-`npm run build` in `app/` typechecks, then writes `app/dist/` with Vite's base
-`/app/`. `npm run build` in `foss-earth.github.io` copies that directory to
-`dist/app/` and adds the landing page (`index.html`, `landing.css`,
-`foss-earth-sw.js`). `npm run deploy` fetches `origin/gh-pages`, replaces that
-branch with `dist/`, and leaves `eac-prototype/` and `examples/` in place. The
-deploy commit records the short SHA of the `app` checkout. GitHub Pages serves
+The deploy first records the commit of each checkout the app is built from in
+`app/deployed-from.json`, and commits and pushes it in `app` when one moved, so
+new code in a library is a new version of the app (About's record; see
+[CONTRIBUTING](https://github.com/foss-earth/.github/blob/main/CONTRIBUTING.md#versions)).
+It stops if `app`'s branch lacks commits its remote has. Then it runs
+`npm run build` in `app/`, which typechecks and writes `app/dist/` with Vite's
+base `/app/`, and `npm run build` in `foss-earth.github.io`, which copies that
+directory to `dist/app/` and adds the landing page (`index.html`,
+`landing.css`, `foss-earth-sw.js`). Last, it fetches `origin/gh-pages`,
+replaces that branch with `dist/`, and leaves `eac-prototype/` and `examples/`
+in place. The deploy commit records the short SHA of the `app` checkout. GitHub Pages serves
 the `gh-pages` branch from the repository root. `main` is not changed.
 
 ## Before the first deploy on a machine
@@ -62,8 +64,9 @@ The University of Minnesota tour is a second site,
 https://umn-vr.github.io/tour/. It is built from `~/gh/UMN-VR/tour` against
 these same sibling checkouts (`foss-earth` and `@foss-earth/ui` are `file:`
 links), so a globe change is not on the tour until the tour is published too.
-`npm run deploy` there builds and pushes the tour repository's own `gh-pages`
-branch. It keeps the photographs already published. The club homepage is a
+`npm run deploy` there records what the tour is built from in its
+`deployed-from.json`, as the app's deploy does, then builds and pushes the tour
+repository's own `gh-pages` branch. It keeps the photographs already published. The club homepage is a
 different repository and this command does not publish it.
 
 ```sh
