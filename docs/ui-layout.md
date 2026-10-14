@@ -17,6 +17,12 @@ fixed breakpoint:
 - **Stacked**, a phone: one window, full width, touching the top and side edges.
   The other window's tabs fold into it. The log is a tab. Which window fills the
   phone follows the last window the user widened; otherwise it is the right one.
+  While an image tab is selected on an expanded side, that fold does not run:
+  both occupied sides stay labelled rows, two images share one body under those
+  rows, and an image beside ordinary content keeps two stacked groups. The empty
+  or collapsed side keeps its launcher or strip. Widening is not a tab move, and
+  ordinary folding returns only when no image is selected. The width where two
+  windows stop fitting is `320 + 160 + 12 * 3` pixels in `resolveDockLayout`.
 
 `resolveDockLayout` allocates the windows and, in the dual arrangement, the log.
 `WindowOverlay` publishes that allocation before paint. The log has no saved
@@ -371,7 +377,7 @@ or a key meant for the camera or the vehicle.
 Inside a panorama, a large **Return to map** button sits at the bottom centre,
 just above the HUD bar. Entering one opens a tab titled
 "360: <title>" (`createViewerTabs` in `360/src/panels.ts`, given to
-`WindowOverlay` as `panoramaTabs`), selected and in front. While the camera
+`WindowOverlay` as `sphereTabs`), selected and in front. While the camera
 flies in, or the entry fades in, its panel is minimized, out of the way of the
 map the camera flies over. It shows once the panorama is on screen (`onScreen`
 in the tabs' snapshot), unless the person showed it or picked another tab in

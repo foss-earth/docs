@@ -33,6 +33,8 @@ Guides and rules:
 
 Proposals:
 
+- [Shared image viewer implementation specification](docs/proposals/shared-image-viewer-implementation.md)
+- [Shared image viewer implementation status](docs/proposals/shared-image-viewer-status.md)
 - [Image repositories](docs/proposals/image-repositories.md)
 - [Repository graphs](docs/proposals/repository-graphs.md), with the [graph](docs/proposals/repository-split-graph.html) and its [JSON data](docs/proposals/repository-split-graph.json)
 - [Search](docs/proposals/search.md)
