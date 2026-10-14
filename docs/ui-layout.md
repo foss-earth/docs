@@ -12,8 +12,13 @@ fixed breakpoint:
 - **Dual**, the widest: a window on each side and the log floating in the center,
   12 px below the top safe area. This is the only arrangement that shows the log
   all the time.
-- **Columns**: a window on each side and no floating log. The log is a tab. A
-  wider window keeps its size and the other takes the rest, down to 160 px.
+- **Columns**: a window on each side and no floating log. The log is a tab.
+  When both no longer fit at their own widths, the window resized last keeps
+  its size and the other takes the rest, down to 160 px, so either side can be
+  dragged wider; before any resize, the wider one keeps its size. A window
+  that gave way grows back when the other narrows, unless it had asked for at
+  least as much as the one dragged: then the width it shows when the drag ends
+  becomes its own, so a reload shows the same widths.
 - **Stacked**, a phone: one window, full width. In split it touches the top and
   side edges; in overlay it floats 6 px in and can be narrowed (see below).
   The other window's tabs fold into it. The log is a tab. Which window fills the
