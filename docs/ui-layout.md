@@ -79,6 +79,11 @@ When split is on and only one side has a tab, that window uses the full width.
 The empty side stays a launcher. The world starts under whichever window or
 launcher reaches lowest, so moving a tab to the other side keeps the split.
 
+An image tab, or a 360 photograph's, takes the world's place under the windows,
+so its tab says so before its label: a picture for an image, a sphere for a 360
+photograph (`icon` on the tab's definition; `@foss-earth/ui`'s README has the
+details). The label is the image's title alone.
+
 Interface → **Windows and the world** is a two-way switch, overlay or split.
 Until it is moved, a phone uses split and a wider screen uses overlay. Holding
 a tab still, or holding the resize grip still, opens the same switch beside
