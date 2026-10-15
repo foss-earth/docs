@@ -65,7 +65,10 @@ finger is down it is the anchor colour, because the grab is holding that point
 under the pointer. Once the finger is up it turns gray: the point is only
 being shown, and the grab is not holding the camera. A zoom's ground mark does
 the same, the anchor colour while its pinch or wheel events are still arriving,
-and gray once only its glide is left. A drag that
+and gray once only its glide is left. Gold and gray are only that: input
+still arriving, or only the glide. A mark behind the ground keeps whichever
+of those colours it has. Being hidden is an X painted on that coloured ink
+([Kept on purpose](#kept-on-purpose)). A drag that
 starts on the sky, or on a point of interest, does not grab. A second finger
 landing ends the grab: the pair zooms and turns, and the finger left takes a
 grab of its own.
@@ -181,6 +184,8 @@ travel. It cuts with a short fade, and nothing glides.
 | Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
 | Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
 | Grabbing the ground: the point held under the pointer, its marker, and the glide on letting go | `CameraController.beginAnchorPan`, `stepAnchorPan` and `endAnchorPan` in `src/babylon/cameraState.ts`, stepped each frame by `createGlobeInertia` in `globeInertia.ts`; the ground from `NavigationAnchorService.groundAt`; the marker in `src/browser/navigationAnchorMarkers.ts` |
+| The feed after a pinch, a button-drag turn, or a one-finger pan, for `TRACKPAD_MOMENTUM_MS` | `trackpadMomentumFraction` in `src/input/trackpadMomentum.ts`, armed from the pointer, touch, Safari, and pinch-wheel handlers; a two-finger swipe is not armed |
+| The collision nudge kept out of Babylon's scratch vector, so a zoom does not walk east | `keepCollisionOffset` in `src/babylon/globeCamera.ts` |
 | Zoom and rotation about a point, keeping it on screen | `CameraController.zoomAbout` and `orbitAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
 | Each glide keeping the point its gesture chose | the per-channel anchors in `createInertialCameraController` |
 | Easing onto a tracked point | `createPoiTracking` in `src/layers/poiTracking.ts` |
@@ -200,6 +205,59 @@ where a unit test can express it:
 6. **Clicks:** the press that stopped something did not also activate what was under it.
 7. **Reduced motion:** a cut with a fade, no travel.
 8. **Parameters:** every duration and rate is a setting with unit, bounds, default and reason. Friction is `camera.inertiaDecay`, not a new constant.
+
+## Kept on purpose
+
+Settled in October 2026. Leave them as they are.
+
+The streamed ground is not a physics world. The camera is one body, moved by
+forces and by `camera.inertiaDecay`. The tiles stay geometry the camera reads.
+With eye contact on, altitude changes only while the ground under the eye
+pushes, inside `camera.eyeClearance`, no faster than
+`camera.eyeContactAcceleration`.
+
+A two-finger swipe already coasts. On the measured trackpad the wheel events
+kept arriving for 1083 ms after the strongest sample, and they got smaller.
+The globe leaves that stream alone. A pinch and a button-drag turn stop with
+the fingers, so `trackpadMomentumFraction` feeds them for
+`TRACKPAD_MOMENTUM_MS` (1100 ms), `exp(-3 × elapsed / 1100)`, and
+`camera.inertiaDecay` slows what that feed added. A one-finger grab is fed at
+the speed the drag already had, so letting go holds that speed and then
+shrinks it. Shift+wheel orbit and a mouse-notch zoom are left alone: a wheel
+stream may already carry the system's glide. A vertical-only integer pixel
+wheel delta is that notch (`wheelZoom`). A two-finger click is the orbit
+button. The gesture pad in `experiments` reports the operating system's
+stream with this feed off.
+
+The grab marker does not drag the camera. Release ends the grab. The mark is
+the ground point remembered for the glide. The grab's own step holds the
+release speed and puts back the share `camera.inertiaDecay` took off, in the
+proportion a swipe's later wheel events still have. Pouring that release into
+the shared pan velocity speeds the camera up, and a faster display then
+travels further.
+
+Gold and gray mean live and gliding. The anchor colour `#fde68a` is a grab
+whose finger is down, or a zoom whose pinch or wheel events are still
+arriving. The coast colour `#a3a3a3`
+(`--foss-earth-navigation-anchor-coast-color`) is only the glide. A point
+behind the ground keeps that colour. An X, one cell `M 0 0 L 3 3 M 3 0 L 0 3`,
+is painted with the same stroke as the coloured ink. Lines across the empty
+part of the marker, a fade, and a second colour were each tried for "behind"
+and rejected: the empty box looked crossed out, and colour was already live
+or gliding.
+
+A zoom walks east if the collision nudge stays in Babylon's scratch vector.
+`GeospatialCamera._getCollisionOffset` returns `TmpVectors.Vector3[6]`, and
+recovering yaw reuses that vector as geographic east, so each zoom step adds
+about a metre east. `keepCollisionOffset` copies the nudge into a vector the
+globe owns. Leave `node_modules` alone. A `new GeospatialCamera` that skips
+that copy still walks.
+
+Unified inertia only scales the push. `camera.panForce`, `camera.orbitForce`
+and `camera.zoomForce` default to 1. A pan still slides the ground, a turn is
+still about the compass, and a zoom still moves toward its anchor. A single
+six-degree body was removed: it orbited where the camera stood, zoomed to the
+screen centre, and broke pan.
 
 ## Known gaps
 
@@ -221,10 +279,20 @@ where a unit test can express it:
   a zoom still moves toward its anchor. Glide is still `camera.inertiaDecay`.
   Turning where the camera stands is `camera.orbitInPlace`, off by default and
   not part of this. Zooming toward the centre of the view is Zoom center.
-- **Eye contact, experimental.** `camera.eyeContact` (Controls → Camera) is off
-  by default, and ground following is unchanged. On, a pan, a grab or a zoom
-  keeps the camera's altitude. The ground under the eye pushes it up only while
-  the eye is inside `camera.eyeClearance`, no faster than
+- **Eye contact, experimental, and still off.** `camera.eyeContact` (Controls →
+  Camera) is off by default, and ground following is unchanged. On, a pan, a
+  grab or a zoom keeps the camera's altitude. The ground under the eye pushes
+  it up only while the eye is inside `camera.eyeClearance`, no faster than
   `camera.eyeContactAcceleration`, and leftover upward speed slows by
   `camera.inertiaDecay`. The ground does not pull the camera down, and a view
-  set over a point still starts on the ground there.
+  set over a point still starts on the ground there. The ask was to default it
+  on. `DEFAULT_EYE_CONTACT.enabled` is still false. A browser that already
+  saved `camera.eyeContact: false` in `foss-earth.settings.v1` keeps that saved
+  value over a new catalogue default, so changing the default alone leaves
+  that browser off.
+- **Phone check of the grab coast and the ground mark.** The one-finger coast,
+  gray while only gliding, and the X on a hidden mark are covered by unit
+  tests. They have not been confirmed on a phone.
+- **Zoom armed with no sample.** `isActive` stays true while a zoom tail is
+  armed even when no zoom sample was stored, so drawing can be asked for with
+  nothing moving. `cancel()` clears it. Still open.
