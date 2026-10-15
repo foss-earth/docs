@@ -57,8 +57,15 @@ the glide after release has stopped. `camera.grabFollowMs`, Controls → Camera 
 Grab follow time, is 0 by default, which holds the point on the pointer. A longer
 time brings it there as a critically damped spring that never overshoots. When
 the pointer lets go, the grab carries on at the speed it was moving, in screen
-pixels per second, and slows by `camera.inertiaDecay` once per 60 Hz frame, so
-the same flick covers about the same ground on a faster display. A drag that
+pixels per second. The globe keeps feeding that speed for `TRACKPAD_MOMENTUM_MS`,
+shrinking the way a swipe's wheel events do, and `camera.inertiaDecay` slows it
+once per 60 Hz frame, so the same flick covers about the same ground on a faster
+display. The marker stays on the grabbed ground through that glide. While the
+finger is down it is the anchor colour, because the grab is holding that point
+under the pointer. Once the finger is up it turns gray: the point is only
+being shown, and the grab is not holding the camera. A zoom's ground mark does
+the same, the anchor colour while its pinch or wheel events are still arriving,
+and gray once only its glide is left. A drag that
 starts on the sky, or on a point of interest, does not grab. A second finger
 landing ends the grab: the pair zooms and turns, and the finger left takes a
 grab of its own.
@@ -67,7 +74,14 @@ grab of its own.
 
 A trackpad's glide after the fingers lift is the system's: a stream of wheel
 events that belongs to the gesture that started it. A wheel event within
-`WHEEL_GESTURE_IDLE_MS` of the previous one continues its gesture.
+`WHEEL_GESTURE_IDLE_MS` of the previous one continues its gesture. A measured
+two-finger swipe kept sending those events for about 1100 ms after its
+strongest sample, and they got smaller. A pinch, a button-drag turn and a
+one-finger pan stop when the fingers do, so the globe feeds them for that
+same stretch (`TRACKPAD_MOMENTUM_MS`), shrinking the same way, and
+`camera.inertiaDecay` slows the result. A one-finger pan is fed at the speed
+the drag already had, so letting go keeps that speed and then shrinks it. A
+swipe is left to the trackpad, so it is not fed twice.
 
 - **Gestures already under way are not new input.** An animation is cut short only
   by a gesture that began after the animation did. A glide still arriving from
@@ -200,3 +214,17 @@ where a unit test can express it:
   way. Map transitions elsewhere, such as the overview a scene applies or the
   camera moves in 0SFS, have not been checked against these rules. Bring each one
   in line when you next work on it.
+- **Unified inertia, experimental.** `camera.unifiedInertia` (Controls → Camera) is off
+  by default. On, `camera.panForce`, `camera.orbitForce` and `camera.zoomForce`
+  scale the same pan, turn and zoom; each defaults to 1, which is the usual
+  push. A pan still slides the ground, a turn is still about the compass, and
+  a zoom still moves toward its anchor. Glide is still `camera.inertiaDecay`.
+  Turning where the camera stands is `camera.orbitInPlace`, off by default and
+  not part of this. Zooming toward the centre of the view is Zoom center.
+- **Eye contact, experimental.** `camera.eyeContact` (Controls → Camera) is off
+  by default, and ground following is unchanged. On, a pan, a grab or a zoom
+  keeps the camera's altitude. The ground under the eye pushes it up only while
+  the eye is inside `camera.eyeClearance`, no faster than
+  `camera.eyeContactAcceleration`, and leftover upward speed slows by
+  `camera.inertiaDecay`. The ground does not pull the camera down, and a view
+  set over a point still starts on the ground there.
