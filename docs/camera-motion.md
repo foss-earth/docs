@@ -114,6 +114,12 @@ needs no correction. For example, a camera handed back orbits the point where it
 line of sight comes down to the height the globe keeps its orbit target at, so
 ground following has nothing to fix.
 
+A view nobody has moved since it was set follows the ground the map shows as it
+loads: map tiles appear flat and then take their terrain, and the view rises with
+them at the ground following's rate. It goes straight onto the ground only where
+it would otherwise be under it: when it was set before any ground there was
+known, or when the ground came up past the eye.
+
 Starting to track a point is a correction too: the centre eases onto the tracked
 point at the glide's pace (`camera.inertiaDecay`) rather than jumping to it.
 Choosing where zoom acts (`input.zoomCenter`, and `input.*.zoomAnchor` while that

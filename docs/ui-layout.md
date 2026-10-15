@@ -75,6 +75,26 @@ when the drawing buffer follows. Release, the default, keeps that buffer while
 the split window is dragged and while the browser window changes shape, then
 resizes it once when the drag ends. Live resizes it on every movement.
 
+### Windows on the screen's edges
+
+Interface → **Windows on the screen's edges** (`interface.windows.flushEdges`)
+changes overlay only. Each window loses its 6 px inset and meets the top and
+its own side of the screen, with square corners and no shadow or blur behind
+it; two windows keep only the 12 px between them. The log stays a tab at every
+width. The toolbar's buttons close up with no gaps and meet the bottom and side
+edges, and the map's detail rail moves inside the basemap's chip, before its
+name. The world is then one rectangle with rectangles cut from its edges: while
+this is on, the depth mask also covers each toolbar item shown, so nothing is
+shaded under the toolbar either. Split already puts its window on the edges and
+does not change.
+
+It is on by default; the inset windows are a choice in Interface → Windows. On 2026-10-14, in Chrome with WebGPU at 1440×900 at 2× and
+no frame-rate cap, the default view over Minneapolis with a window on each side
+drew a frame in a median 3.19 ms on the edges and 3.40 ms inset, faster in all
+8 alternating blocks. The 3D world's own GPU time fell only 2.6%, although the
+covered area grew from 24% to 26% of the screen. Most of the saving is the blur
+and shadow behind floating windows, which the browser no longer composites.
+
 When split is on and only one side has a tab, that window uses the full width.
 The empty side stays a launcher. The world starts under whichever window or
 launcher reaches lowest, so moving a tab to the other side keeps the split.
@@ -427,29 +447,35 @@ space to show a section heading when scrolling. The tab holds:
   load that failed), the images the panorama offers, and
   `scene.panorama.immersionWidth`, whose one home this is. These sections are
   available by scrolling; a manual resize takes precedence for this visit.
-- **Placement**, only in local `vite dev` with exactly one `?dev=1`. A
-  right-click on that photograph's orb arms it and stays on the map; a left
-  click is what enters. While it is armed, this tab is open on the map, and
-  the map's own tabs stay. A click on the ground, or closing the tab, leaves
-  editing. The red arrow is east and the blue arrow is north; the green one
-  is up. Hovering a red or blue arrow lengthens it, and it stays that long
-  while its turn arc is open. Clicking it shows an arc of one eighth of a
-  circle on both sides of that arrow, turning about up. Slide the arc to
-  turn the red and blue pair together. That turn is only how those two
-  arrows drag: it is not the photograph's heading, and Save does not write
-  it. Arrow heading sets the same turn. The circular arrow at that field's
-  corner puts the pair back on east and north; the big Reset restores the
-  place and leaves the arrow turn alone. Dragging a shaft still moves the
-  photograph along the way that arrow points. The heading and pitch rings
-  stay on the geographic axes. See through is not saved. Save, on the dev
-  server only (`POST /__foss-earth/pose`, plugin `apply: "serve"`), writes
-  the existing scene file and leaves roll as it was. Reload afterward: the
-  status bar still shows the place it read from the file. The number fields
-  shrink to the text in them. Inside, the gizmo sits in the center of the
-  view, and the controls are at the bottom of this same tab. The published
-  site does not include the editor. The campus tour's local server uses
-  this checkout, so the same `?dev=1` works there; the published tour does
-  not.
+- **Placement**, when the address has exactly one `dev=1`, in local dev and on a
+  published build. Visitors without that flag do not download the editor.
+  Saved corrections for this browser still apply on an ordinary visit. A
+  right-click on an orb arms it and stays on the map; a short click or tap
+  enters. A touch or pen long-press on an orb, about half a second without
+  moving past the click threshold, arms it and does not also enter. While a
+  photograph is open, that photograph is the one being edited. Closing the
+  tab or clicking the ground stops editing and does not start again just
+  because the same photograph reports its status. The controls stay at the
+  bottom of this tab, including when no photograph is selected: the saved-edit
+  count, Export, Download, Copy JSON and Clear. The red arrow is east and the
+  blue arrow is north; the green one is up. Hovering a red or blue arrow
+  lengthens it, and it stays that long while its turn arc is open. Clicking
+  it shows an arc of one eighth of a circle on both sides of that arrow,
+  turning about up. Slide the arc to turn the red and blue pair together.
+  That turn is only how those two arrows drag: it is not the photograph's
+  heading, and it is not exported. Arrow heading sets the same turn. The
+  circular arrow at that field's corner puts the pair back on east and north;
+  Reset restores the published place and leaves the arrow turn alone. Dragging
+  a shaft moves the photograph along the way that arrow points. The heading
+  and pitch rings stay on the geographic axes. See through is not saved.
+  North checked records a confirmation against the text in Checked against.
+  Changing heading, pitch or the capture place clears that check. Marker east
+  and north are display offsets. Save place is only for a local `*.scene.json`
+  on the dev server (`POST /__foss-earth/pose`, plugin `apply: "serve"`). A
+  published tour offers Export instead. Export, Download and Copy keep a JSON
+  file; they do not clear the edits. Reload afterward to see a saved local
+  file in the status bar. The number fields shrink to the text in them.
+  Inside, the gizmo sits in the center of the view.
 
 A failure also goes to the log as an error line, since a tab can be closed: the
 scene file, entering a panorama, a larger image of the one on screen, and orb
@@ -508,6 +534,23 @@ rounded edge and lights up whole on hover; nothing underlines. It reserves its
 width beside the default toolbar's single row. When the person's explicit
 toolbar choices require wrapping, it remains part of the bar's layout rather
 than covering other controls.
+
+The toolbar's first row never leaves the bar's edge, and the map source never
+gets a row of its own under it. It sits in the bottom-right corner only when the
+row holds every control the person wants beside it. Otherwise it is the last
+item of that first row, directly after the last control that fits on it
+(`hud-bar--end-attached`). A pinned control that does not fit keeps its row
+above the first on a bar at the bottom. The fitting (`fitHudBar` in
+`@foss-earth/toolbar`) counts the controls it hides as outside the row, so their
+hidden state must take them out of the layout whatever an item's own style says.
+The row's width is the bar's content box: the split toolbar's padding is not
+room for another control.
+On 2026-10-14 the
+windows-on-the-edges style gave every item `position: relative`. The hidden
+items took their width back, and at 800 px and narrower the bar wrapped with
+the provider under a raised toolbar. The browser check missed it: it only
+compared the slot's bottom with the bar's, which a wrapped bar still passes, and
+it runs at 1100 px, where nothing is hidden.
 
 A provider whose logo spells its name, such as CARTO, shows that logo instead of
 the mark and name (`wordmark`), followed by the basemap's own name, "Positron".
