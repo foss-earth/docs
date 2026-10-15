@@ -212,9 +212,10 @@ Settled in October 2026. Leave them as they are.
 
 The streamed ground is not a physics world. The camera is one body, moved by
 forces and by `camera.inertiaDecay`. The tiles stay geometry the camera reads.
-With eye contact on, altitude changes only while the ground under the eye
-pushes, inside `camera.eyeClearance`, no faster than
-`camera.eyeContactAcceleration`.
+Safe space (`camera.safeSpace`) is on by default. Altitude changes only
+while the ground enters the sphere around the camera
+(`camera.safeSpace.clearance`, 15 m), no faster than Safe space acceleration
+(`camera.safeSpace.acceleration`, 60 m/s²).
 
 A two-finger swipe already coasts. On the measured trackpad the wheel events
 kept arriving for 1083 ms after the strongest sample, and they got smaller.
@@ -228,6 +229,23 @@ stream may already carry the system's glide. A vertical-only integer pixel
 wheel delta is that notch (`wheelZoom`). A two-finger click is the orbit
 button. The gesture pad in `experiments` reports the operating system's
 stream with this feed off.
+
+A phone pinch or two-finger turn uses that same tail. A reload on a phone in
+October 2026 found the current numbers passable, so leave them. The coast
+speed is the average of the last `MOMENTUM_WINDOW_MS` (120) in
+`src/input/inertialCameraController.ts`. A gesture that has already slowed
+before the fingers lift has almost nothing in that window, so it stops. On a
+touch screen, `ORBIT_ACTIVATION_PX` (4) in `src/browser/touchController.ts` is
+both how far the two-finger centre must move before a turn counts and how far
+a finger left down may drift before that coast is cancelled and a grab starts.
+`TOUCH_MAX_DELTA_PX` (80) drops an orbit frame whose centre jumps further than
+that, so a smooth turn is remembered and a jerky one can lose the frames that
+would have made the coast. `ZOOM_ACTIVATION_LOG` is `ln(1.05)`: the finger gap
+must change about 5% before a pinch counts. `PINCH_RELEASE_GAP_MS` (48) treats
+a quiet that long as the pinch ending, and the next small movement then
+replaces the coast. Glide and `TRACKPAD_MOMENTUM_MS` change how long a coast
+lasts once it has started. `camera.orbitForce` and `camera.zoomForce` scale
+the push. They do not decide whether the coast is kept.
 
 The grab marker does not drag the camera. Release ends the grab. The mark is
 the ground point remembered for the glide. The grab's own step holds the
@@ -263,8 +281,10 @@ screen centre, and broke pan.
 
 - **Touch, on devices.** A touch that interrupts a flight carries on as the globe
   gesture it is: one finger pans and two pinch and turn from where they are, about
-  the point under their midpoint when they landed. This is covered by unit tests
-  with synthetic touch events; it has not yet been checked on a phone or tablet.
+  the point under their midpoint when they landed. A phone check found pinch and
+  turn coasting once a finger left after the gesture stays still. The gates that
+  still drop a coast are in Kept on purpose. Dragging that leftover finger takes
+  the camera over.
 - **Looking up.** The globe camera cannot look above the horizon. An exit from a
   360 image cut short in its first moments, from a view looking up, snaps the tilt
   to the horizon.
@@ -272,24 +292,23 @@ screen centre, and broke pan.
   way. Map transitions elsewhere, such as the overview a scene applies or the
   camera moves in 0SFS, have not been checked against these rules. Bring each one
   in line when you next work on it.
-- **Unified inertia, experimental.** `camera.unifiedInertia` (Controls → Camera) is off
-  by default. On, `camera.panForce`, `camera.orbitForce` and `camera.zoomForce`
-  scale the same pan, turn and zoom; each defaults to 1, which is the usual
-  push. A pan still slides the ground, a turn is still about the compass, and
-  a zoom still moves toward its anchor. Glide is still `camera.inertiaDecay`.
-  Turning where the camera stands is `camera.orbitInPlace`, off by default and
-  not part of this. Zooming toward the centre of the view is Zoom center.
-- **Eye contact, experimental, and still off.** `camera.eyeContact` (Controls →
-  Camera) is off by default, and ground following is unchanged. On, a pan, a
-  grab or a zoom keeps the camera's altitude. The ground under the eye pushes
-  it up only while the eye is inside `camera.eyeClearance`, no faster than
-  `camera.eyeContactAcceleration`, and leftover upward speed slows by
-  `camera.inertiaDecay`. The ground does not pull the camera down, and a view
-  set over a point still starts on the ground there. The ask was to default it
-  on. `DEFAULT_EYE_CONTACT.enabled` is still false. A browser that already
-  saved `camera.eyeContact: false` in `foss-earth.settings.v1` keeps that saved
-  value over a new catalogue default, so changing the default alone leaves
-  that browser off.
+- **Unified inertia is on.** `camera.unifiedInertia` (Controls → Camera) defaults
+  on. `camera.panForce`, `camera.orbitForce` and `camera.zoomForce` scale the
+  same pan, turn and zoom; each defaults to 1, which is the usual push. A pan
+  still slides the ground, a turn is still about the compass, and a zoom still
+  moves toward its anchor. Glide is still `camera.inertiaDecay`. Turning where
+  the camera stands is `camera.orbitInPlace`, off by default and not part of
+  this. Zooming toward the centre of the view is Zoom center.
+- **Safe space is on.** `camera.safeSpace` (Controls → Camera) defaults on,
+  with `camera.safeSpace.clearance` at 15 m and `camera.safeSpace.acceleration`
+  at 60 m/s². A pan, a grab or a zoom keeps the camera's altitude. The ground
+  pushes the camera up only while it is inside that sphere, and leftover
+  upward speed slows by `camera.inertiaDecay`. The ground does not pull the
+  camera down, and a view set over a point still starts on the ground there.
+  Off, the orbit point follows the ground again. The old ids
+  (`camera.eyeContact`, `camera.eyeContactAcceleration`, `camera.eyeClearance`)
+  are not parameters, so a saved record drops that branch and keeps every
+  other saved value.
 - **Phone check of the grab coast and the ground mark.** The one-finger coast,
   gray while only gliding, and the X on a hidden mark are covered by unit
   tests. They have not been confirmed on a phone.
