@@ -536,10 +536,13 @@ toolbar choices require wrapping, it remains part of the bar's layout rather
 than covering other controls.
 
 The toolbar's first row never leaves the bar's edge, and the map source never
-gets a row of its own under it. It sits in the bottom-right corner only when the
-row holds every control the person wants beside it. Otherwise it is the last
-item of that first row, directly after the last control that fits on it
-(`hud-bar--end-attached`). A pinned control that does not fit keeps its row
+gets a row of its own under it. Interface → Toolbar → **Imagery in the toolbar**
+chooses whether that source joins the buttons. Off, the default, keeps it in
+the bottom-right corner, so the empty space stays between the toolbar and the
+provider. When the row is full moves it next to the last control that fits
+once a wanted control is hidden or does not fit beside it
+(`hud-bar--end-attached`). Always keeps it as the last toolbar button even
+when the corner has room. A pinned control that does not fit keeps its row
 above the first on a bar at the bottom. The fitting (`fitHudBar` in
 `@foss-earth/toolbar`) counts the controls it hides as outside the row, so their
 hidden state must take them out of the layout whatever an item's own style says.
