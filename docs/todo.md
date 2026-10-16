@@ -3,6 +3,14 @@
 Work across the Earth repositories that isn't done yet. The app's own
 follow-ups are in [app's docs/todo.md](https://github.com/foss-earth/app/blob/main/docs/todo.md).
 
+## Scenes photograph grid
+
+The Scenes tab should list each photograph once, grouped by indoor/outdoor or
+by tour stop, with collapsed preview-sheet cards, one mini 360 viewer for the
+expanded card, and an opening-look setting (last view, per photograph, or a
+fixed position including Look up). Handoff:
+[proposals/scenes-photograph-grid.md](proposals/scenes-photograph-grid.md).
+
 ## Choosing how each library is used
 
 For each library, a developer should be able to choose between:
