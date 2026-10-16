@@ -319,8 +319,8 @@ Every setting lives in exactly one place, a section of a tab.
   rate, Depth range and Performance debug; the Sky tab (`createSkyPanel`) is a
   line saying where the Sun is, with a button that opens Date and time, then
   Atmosphere and illumination, Moon and stars, Ground and Exposure and display; the
-  Date and time tab (`createDateTimePanel`) is one section, its two dials; the Scenes tab is Content, Orbs,
-  Motion, Loading and memory, Tiled images, Saved images and Credits; the Controls tab is Input method,
+  Date and time tab (`createDateTimePanel`) is one section, its two dials; the Scenes tab is Content, Image links
+  (only when editing is enabled), Orbs, Motion, Loading and memory, Tiled images, Saved images and Credits; the Controls tab is Input method,
   Camera, Orbit, Mouse and trackpad, Touch and Controller; the Interface tab
   is Toolbar, Position readout, Log and Search; and the Settings tab is Presets, Saved settings, App files and Diagnostics. About is
   a tab of its own (`createAboutPanel`): which version runs and what it is built from, as a tree from the app
@@ -426,15 +426,16 @@ or a key meant for the camera or the vehicle.
 ## A panorama's tabs
 
 Inside a panorama, a large **Return to map** button sits at the bottom centre,
-just above the HUD bar. Entering one opens a tab titled with the panorama's
-title, after a sphere mark (`createViewerTabs` in `360/src/panels.ts`, given to
-`WindowOverlay` as `sphereTabs`), selected and in front. While the camera
-flies in, or the entry fades in, its panel is minimized, out of the way of the
-map the camera flies over. It shows once the panorama is on screen (`onScreen`
-in the tabs' snapshot), unless the person showed it or picked another tab in
-that panel meanwhile. Its window fits the photograph content, with the same
-compact padding as the other tabs. Short or empty descriptions leave enough
-space to show a section heading when scrolling. The tab holds:
+just above the HUD bar. Entry leaves existing tabs and their minimized state
+alone throughout the flight and while inside. Once the panorama is on screen
+(`onScreen` in the tabs' snapshot), if no tabs are open, a tab titled
+with the panorama's title opens, after a sphere mark (`createViewerTabs` in
+`sphere-image/src/panels.ts`, given to `WindowOverlay` as `sphereTabs`). An
+existing tab keeps its selection; the photograph tab remains available under +.
+The windows retain their chosen widths and heights when
+entering or leaving a photograph, and remember those sizes across reloads.
+Photograph content uses the same compact padding as the other tabs and scrolls
+within the window instead of resizing it. The tab holds:
 
 - The photograph's description and the groups it is in. This content has no
   section header or repeated title. Capture, accuracy, pose, north alignment
@@ -446,7 +447,7 @@ space to show a section heading when scrolling. The tab holds:
   asked for, the device's texture limit or a memory budget, each named, or a
   load that failed), the images the panorama offers, and
   `scene.panorama.immersionWidth`, whose one home this is. These sections are
-  available by scrolling; a manual resize takes precedence for this visit.
+  available by scrolling within the remembered window size.
 - **Placement**, when the address has exactly one `dev=1`, in local dev and on a
   published build. Visitors without that flag do not download the editor.
   Saved corrections for this browser still apply on an ordinary visit. A
@@ -476,6 +477,15 @@ space to show a section heading when scrolling. The tab holds:
   file; they do not clear the edits. Reload afterward to see a saved local
   file in the status bar. The number fields shrink to the text in them.
   Inside, the gizmo sits in the center of the view.
+  The editing selection is remembered for this browser tab and scene: reloading
+  into the same photograph restores edit mode and its saved corrections.
+  Valid focused number fields are committed before reload. Done editing or
+  closing the editing tab stops this recovery until editing is enabled again.
+
+Entering a photograph from the map keeps the heading and pitch of the incoming
+flight. Look up and remembered thumbnail views do not replace that direction or
+level its pitch afterward. An explicit saved view used to restore a visit still
+restores its exact direction.
 
 A failure also goes to the log as an error line, since a tab can be closed: the
 scene file, entering a panorama, a larger image of the one on screen, and orb
@@ -494,7 +504,7 @@ of the context on screen:
 | Tab | On the globe | In a panorama | Why |
 | --- | --- | --- | --- |
 | Location | yes | yes | Place search and coordinate fields stay available in a tour |
-| Map | yes | hidden | The map is not drawn |
+| Map | yes | kept if already open | A closed Map tab is offered again when returning to the map |
 | Renderer | yes | yes | The panorama is drawn by the same renderer, at its resolution and frame-rate cap |
 | Controls | yes | yes | The input method and controller bindings drive the panorama's look too |
 | Interface, Settings | yes | yes | The toolbar, log, search, presets and saved settings apply anywhere |
@@ -511,7 +521,8 @@ panorama too: the detail rail, the basemap chip, whose place the panorama's
 credit takes, and the camera's position, whose Location tab is hidden.
 
 The Scenes tab holds what the globe shows and what both sides share: Content
-(choosing a scene, its panoramas and their orbs), Orbs, Motion (hover growth,
+(choosing a scene, its panoramas and their orbs), Image links (connecting two
+photographs, in local development or with exactly one `dev=1`), Orbs, Motion (hover growth,
 flying into and out of 360 images, the entry reveal, fades and reduced motion,
 which play on the globe side too),
 Loading and memory (one set of budgets: the orbs' previews and the image on
