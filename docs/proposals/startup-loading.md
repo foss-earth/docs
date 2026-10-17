@@ -1,7 +1,8 @@
 # Startup: instant feedback, a boot terminal, code on demand
 
-Status: proposal, 17 October 2026. Nothing below is built yet unless it says
-so. It covers four requests that share one goal, a FOSS Earth page that
+Status: proposal, 17 October 2026, being built in its order of work (steps 1
+to 3 are built). Nothing below is built yet unless it says so. It covers four
+requests that share one goal, a FOSS Earth page that
 answers a click at once and is in its 3D scene as early as possible:
 
 1. Code on demand ("JIT"), with prefetching while the page is idle, so that
@@ -22,10 +23,10 @@ prompt that starts an agent on this work.
 | Lazy `import()` for a few features | app `sceneHost.ts` (pose editor, thumbnails), engine `globeBindings.ts` (3D Tiles), engine `createGlobeRuntime.ts` (compass center ball) | Ad hoc: each is written by hand, and none is prefetched |
 | Developer mode | `@foss-earth/dev`: `wantsDev(search)` accepts exactly one `dev=1`; the Dev tab mounts contributions only while open | Built |
 | Developer-only settings | engine `DEV_CONTROLS_PARAMETERS`, which the app registers only under `?dev=1` (`app/src/settings/appSettings.ts`) | Built for Show compass center |
-| Prefetch while idle | — | None. No `requestIdleCallback`, `modulepreload` injection or speculation rules anywhere |
+| Prefetch while idle | `warmPages()` from `@foss-earth/ui/vite`, on the tour's selector page | Built 17 October 2026 (section 2, The click). Until then there was no `requestIdleCallback`, `modulepreload` injection or speculation rules anywhere |
 | App files kept on the device | `appFiles()` Vite plugin and `foss-earth-sw.js` | Built; repeat visits read the app from the device |
-| Loading screen | — | None. A campus page is an empty `<div id="root">` until the whole bundle has run |
-| Failure and stall screen | `browserRecovery()` from `@foss-earth/ui/vite`, inline in `<head>`, 45 s stall limit | Built; it is the natural owner of the boot terminal |
+| Loading screen | `bootTerminal()` from `@foss-earth/ui/vite` | Built 17 October 2026 (section 2, The boot terminal). Until then a campus page was an empty `<div id="root">` until the whole bundle had run |
+| Failure and stall screen | `browserRecovery()` from `@foss-earth/ui/vite`, inline at the start of `<body>` after the boot terminal (in `<head>` until 17 October 2026), 45 s stall limit | Built; its offers show inside the boot terminal while it is there |
 | Log with progress bars | `createGameLog` in `@foss-earth/ui` (`progress: number \| null` per line), map and scene loading lines | Built |
 | Renderer diagnostics | Renderer tab: secure context, `navigator.gpu`, `IsSupportedAsync`, fallback error | Built. Until 17 October 2026 only in the tab: nothing in the log said WebGL was a fallback (now `describeRendererStart`, section 3) |
 | Startup items in the optimization backlog (`docs/optimization-backlog.md`, Loading, network and startup) | S1 (import only the Babylon modules used), S2 (lazy panels), S3 (compile shaders during loading), S4 (fetch only one shader chunk) | Open |
@@ -142,36 +143,81 @@ engine's chunk for prefetch through the same plugin.
 
 ### The boot terminal
 
-Owner: `@foss-earth/ui/vite`, as a `bootTerminal()` plugin beside
-`browserRecovery()`, so that every FOSS Earth app gets it.
+Built 17 October 2026. Owner: `@foss-earth/ui/vite`, as a `bootTerminal()`
+plugin beside `browserRecovery()`, so that every FOSS Earth app gets it. Its
+runtime is `ui/src/browser/bootTerminal.ts`, and an app's side is the helpers
+in `bootSteps.ts`, which do nothing on a page without the terminal. The FOSS
+Earth app, the tour's campus pages and 0sfs (`/`, `/fly/` and `/rc/`) use it.
 
-- **Markup and style first.** An inline `<style>` and a static
-  `<div id="foss-earth-boot" role="status" aria-live="polite">` are the first
-  things in the HTML, so the terminal paints from the first bytes with no
-  script. The bar is `role="progressbar"` with `aria-valuenow`. It uses
-  `ui-monospace`, no web font, and follows `data-ui-theme` and
-  `prefers-color-scheme`, with no animation under `prefers-reduced-motion`.
-- **A small HTML.** Move the 25 KB build provenance out of the HTML into a
-  `built-from.json` that the About tab fetches when it opens. Keep the HTML
-  before the terminal under about 14 KB compressed, so it arrives in the first
-  round trip.
-- **Knows what it waits for.** At build time the plugin writes the entry's
-  static import graph, with each chunk's compressed size, into the page as a
-  small JSON. A `PerformanceObserver` for `resource` entries (buffered)
-  matches finished chunks and sums `encodedBodySize`. Where sizes are missing,
-  for example when the service worker answers, it counts files instead.
+- **Markup and style first.** Right after `<meta charset>` come the
+  terminal's `<style>` (3.8 KB, or 2.6 KB for a page that is always dark) and
+  a one-line script that marks `boot:html` and applies the theme the visitor
+  chose (`foss-earth.theme`, else the settings' `interface.theme`, else the
+  device's). The terminal's markup is the first thing in `<body>`: a title,
+  the lines as an `<ol role="log">`, and a bar with `role="progressbar"` and
+  `aria-valuenow`. It uses `ui-monospace`, no web font, and follows
+  `data-ui-theme` (Earth or UMN) and `prefers-color-scheme`, with no
+  transition under `prefers-reduced-motion`.
+- **Nothing ahead of it.** The page's stylesheets move from `<head>` to the
+  end of `<body>`, so they no longer hold back the first paint. Modules still
+  wait for them, so the app never shows unstyled. The recovery script (38 KB)
+  moves from `<head>` to just after the terminal. On all three apps the HTML
+  up to the end of the terminal's markup is about 3 KB compressed, well inside
+  the first round trip.
+- **Knows what it waits for.** At build time the plugin writes the files the
+  page waits for before its first module runs into the runtime's call: the
+  entry, its static imports and their styles, and the lazy chunks named by
+  `waitFor` (0sfs's flight), each with its gzip size. A buffered
+  `PerformanceObserver` for `resource` entries matches them. Bytes count when
+  they came over the network (`transferSize` above 0). Otherwise the line
+  counts files ("Loading the app from this device: 12 of 70 files").
 - **Stages after the download.** The app reports
-  `window.__fossEarthBoot?.step(id, text, fraction?)` for: evaluate modules,
-  start the renderer (saying WebGPU or WebGL), compile shaders (n of m, which
-  is where backlog S3 runs), load the scene, first frame.
+  `bootStep(id, text, fraction?)`: "Starting the app" (0sfs: "Starting the
+  flight") when its modules run, "Starting the renderer", then "Started
+  WebGPU" (or WebGL 2, WebGL), and "Preparing the 3D scene". Compiling shaders
+  (n of m) comes with backlog S3.
 - **An honest estimate.** The bar weighs download and startup by the times
-  this device took last time (kept in `localStorage`, in try/catch). It shows
-  "about N s" only once it has measured a byte rate on this visit.
-- **Handover.** On the first presented frame of the 3D scene the terminal fades
-  out over about 150 ms, and its lines are printed into the game log's history,
-  so the record runs on without a gap.
-- **Failure.** The recovery script's stall and failure offers use the same
-  element: the last line turns into the error, with its actions.
+  this device took on its last start of this page (`localStorage` key
+  `foss-earth.boot <path>`, in try/catch; 3 s and 1.5 s until there is one),
+  and never goes back. It shows "about N s left" only once 64 KB have
+  arrived over at least 400 ms on this visit. The download's line is
+  rewritten at most every 500 ms, so a screen reader is not flooded.
+- **Handover.** At `boot:first-frame` (in `browserRuntime`, so the app, the
+  tour and 0sfs alike) the terminal fades out over 150 ms and is removed. The
+  game log takes the terminal's lines into its history as soon as the log
+  exists (`attachBootLog`), and every later line too, so the record runs on
+  without a gap. A page that draws no scene (0sfs's `/rc/`) hands over when
+  the app says it is ready.
+- **Failure.** A module that cannot download ends the start with an error
+  line. A failure the app reports (`reportBrowserAppFailure`) does the same,
+  unless the app's log is already on the page: then the terminal goes, and the
+  log shows the failure with its actions. The recovery's stall and failure
+  offers show inside the terminal while it is there, and stay after it goes.
+  On 0sfs's `/rc/` the terminal stays hidden unless the start fails, so the
+  controller keeps its black screen.
+
+Changed from the proposal:
+
+- The lines are a `role="log"` with `aria-relevant="additions"`, not a
+  `role="status"`: a status is read out whole on every change, a log only its
+  new lines.
+- The build provenance (24 to 38 KB) stays in the HTML, moved to the end of
+  `<body>`, rather than into a `built-from.json` that the About tab fetches.
+  The About tab and the diagnostics report read it at once when the app
+  starts, and it cannot describe a different build from the page's. At the end
+  of the body it holds back nothing that paints.
+
+### The click
+
+Built 17 October 2026 for the tour's selector page. `warmPages({ from, pages })`
+from `@foss-earth/ui/vite` writes speculation rules for the campus pages
+(`prefetch`, `eagerness: "moderate"`), so a hovered or pressed card fetches
+its page's HTML. Once the selector has loaded and is idle, it fetches the
+files the campus pages wait for into the HTTP cache with
+`<link rel="prefetch">`: largest first, four at a time, only while the page
+is visible, and not under Save-Data or on a 2G connection. A card shows
+pressed on `:active` (with a passive `touchstart` listener, which iOS Safari
+needs for `:active`).
 
 ### The empty scene first
 
@@ -189,15 +235,20 @@ half of today's 1.44 MiB brotli before the first frame.
 Measure with `@foss-earth/browser-testing`: a cold profile, and the Chrome
 DevTools Protocol for network throttling (Fast 4G) and a 4× CPU slowdown. Use
 `performance.mark` at `boot:html`, `boot:terminal`, `boot:modules`,
-`boot:renderer`, `boot:first-frame` and `boot:settled`. Record:
+`boot:renderer`, `boot:first-frame`, `boot:globe`, `boot:content` and
+`boot:settled` (`app/src/app/bootMarks.ts`). `boot:globe` is the first frame
+that draws the globe's ground. `boot:content` is the first that draws what the
+page is for: a tour's scene on the globe, 0sfs's aircraft, or for the app
+alone the opening view with no tile missing. Record:
 
 - the first paint of the terminal after navigation;
-- the first 3D frame;
+- the first 3D frame, the globe and the content;
 - the bytes fetched before the first 3D frame;
 - the time to settled.
 
-Record each for the Minneapolis page and the FOSS Earth app, cold and warm,
-before and after each step. Put the numbers in this document, as section 1's
+Record each for the Minneapolis page, the FOSS Earth app and 0sfs's `/fly/`
+(which never settles: a flight keeps drawing), cold and warm, before and after
+each step. Put the numbers in this document, as section 1's
 measurements are. A step is done when its numbers are recorded and no other
 number regressed.
 
@@ -218,6 +269,10 @@ checkout (gitignored, so it is copied here in outline):
 - The builds are served by a local server that answers like GitHub Pages:
   gzip, `Cache-Control: max-age=600` and ETags. Tiles come from the real tile
   servers.
+- The local server speaks HTTP/1.1, so Chrome fetches at most six files at a
+  time from it. GitHub Pages speaks HTTP/2, which fetches them all over one
+  connection, so a cold start of a page with about 70 scripts is faster there
+  than these numbers.
 - "Bytes" is what the network carried, compressed, for requests that finished
   before the mark.
 - Settled is `boot:settled`: the moment frames stopped, once they stay stopped
@@ -250,6 +305,42 @@ What this shows:
 - A warm visit takes nothing from the network before its first frame.
 - There is no terminal yet ("—"). `boot:terminal` comes with the boot
   terminal.
+
+**After step 3 (the boot terminal), 17 October 2026.** Before is app
+`19852ba` (which added `boot:globe` and `boot:content`), ui `79f9ea5`,
+renderer `a6b85b0`, 0sfs `9e25a9e`. After is ui `44717f9`, app `e12a91d`, the
+tour `eca262ffd`, 0sfs `7a383d1`, with the provenance at the end of the body
+(about `882926b`). All pages started on WebGPU. Each cell is before → after.
+
+| Page | Visit | First paint | Terminal paint | Modules run | First 3D frame | Globe | Content | Bytes before first frame | Settled |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/tour/minneapolis/` | cold | 4.14 → **0.23** | — → **0.23** | 4.05 → 4.03 | 5.57 → 5.58 | 7.19 → 7.24 | 7.19 → 7.24 | 1.94 → 1.95 MiB | 48.2 → 47.8 |
+| `/tour/minneapolis/` | warm | 0.41 → **0.06** | — → **0.06** | 0.33 → 0.34 | 1.46 → 1.45 | 2.95 → 3.21 | 2.95 → 3.21 | 276 B → 276 B | 8.0 → 8.3 |
+| FOSS Earth app `/app/` | cold | 3.08 → **0.22** | — → **0.22** | 2.99 → 2.99 | 4.51 → 4.56 | 6.19 → 6.25 | 60.5 → 60.6 | 1.94 → 1.95 MiB | 60.8 → 60.9 |
+| FOSS Earth app `/app/` | warm | 0.39 → **0.07** | — → **0.07** | 0.30 → 0.31 | 1.42 → 1.45 | 2.72 → 2.97 | 5.29 → 5.54 | 276 B → 276 B | 19.4 → 18.4 |
+| 0sfs `/fly/` | cold | 0.42 → **0.24** | — → **0.24** | 3.71 → 3.71 | 5.18 → 5.19 | 7.31 → 7.36 | 24.5 → 25.0 | 2.91 → 2.92 MiB | — |
+| 0sfs `/fly/` | warm | 0.06 → 0.06 | — → **0.06** | 0.33 → 0.35 | 1.68 → 1.71 | 3.13 → 3.20 | 3.54 → 3.59 | 0 B → 0 B | — |
+
+What this shows:
+
+- The screen is no longer blank: the terminal paints at 0.22 to 0.24 s cold
+  and 0.06 to 0.07 s warm, where the tour showed nothing until 4.1 s and the
+  app until 3.1 s. 0sfs painted its static log at 0.42 s; the terminal that
+  replaces it paints at 0.24 s, because the stylesheet and the recovery script
+  no longer come before it.
+- The terminal costs about 5.5 KB before the first frame (its style, markup
+  and runtime, inline in the HTML), and nothing measurable after it: the
+  modules, the first frame, the globe and the content moved by no more than
+  the runs vary, except the warm globe.
+- The warm globe came 0.25 s later on the tour and the app. It is not the
+  terminal: two builds of the app from the same tree, with and without it,
+  opened in turn on the same machine (five warm visits each), drew the globe
+  at 2.87 and 2.90 s. The after builds held other work in the app's and the
+  engine's checkouts, not yet committed, that changes the terrain decoding
+  workers.
+- The app's content comes about a minute after its globe on a cold visit:
+  with no tile missing from the opening view means every tile of it, down to
+  the finest, has arrived over Fast 4G.
 
 ## 3. Renderer advisor
 
@@ -351,7 +442,9 @@ log.
    in the log. Small, and fixes a real trap. Done 17 October 2026: see Two
    defects, fixed first.
 3. Boot terminal, provenance moved out of the HTML, and selector-page
-   speculation rules.
+   speculation rules. Done 17 October 2026, with the provenance moved to the
+   end of the HTML instead: see The boot terminal, The click and Startup
+   measurements.
 4. One shader chunk (S4), and the unused Babylon modules out of the startup
    graph (start of S1).
 5. `defineLazyFeature`, the chunk-map plugin and the idle queue. Move the
