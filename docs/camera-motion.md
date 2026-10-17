@@ -73,6 +73,25 @@ starts on the sky, or on a point of interest, does not grab. A second finger
 landing ends the grab: the pair zooms and turns, and the finger left takes a
 grab of its own.
 
+With the developer tool `input.showCompassCenter` (Controls → Orbit → Show
+compass center, listed only on a page opened with `?dev=1`, off by default), a turn or tilt about the compass target, which is the middle of the
+view, shows a faint ball standing there in the world: about 52 px across, at 22%
+opacity while the input arrives. From the release it fades with the glide's
+speed, its opacity the share of the speed it had when let go, so it is gone
+when the turn stops. It is the only mark of a turn that holds no point of the
+ground, so a twist that holds the ground, a drag, a pinned point and a zoom
+never show it. It is shown where `GlideAnchors.compass` says the orbit under
+way has no anchor point.
+
+The ball is a sphere impostor in Babylon, `src/visualization/compassCenterSphere.ts`:
+one camera-facing quad whose fragment shader shades a lit ball from the quad's
+own coordinates, with no texture and the same one-pixel rim at any pixel ratio.
+Its vertex shader faces and sizes it, so a frame only moves the mesh and sets
+its opacity. It is placed at the front of the ball, so the ground behind the
+center does not cut it, while buildings and hills in front of it hide it. It
+never writes depth. Hidden, it is disabled. Its module is fetched only when the
+setting is switched on, so a visitor's page never downloads it.
+
 Two fingers that twist in place can grab too, as in Google Maps. With
 `input.touch.twistTurn` (Controls → Touch → Twist to turn, on by default),
 a pair that twists past `input.touch.twistThreshold` (15° by default) takes
@@ -200,6 +219,7 @@ travel. It cuts with a short fade, and nothing glides.
 | Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
 | Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
 | Grabbing the ground: the point held under the pointer, its marker, and the glide on letting go | `CameraController.beginAnchorPan`, `stepAnchorPan` and `endAnchorPan` in `src/babylon/cameraState.ts`, stepped each frame by `createGlobeInertia` in `globeInertia.ts`; the ground from `NavigationAnchorService.groundAt`; the marker in `src/browser/navigationAnchorMarkers.ts` |
+| The ball at the compass center while the view turns about it, and its fade | `GlideAnchors.compass` from `createInertialCameraController` in `src/input/inertialCameraController.ts`; the ball in `src/visualization/compassCenterSphere.ts`, shown by `createGlobeRuntime` |
 | A two-finger twist that holds the ground: when it counts, the turn and zoom about the held point, and the glide on letting go | `detectTwist` and `applyTwist` in `src/browser/touchController.ts`; `CameraController.twistAbout` and `twistAnchorPan` in `src/babylon/cameraState.ts`, turning with `turnAbout` in `src/camera/anchoredMotion.ts`; the glide in `createGlobeInertia` in `globeInertia.ts` |
 | The feed after a pinch, a button-drag turn, or a one-finger pan, for `TRACKPAD_MOMENTUM_MS` | `trackpadMomentumFraction` in `src/input/trackpadMomentum.ts`, armed from the pointer, touch, Safari, and pinch-wheel handlers; a two-finger swipe is not armed |
 | The collision nudge kept out of Babylon's scratch vector, so a zoom does not walk east | `keepCollisionOffset` in `src/babylon/globeCamera.ts` |

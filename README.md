@@ -39,10 +39,12 @@ Proposals:
 - [Repository graphs](docs/proposals/repository-graphs.md), with the [graph](docs/proposals/repository-split-graph.html) and its [JSON data](docs/proposals/repository-split-graph.json)
 - [Search](docs/proposals/search.md)
 - [Settings](docs/proposals/settings.md)
+- [Startup loading](docs/proposals/startup-loading.md): instant feedback, a boot terminal, code on demand, renderer advice
 - [Tab inventory](docs/proposals/tab-inventory.md)
 - [VR](docs/proposals/vr.md)
 - [Implementation brief: Earth agent](docs/proposals/implementation/earth-agent.md)
 - [Implementation brief: platform agent](docs/proposals/implementation/platform-agent.md)
+- [Implementation brief: startup loading agent](docs/proposals/implementation/startup-loading-agent.md)
 
 Other:
 

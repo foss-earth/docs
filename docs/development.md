@@ -95,7 +95,7 @@ tour's `npm run qr`. It reads the key from FOSS Earth's `.env.local` wherever it
 application installed before the command existed needs `npm rebuild foss-earth` to link it.
 
 - A phone's browser gives no WebGPU over plain HTTP, since WebGPU needs a secure context, so
-  the app draws with WebGL there.
+  the app draws with WebGL there. [WebGPU on a phone](#webgpu-on-a-phone) says how to get it.
 - If your key is restricted to certain websites, Google refuses it from this computer's LAN
   address until you add the address to the key's restrictions.
 - If the macOS firewall is on, allow Node's incoming connections when asked, or the phone
@@ -107,6 +107,34 @@ phone that comes back to a tab may show its own copy of an older page; a page bu
 When something goes wrong on the phone, Settings → Diagnostics → Copy report gives what the app
 knows as text, and `?report` in the address shows it when the app does not stay open:
 [diagnostics.md](https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/diagnostics.md), which also says how to attach a browser's inspector to a phone.
+
+### WebGPU on a phone
+
+`http://<this computer's address>:5173` is not a secure context, so the phone's browser hides
+`navigator.gpu`, and the app quietly falls back to WebGL. Settings → Renderer shows it
+(`Secure context: ✗ no`). Either of these gives the phone WebGPU against the dev server:
+
+- **USB, Android:** turn on USB debugging, connect the phone, run
+  `adb reverse tcp:5173 tcp:5173`, and open `http://localhost:5173/...` on the phone.
+  `localhost` counts as secure.
+- **Wi-Fi, Chrome on Android:** open `chrome://flags/#unsafely-treat-insecure-origin-as-secure`,
+  enter the origin (such as `http://192.168.0.103:5173`), enable it and relaunch Chrome. Remove it
+  when done.
+
+A fallback is remembered: the first start without WebGPU saves `webgl2` as that origin's
+renderer preference (`foss-earth:renderer-preference`), and automatic mode keeps using WebGL
+there afterwards. After fixing the origin, choose Settings → Renderer → WebGPU once, or clear the
+site's data. The [startup proposal](proposals/startup-loading.md#3-renderer-advisor) plans to
+retry WebGPU on its own and to say so in the log.
+
+### Developer tools
+
+A page opened with `?dev=1` (exactly one, `wantsDev` in `@foss-earth/dev`) gets the Dev tab and
+the engine's developer settings (`DEV_CONTROLS_PARAMETERS`, such as Controls → Orbit → Show
+compass center). A developer tool is in every build but is fetched with `import()` only when it
+is switched on, so a visitor's page never downloads it. Once a build with it is deployed, it works
+on the live site too:
+`https://umn-vr.github.io/tour/minneapolis/?dev=1&set.input.showCompassCenter=true`.
 
 ## Quality checks
 
