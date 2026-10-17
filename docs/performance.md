@@ -246,14 +246,20 @@ passes under `gpu/`.
 
 ## Still to do
 
+The items below finish work already started. Everything else, ranked, is in
+the [Optimization backlog](optimization-backlog.md).
+
 ### Publish the JavaScript speedups
 
-These commits are local. Nothing below has been pushed:
+Done. On 16 October 2026, `git ls-remote` showed each of these on its
+library's `main` on GitHub:
 
 - images, five commits through `fe19ea7`
 - sky, four commits through `88cda0e`
 - cubemap `357d4de`, equirectangular `18b76dc`, tiled-cubemap `96c7f3f`
-- `360` `a16324f` only if `bd3d4e7` is meant to go with it
+- `360`, now `sphere-image`: `a16324f`, with `bd3d4e7`
+
+The published apps get them with their next build.
 
 ### Point the app at the streamgraphs
 
@@ -309,10 +315,10 @@ speedups above.
 `research/scripts/benchmarks/scene-ab` already opens a page with
 `set.renderer.profiling.*`, cross-origin isolation, and a CDP trace.
 Isolation is what makes `performance.now()` finer than 100 µs and what
-`performance.measureUserAgentSpecificMemory` requires. GitHub Pages cannot
-send COOP/COEP, and a service-worker isolation shim would break cross-origin
-tiles that lack CORP. Keep isolation on the capture harness. The published
-app stays as it is.
+`performance.measureUserAgentSpecificMemory` requires. The published apps
+are to be isolated too, with the headers from their service worker, since
+GitHub Pages cannot send them: [WebAssembly builds](proposals/webassembly.md#3-isolation-from-the-service-worker),
+step 3. Until then, isolation is only on the capture harness.
 
 Resource Timing keeps 250 entries unless the page raises the buffer. A long
 tile load can drop entries. The observer does not ask for entries that
@@ -320,13 +326,15 @@ finished before measuring started.
 
 ### WebAssembly
 
-Not until the JavaScript above is published and a profile says a core is
-still the cost. Candidates remain images, the three projection libraries,
-the sky model, and preview sheets. UI, the toolbar and the app shell are
-not candidates. A port keeps the TypeScript API and needs the same
-bit-identical proof. Publishing the build needs GitHub Actions and Pages,
-which wants an explicit go-ahead. Design notes from the sky bake-off sit in
-that repo's gitignored `build/wasm-bakeoff/`; they are not a decision.
+[WebAssembly builds](proposals/webassembly.md) is the plan, and the
+[WebAssembly agent](proposals/implementation/webassembly-agent.md) brief is
+how to carry it out. A core moves to WASM only where a profile says it is
+still the cost. It keeps the TypeScript API and needs the same bit-identical
+proof. The binaries are built on the Mac with a pinned toolchain and
+committed with their build metadata, so no hosted CI is needed. UI, the
+toolbar and the app shell are not candidates. Design notes from the sky
+bake-off sit in that repo's gitignored `build/wasm-bakeoff/`; they are not a
+decision.
 
 ### After a merge
 

@@ -26,6 +26,7 @@
     "setup.md"
   ],
   "scripts": {
+    "conversation": "node scripts/read-agent-conversation.mjs",
     "check:links": "node scripts/check-links.mjs",
     "test:source": "node --test --test-concurrency=1 fixtures/*.test.mjs",
     "check:source": "npm run check:links && npm run test:source",

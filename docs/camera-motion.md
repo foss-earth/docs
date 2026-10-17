@@ -3,7 +3,8 @@
 The camera is a physical thing with mass and momentum. It never jumps, it
 never stops dead, and it never ignores the person moving it. These rules hold for
 the globe camera and for every camera a person steers in FOSS Earth and in the
-applications built on it, 0SFS and the campus tour included. Read them before you
+applications built on it, 0SFS and the campus tour included. Read them alongside
+[Physical UX](physical-ux.md) before you
 add or change a camera animation, a transition between modes, a handover of the
 camera from one owner to another, or an input handler.
 

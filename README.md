@@ -14,6 +14,7 @@ Start here:
 
 - [Follow-ups](docs/todo.md): work across the Earth repositories that isn't done yet, including WebAssembly builds.
 - [Performance](docs/performance.md): the bit-identical JavaScript speedups, the frame-budget streamgraphs, and what is left.
+- [Optimization backlog](docs/optimization-backlog.md): every optimization not done yet, for FOSS Earth, 0SFS and the UMN tour, ranked by estimated gain against effort, by backend.
 - [Incident reports](docs/incidents/README.md): failures, observed evidence, recovery actions and unresolved causes.
 - [Repository navigation](navigation.md)
 - [Checkout setup](setup.md)
@@ -21,10 +22,12 @@ Start here:
 
 Guides and rules:
 
+- [Physical UX](docs/physical-ux.md): direct grabs vs. two-finger impulses, exponential pan and zoom inertia, and FOV-tangent scaling across the globe and 360 spheres
 - [Camera motion](docs/camera-motion.md)
 - [UI layout](docs/ui-layout.md)
 - [Render on demand](docs/render-on-demand.md)
 - [Development](docs/development.md)
+- [Read previous agent conversations](docs/agent-conversations.md): local Claude/Codex JSONL reader, session discovery, search and bounded excerpts
 - [Deploying](docs/deploying.md)
 - [CI/CD](docs/ci-cd.md)
 - [Manual QA](docs/manual-qa.md)
@@ -40,11 +43,13 @@ Proposals:
 - [Search](docs/proposals/search.md)
 - [Settings](docs/proposals/settings.md)
 - [Startup loading](docs/proposals/startup-loading.md): instant feedback, a boot terminal, code on demand, renderer advice
+- [WebAssembly builds](docs/proposals/webassembly.md): shared memory, Rust cores per map family, ranked steps
 - [Tab inventory](docs/proposals/tab-inventory.md)
 - [VR](docs/proposals/vr.md)
 - [Implementation brief: Earth agent](docs/proposals/implementation/earth-agent.md)
 - [Implementation brief: platform agent](docs/proposals/implementation/platform-agent.md)
 - [Implementation brief: startup loading agent](docs/proposals/implementation/startup-loading-agent.md)
+- [Implementation brief: WebAssembly agent](docs/proposals/implementation/webassembly-agent.md): gates W0–W12, repository ownership, proof and acceptance checks
 
 Other:
 

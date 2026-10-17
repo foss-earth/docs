@@ -29,13 +29,15 @@ loads through an import map instead of from `node_modules`.
 
 The JavaScript speedups, the proof they match the shipped pixels, the
 frame-budget streamgraphs, and the remaining app, sky and capture work are
-in [Performance](performance.md). WebAssembly is still the section below,
-and it waits on that work.
+in [Performance](performance.md). The WebAssembly program below starts with
+measurement and can prepare isolation and tooling alongside it. Every optimization not done yet, ranked by gain
+against effort, is in the [Optimization backlog](optimization-backlog.md).
 
 ## WebAssembly builds
 
 Every component where it makes sense should eventually have a WebAssembly (WASM)
-LTS build. Nothing is compiled to WASM yet.
+LTS build where measurement justifies it. The new Rust cores are not built yet;
+0SFS already uses JSBSim compiled from C++ to WASM.
 
 WASM isn't a build setting for this code. The libraries are TypeScript, which the
 browser's JavaScript engine already compiles to machine code, and most of them
@@ -49,24 +51,46 @@ TypeScript like this into faster WASM:
 - Running JavaScript inside a WASM build of a JavaScript engine, such as Javy
   with QuickJS, works but is slower than the browser's own engine.
 
-So a WASM build means rewriting a component's core in a language that compiles
-to WASM well (Rust, C++, Zig or AssemblyScript), keeping a thin TypeScript
+So a WASM build means rewriting a component's core in Rust, keeping a thin TypeScript
 wrapper with the same API, and testing that both behave the same. The cost is
 roughly a rewrite of that core, so it pays off for heavy, self-contained
 computation and not for UI or rendering code. Profile before choosing; the
 likely candidates are:
 
-- image decoding and resampling (images);
-- projection conversions (cubemap, equirectangular, tiled-cubemap);
+- terrain mesh construction and tile parsing (engine);
+- ground height grids and collision BVHs (engine, with 0SFS ground contact);
+- projection conversions (sphere-cubemap, sphere-equirectangular, sphere-tiled-cubemap);
 - sky model calculations (sky);
-- preview sheet composition (preview-sheets).
 
-ui, toolbar, about, dev, scenes and the app shell are not candidates. No
-infrastructure of our own is needed: GitHub Actions can install the toolchain
-(for example Rust and wasm-pack), build the WASM and publish it with the release.
+Keep browser image decoding in `createImageBitmap` workers. Preparation-time
+JPEG codecs are a separate native-tool decision; they are not part of the
+projection binary.
+
+ui, toolbar, about, dev, scenes and the app shell are not candidates. Builds
+run locally on the Mac with a pinned toolchain. Commit the generated binaries,
+glue and metadata with hashes; checks rebuild when that toolchain is present,
+and verify retained artifacts otherwise. No hosted CI is required.
 
 The precompiled LTS builds in the previous section don't depend on WASM: static
 JavaScript builds already avoid installing anything.
+
+### Plan
+
+[WebAssembly builds](proposals/webassembly.md) is the end-to-end plan, ranked by
+gain against effort. The [implementation brief](proposals/implementation/webassembly-agent.md)
+has a paste-ready assignment, gates W0–W12 and their acceptance checks.
+
+- GitHub Pages stays the host.
+- Shared memory is on by default, with the headers it needs added by the apps'
+  service worker.
+- Rust for the new native cores.
+- One binary per map family (Google 3D Tiles; raster terrain and imagery) and
+  one per library core.
+- Each binary has a threaded and a single-threaded build, and the TypeScript is
+  kept as the reference and the last fallback.
+- Workers move work off the main thread first; Rust replaces measured CPU
+  kernels. Shared memory and Rust are tools to measure, not evidence that a
+  build is faster.
 
 ## Libraries on their own
 
