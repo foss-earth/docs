@@ -22,7 +22,12 @@ fixed breakpoint:
 - **Stacked**, a phone: one window, initially the available width. It can be
   narrowed in overlay; an explicit split keeps it full width (see below).
   The other window's tabs fold into it. The log is a tab. Which window fills the
-  phone follows the last window the user widened; otherwise it is the right one.
+  phone stays on its occupied side when only one side has tabs. When both do,
+  it follows the last side the user focused or resized; otherwise it is the
+  right one. The empty opposite **+** disappears, and the grip moves to the
+  middle of the window's bottom edge. Browser resizing never moves a lone
+  window to the other side. Dragging a tab temporarily reveals the opposite
+  launcher as a drop target, so the tab can still be moved there.
   While an image tab is selected on an expanded side, that fold does not run:
   both occupied sides stay labelled rows, two images share one body under those
   rows, and an image beside ordinary content keeps two stacked groups. The empty
@@ -121,7 +126,7 @@ The workspace is remembered per device. After a reload each window holds the
 tabs it held, shows the one it showed, and keeps its width and whether it was
 minimized (`src/shell/savedWorkspace.ts`); the sections open inside each tab
 are remembered the same way (`panelSectionsOpen.ts`). What is saved is the
-layout a wide window on the globe would show: tabs folded onto the right are
+layout a wide window on the globe would show: tabs folded onto either side are
 saved on their own sides, and inside a panorama the map's tabs are saved where
 they were and the panorama's own tabs not at all. A saved tab the application no
 longer offers is dropped.
@@ -141,8 +146,16 @@ disagree.
 - **Middle of the bottom edge, both ways**: a phone in overlay. The window
   starts full width, where a corner grip would sit on the screen's edge, hard
   to grab and where a phone's back gesture starts. Dragging toward the side
-  the window is anchored on narrows it, down to 160 px. The width chosen is
-  that window's own, kept on a reload and when two windows fit again.
+  the window is anchored on narrows it, down to 160 px. Dragging the other way
+  expands it. Within 24 px of full width it snaps to fill the available width;
+  releasing there keeps it full width as the compact browser width changes.
+  Continuing past that snap zone moves the window to the opposite side and
+  starts narrowing it from there, in the same gesture. Reversing the drag
+  reverses that transition. This explicit side change moves the whole visible
+  window, including its folded tabs, and is remembered on reload and when two
+  windows fit again. A tab can also be moved individually by dragging it to
+  the opposite side. Other chosen widths are kept on reload and when two
+  windows fit again.
 - **Middle of the bottom edge, height only**: a split window that spans the
   width, on a phone or as the one open window on a wider screen.
 
