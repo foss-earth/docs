@@ -73,6 +73,19 @@ starts on the sky, or on a point of interest, does not grab. A second finger
 landing ends the grab: the pair zooms and turns, and the finger left takes a
 grab of its own.
 
+Two fingers that twist in place can grab too, as in Google Maps. With
+`input.touch.twistTurn` (Controls → Touch → Twist to turn, on by default),
+a pair that twists past `input.touch.twistThreshold` (15° by default) takes
+hold of the ground under its midpoint until it lifts. Its twist turns the view
+about that ground, as far as the fingers turn. Its spread zooms toward it, as
+far as they spread. Its midpoint drags it along. It no longer tilts. Whatever
+the pair had set moving stops when it takes hold, because the ground is held
+now. The twist before the threshold is not applied, so nothing jumps. Letting
+go glides on, turning and zooming about that point at the speed the fingers
+had, fed and slowed like a grab. A twist that starts on the sky, or on a point
+of interest, does not grab: the pair stays a swipe and a pinch. A two-finger
+swipe still turns and tilts the view about the compass.
+
 ### 4. Only the person's input is input
 
 A trackpad's glide after the fingers lift is the system's: a stream of wheel
@@ -142,6 +155,9 @@ point at the glide's pace (`camera.inertiaDecay`) rather than jumping to it.
 Choosing where zoom acts (`input.zoomCenter`, and `input.*.zoomAnchor` while that
 is the ground anchor) never moves the camera by itself. A turn stays on the
 compass: the centre does not run out to where a shallow look meets the ground.
+A twist that holds the ground is the one turn that is not about the compass:
+it turns about the ground the fingers hold, and the centre goes where the new
+look comes down to the orbit target's height.
 A zoom toward a ground point keeps that point where it is on screen, and the
 centre stays where the line of sight comes down to the orbit target's height.
 A zoom toward the view centre keeps the compass where it is. A point picked
@@ -184,6 +200,7 @@ travel. It cuts with a short fade, and nothing glides.
 | Input carried on, or ignored, when the globe gets input back | `InputHandback` in `src/browser/createInputController.ts`, `heldPress` in `mouseController.ts`, `heldTouches` in `touchController.ts`; the fingers come from `NavigationGlide.touches` |
 | Where zoom and rotation act, and the pinned point | `createNavigationAnchorService` in `src/babylon/navigationAnchorService.ts`, choices in `src/input/navigationAnchors.ts` |
 | Grabbing the ground: the point held under the pointer, its marker, and the glide on letting go | `CameraController.beginAnchorPan`, `stepAnchorPan` and `endAnchorPan` in `src/babylon/cameraState.ts`, stepped each frame by `createGlobeInertia` in `globeInertia.ts`; the ground from `NavigationAnchorService.groundAt`; the marker in `src/browser/navigationAnchorMarkers.ts` |
+| A two-finger twist that holds the ground: when it counts, the turn and zoom about the held point, and the glide on letting go | `detectTwist` and `applyTwist` in `src/browser/touchController.ts`; `CameraController.twistAbout` and `twistAnchorPan` in `src/babylon/cameraState.ts`, turning with `turnAbout` in `src/camera/anchoredMotion.ts`; the glide in `createGlobeInertia` in `globeInertia.ts` |
 | The feed after a pinch, a button-drag turn, or a one-finger pan, for `TRACKPAD_MOMENTUM_MS` | `trackpadMomentumFraction` in `src/input/trackpadMomentum.ts`, armed from the pointer, touch, Safari, and pinch-wheel handlers; a two-finger swipe is not armed |
 | The collision nudge kept out of Babylon's scratch vector, so a zoom does not walk east | `keepCollisionOffset` in `src/babylon/globeCamera.ts` |
 | Zoom and rotation about a point, keeping it on screen | `CameraController.zoomAbout` and `orbitAbout` in `src/babylon/cameraState.ts`, with `src/camera/anchoredMotion.ts` |
@@ -247,6 +264,21 @@ replaces the coast. Glide and `TRACKPAD_MOMENTUM_MS` change how long a coast
 lasts once it has started. `camera.orbitForce` and `camera.zoomForce` scale
 the push. They do not decide whether the coast is kept.
 
+A twist counts when the pair has turned past the threshold in its recent
+motion and is in place. Recent means the last `TWIST_MEMORY_PX` (100) of
+fingertip travel, or the gap between the fingers when that is wider, so older
+turning fades as new motion comes in. In place means the fingertips travel at
+least `TWIST_IN_PLACE_RATIO` (0.5) as far turning as the midpoint travels. A
+twist about one still finger moves the midpoint as far as it turns them, and a
+swipe hardly turns them. Fingers closer than `TWIST_MIN_SPAN_PX` (40) give no
+direction. A turn of more than `TWIST_MAX_STEP_RAD` (45°) in one frame is a
+glitch. The turn is about the vertical through the Earth's centre and the held
+point (`turnAbout`), not the WGS84 one. A level look turned about that axis
+stays level. Looking almost straight down, the WGS84 axis rolled the look, and
+levelling it again turned the view 17% further than the fingers at 89° tilt,
+so the ground slid out from under them. The heading the compass then shows
+can differ from the twist by a few hundredths of a degree.
+
 The grab marker does not drag the camera. Release ends the grab. The mark is
 the ground point remembered for the glide. The grab's own step holds the
 release speed and puts back the share `camera.inertiaDecay` took off, in the
@@ -309,6 +341,12 @@ screen centre, and broke pan.
   (`camera.eyeContact`, `camera.eyeContactAcceleration`, `camera.eyeClearance`)
   are not parameters, so a saved record drops that branch and keeps every
   other saved value.
+- **Twist to turn, on devices.** The threshold, the in-place test and the
+  glide after a twist are covered by unit tests and the real camera, not yet
+  by a phone. Only the ground under the midpoint is held exactly. From above,
+  the ground under each finger stays within about a pixel. Tilted, the
+  ground under the outer fingers drifts as the view turns about the vertical,
+  as in Google Maps.
 - **Phone check of the grab coast and the ground mark.** The one-finger coast,
   gray while only gliding, and the X on a hidden mark are covered by unit
   tests. They have not been confirmed on a phone.
