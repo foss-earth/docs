@@ -19,8 +19,8 @@ fixed breakpoint:
   that gave way grows back when the other narrows, unless it had asked for at
   least as much as the one dragged: then the width it shows when the drag ends
   becomes its own, so a reload shows the same widths.
-- **Stacked**, a phone: one window, full width. In split it touches the top and
-  side edges; in overlay it floats 6 px in and can be narrowed (see below).
+- **Stacked**, a phone: one window, initially the available width. It can be
+  narrowed in overlay; an explicit split keeps it full width (see below).
   The other window's tabs fold into it. The log is a tab. Which window fills the
   phone follows the last window the user widened; otherwise it is the right one.
   While an image tab is selected on an expanded side, that fold does not run:
@@ -57,38 +57,39 @@ fit their allocated widths.
 
 ### What the world draws under the windows
 
-On dual and columns the windows float over the full-screen world, so they can
-be resized freely. The world still shades only the pixels those opaque windows
+Overlay is the default at every width: windows float over the full-screen world
+and can be resized freely. An empty window's **+** launcher stays in its top
+corner. The world still shades only the pixels those opaque windows
 do not cover: a depth mask is drawn over each window (and over the floating
 log) before the globe, and later fragments fail the depth test there.
 
-On a phone the window is a band across the top and the world is drawn only in
-the area under it, so the drawing buffer itself is smaller. The resize grip
-sits on the edge where the window meets the world, in front of the toolbar. Interface → **Toolbar**
-chooses where that bar sits: above the tabs, at the bottom of the window, or
-auto, which is the top on a phone and the bottom when two windows fit. Bottom
-is the default. A solid strip behind the toolbar is the default; Interface →
-**Tabs behind the toolbar** lets the window show through it. Dragging the grip
-gives the world less or more of the screen. A collapsed window leaves the
-toolbar in a strip only as tall as the bar. Interface → **World size** chooses
-when the drawing buffer follows. Release, the default, keeps that buffer while
+With Split explicitly chosen, the window is a band across the top and the world
+is drawn only in the area under it, so the drawing buffer itself is smaller.
+The resize grip sits on the edge where the window meets the world. The toolbar
+and imagery provider stay at the bottom of the screen at every screen width.
+Dragging the grip gives the world less or more of the screen; collapsing the window leaves
+only its tab strip at the top. Interface → **World size** chooses when the
+drawing buffer follows. Release, the default, keeps that buffer while
 the split window is dragged and while the browser window changes shape, then
 resizes it once when the drag ends. Live resizes it on every movement.
 
 ### Windows on the screen's edges
 
 Interface → **Windows on the screen's edges** (`interface.windows.flushEdges`)
-changes overlay only. Each window loses its 6 px inset and meets the top and
-its own side of the screen, with square corners and no shadow or blur behind
-it; two windows keep only the 12 px between them. The log stays a tab at every
+chooses the edge style at every screen width. It is on by default; turning it
+off explicitly chooses corner insets. Resizing the screen keeps that choice.
+With it on, each overlay window loses its 6 px inset and meets the top and its
+own side of the screen, with square corners and no shadow or blur behind it;
+two windows keep only the 12 px between them. The log stays a tab at every
 width. The toolbar's buttons close up with no gaps and meet the bottom and side
 edges, and the map's detail rail moves inside the basemap's chip, before its
 name. The world is then one rectangle with rectangles cut from its edges: while
 this is on, the depth mask also covers each toolbar item shown, so nothing is
-shaded under the toolbar either. Split already puts its window on the edges and
-does not change.
+shaded under the toolbar either. The same toolbar style applies with Split
+chosen, while its window remains a band at the top.
 
-It is on by default; the inset windows are a choice in Interface → Windows. On 2026-10-14, in Chrome with WebGPU at 1440×900 at 2× and
+With corner insets chosen, the toolbar keeps its inset and gaps at every width.
+On 2026-10-14, in Chrome with WebGPU at 1440×900 at 2× and
 no frame-rate cap, the default view over Minneapolis with a window on each side
 drew a frame in a median 3.19 ms on the edges and 3.40 ms inset, faster in all
 8 alternating blocks. The 3D world's own GPU time fell only 2.6%, although the
@@ -105,7 +106,8 @@ photograph (`icon` on the tab's definition; `@foss-earth/ui`'s README has the
 details). The label is the image's title alone.
 
 Interface → **Windows and the world** is a two-way switch, overlay or split.
-Until it is moved, a phone uses split and a wider screen uses overlay. Holding
+Overlay stays the default on phones and wider screens. Split is an explicit
+choice; resizing never changes the chosen presentation. Holding
 a tab still, or holding the resize grip still, opens the same switch beside
 the press, below it when the press is at the top of the screen. Moving during
 the press drags the tab or resizes the window, as before.
@@ -557,8 +559,7 @@ when the corner has room. A pinned control that does not fit keeps its row
 above the first on a bar at the bottom. The fitting (`fitHudBar` in
 `@foss-earth/toolbar`) counts the controls it hides as outside the row, so their
 hidden state must take them out of the layout whatever an item's own style says.
-The row's width is the bar's content box: the split toolbar's padding is not
-room for another control.
+The row's width is the bar's content box.
 On 2026-10-14 the
 windows-on-the-edges style gave every item `position: relative`. The hidden
 items took their width back, and at 800 px and narrower the bar wrapped with
