@@ -136,6 +136,11 @@ is switched on, so a visitor's page never downloads it. Once a build with it is 
 on the live site too:
 `https://umn-vr.github.io/tour/minneapolis/?dev=1&set.input.showCompassCenter=true`.
 
+A tool that only a developer's machine needs is a Vite plugin for `npm run dev` instead, and no
+build contains it. The emulated VR headset is one: `headsetEmulator()` from `foss-earth/vite`
+serves Meta's `iwer` to a page opened with `?headsetEmulator=quest3`, and `npm run check:headset`
+in the app goes through a headset visit with it (the app's README, "VR without a headset").
+
 ## Quality checks
 
 ```sh

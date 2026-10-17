@@ -239,11 +239,14 @@ the Renderer tab lists them all.
 Check the version thresholds against current browser release notes when this
 is built. They change, and this table was written from memory in October 2026.
 
-One risk to check first: another agent's uncommitted renderer change, seen on
-17 October 2026, makes automatic mode choose WebGL on any device that answers
-`navigator.xr.isSessionSupported("immersive-vr")` with true. Find what Android
-Chrome on an ordinary phone answers before landing it, because phones
-answering true would lose WebGPU.
+One risk to check first: since renderer 7c61ef0 (17 October 2026, the VR
+headset work), automatic mode chooses WebGL on any device that answers
+`navigator.xr.isSessionSupported("immersive-vr")` with true
+(`immersiveVrRequirement` in `renderer/src/babylon/browserRenderer.ts`). It is
+pushed but not deployed yet. Find what Android Chrome on an ordinary phone
+answers before the next deploy, because phones answering true would lose
+WebGPU. If they do, ask for WebGL only when a session is about to start, or
+only on a headset's browser.
 
 ## Order of work
 

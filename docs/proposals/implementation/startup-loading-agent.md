@@ -35,8 +35,8 @@ next step unless I say to continue.
    fetched by About, and speculation-rules prefetch on the tour's selector page.
 
 Rules:
-- Other agents are working in these checkouts (VR headset work in renderer, app, engine and the
-  tour; WebAssembly benchmarks in research, 0sfs/fly and docs proposals). Run git status first.
+- Other agents are working in these checkouts (WebAssembly benchmarks in research, 0sfs/fly and
+  the docs; the VR headset work is committed). Run git status first.
   Don't discard, overwrite or commit their changes. Stage only your own paths, or only your own
   hunks with git apply --cached.
 - Before the renderer step, check what Android Chrome answers to
