@@ -46,6 +46,19 @@ From the tour's `dist/` built on 16 October 2026 (`/tour/minneapolis/`):
   `abstractSound*`), flow graph (`flowGraph*`) and DDS modules, which the
   globe does not use: evidence for S1.
 
+Rebuilt on 17 October 2026 and checked again (brotli at quality 11, entry
+script counted with the preloads), the figures hold:
+
+| Page | HTML (brotli) | Inline recovery | Inline provenance | Modules before app code | `scenes-*` / `index-*` | GLSL / WGSL (brotli) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/tour/minneapolis/` | 70.7 KB (14.6 KB) | 37.5 KB | 25.9 KB | 71: 7.48 MiB raw, 1.43 MiB brotli | 5.20 MiB, 1.04 MiB brotli | 100.5 KB / 98.7 KB |
+| FOSS Earth app (`/app/`) | 68.5 KB (14.1 KB) | 37.5 KB | 24.1 KB | 69: 7.48 MiB raw, 1.43 MiB brotli | 5.20 MiB, 1.04 MiB brotli | 100.5 KB / 98.7 KB |
+
+The audio (`spatialWebAudio*`, `abstractSound*`), flow graph (10
+`flowGraph*` chunks) and `dds-*` modules are still preloaded by both pages.
+Both pages' HTML is just over the 14 KB of a first round trip when
+compressed, with nothing paintable in it.
+
 Repeat visits read these from the service worker's cache, so the cold first
 visit on a phone is the case to design for.
 
@@ -188,6 +201,56 @@ before and after each step. Put the numbers in this document, as section 1's
 measurements are. A step is done when its numbers are recorded and no other
 number regressed.
 
+### Startup measurements
+
+**How.** The script is `build/startup-baseline/measure.mjs` in the tour
+checkout (gitignored, so it is copied here in outline):
+
+- Chrome 155, headless, with WebGPU on Metal.
+- Fast 4G is the DevTools preset: 165 ms latency, 1,012,500 B/s down,
+  168,750 B/s up. It is applied to the page and to the service worker.
+- The 4× CPU slowdown is applied to the page.
+- Chrome refuses both throttles in dedicated workers ("Not supported"). Their
+  requests still wait the page's latency, but tile decoding in workers runs at
+  full speed, so phones will be slower there.
+- A cold visit starts from a new, empty profile. The warm visit opens the page
+  again in the same profile, through the service worker it installed.
+- The builds are served by a local server that answers like GitHub Pages:
+  gzip, `Cache-Control: max-age=600` and ETags. Tiles come from the real tile
+  servers.
+- "Bytes" is what the network carried, compressed, for requests that finished
+  before the mark.
+- Settled is `boot:settled`: the moment frames stopped, once they stay stopped
+  for a second after the first frame. It depends on the tile servers.
+- The local server has no tour media: `public/` is not in `dist/`, and its
+  ~400 requests answer 404. So the tour's settled time misses that media.
+
+All numbers are medians of 3 runs, in seconds from navigation. The runs
+agreed within 2%, except warm settled, which varied by up to 50%.
+
+**Baseline, 17 October 2026.** Measured at commits app `a802d92`, ui
+`79f9ea5`, renderer `a6b85b0`. Both pages started on WebGPU.
+
+| Page | Visit | `boot:html` | Terminal paint | First contentful paint | `boot:modules` | `boot:renderer` | First 3D frame | Bytes before first frame | Settled | Bytes until settled |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/tour/minneapolis/` | cold | 0.18 | — | 4.11 | 4.02 | 4.49 | **5.54** | **1.94 MiB** (74 scripts, 1 CSS, the HTML) | 47.4 | 41.5 MiB |
+| `/tour/minneapolis/` | warm | 0.02 | — | 0.40 | 0.32 | 0.78 | 1.43 | 276 B | 6.2 | 2.7 MiB |
+| FOSS Earth app `/app/` | cold | 0.18 | — | 3.07 | 2.99 | 3.46 | **4.50** | **1.94 MiB** (72 scripts, 1 CSS, the HTML) | 61.0 | 55.4 MiB |
+| FOSS Earth app `/app/` | warm | 0.02 | — | 0.39 | 0.31 | 0.78 | 1.43 | 276 B | 16.4 | 0.3 MiB |
+
+What this shows:
+
+- On a cold visit the HTML has arrived and begun to run by 0.18 s, then the
+  screen stays blank for about 3 s (app) to 4 s (tour). That is the time the
+  modules take to load and run.
+- Apart from the HTML and one stylesheet, everything fetched before the first
+  frame is script. No tile and no scene data is fetched before it.
+- From the modules running to the first frame takes 1.0 to 1.5 s, cold or
+  warm: the renderer starts, then the first frame is drawn.
+- A warm visit takes nothing from the network before its first frame.
+- There is no terminal yet ("—"). `boot:terminal` comes with the boot
+  terminal.
+
 ## 3. Renderer advisor
 
 The phone case that prompted this: Chrome on Android opened the tour from the
@@ -282,9 +345,11 @@ log.
 
 ## Order of work
 
-1. Measure the baseline (section 2, Acceptance).
+1. Measure the baseline (section 2, Acceptance). Done 17 October 2026: see
+   Startup measurements.
 2. Renderer: stop saving a fallback as the preference, and print the fallback
-   in the log. Small, and fixes a real trap.
+   in the log. Small, and fixes a real trap. Done 17 October 2026: see Two
+   defects, fixed first.
 3. Boot terminal, provenance moved out of the HTML, and selector-page
    speculation rules.
 4. One shader chunk (S4), and the unused Babylon modules out of the startup
