@@ -124,7 +124,8 @@ including while history is open, so repeated visits do not accumulate ready noti
 
 The workspace is remembered per device. After a reload each window holds the
 tabs it held, shows the one it showed, and keeps its width and whether it was
-minimized (`src/shell/savedWorkspace.ts`); the sections open inside each tab
+minimized (`ui/src/browser/workspace.ts` and
+`ui/src/windowing/core/workspacePersistence.ts`); the sections open inside each tab
 are remembered the same way (`panelSectionsOpen.ts`). What is saved is the
 layout a wide window on the globe would show: tabs folded onto either side are
 saved on their own sides, and inside a panorama the map's tabs are saved where
@@ -158,6 +159,57 @@ disagree.
   windows fit again.
 - **Middle of the bottom edge, height only**: a split window that spans the
   width, on a phone or as the one open window on a wider screen.
+
+### Maintaining compact window gestures
+
+The shared implementation lives in `ui`, rather than in the app's tab
+composition. Keep these rules when changing it:
+
+- `src/shell/dockLayout.ts` chooses a lone occupied side before any remembered
+  resize or focus preference. `WindowOverlay` checks the logical workspace,
+  with borrowed tabs restored to their homes. Once two windows are folded,
+  pin the presented side to `compactMemory.into`: selecting a borrowed tab
+  must not move the window. An explicit tab drop activates its destination
+  before the updated workspace has rendered.
+- A snapped full-width overlay stores `width: null`. This follows the compact
+  viewport's available width, including the chosen insets, rather than saving
+  the current pixel width. At desktop widths, null still uses the ordinary
+  default window width.
+- `src/windowing/react/panelWidth.ts` calculates from the drag's original
+  side, width and maximum width. Within 24 px of the maximum, retain the
+  original side and use full width. Beyond that zone, switch anchors and use
+  `2 * maximum - requested` as the width. Do not rebase the drag after a side
+  change; reversing one captured gesture must retrace it.
+- `WindowOverlay` keeps component identities independent of their physical
+  slots (`slotOrder`). Keep the same mounted `DockPanel` and grip while the
+  side changes, or the browser loses pointer capture. Compact image rows use
+  CSS order to retain left-before-right presentation after a prior side swap.
+- Save the height before the atomic side-and-width callback. The callback
+  swaps whole workspace slots, clears borrowed-tab memory, and moves the
+  hidden context tabs, context entry marker, pending opens, log home and focus
+  with them. Updating only visible tabs loses the chosen placement when a
+  panorama closes, the browser widens or the page reloads.
+- In compact mode, the opposite launcher mounts only during a tab drag. Pass its
+  active drop state explicitly: it mounted after the drag-start event and
+  cannot rely on hearing that event. Pointer up, cancel, lost capture and
+  unmount must each end a resize at most once, without treating cancellation
+  as a click to minimize.
+
+Side-crossing resize is enabled only for an ordinary stacked overlay. Full-width
+split windows and compact image/surface rows retain their height-only grips. Browser width
+may change fitting and folding; it must preserve the user's edge and
+presentation choices, the screen-bottom HUD, and a lone window's side.
+
+Regression coverage lives in `src/shell/WindowOverlay.grip.test.tsx`,
+`src/shell/dockLayout.test.ts`, `src/windowing/react/DockPanel.resize.test.tsx`
+and `src/windowing/react/panelWidth.test.ts`. The app's
+`src/shell/WindowOverlay.test.tsx` checks the composed host and reload. On
+2026-10-17, 92 Chrome scenarios also checked narrow/wide transitions, both
+sides, inset/flush edges, explicit split, captured-pointer resize and reversal,
+tab drop targets, context transitions and saved placement. The user confirmed
+the resulting gestures by hand. Browser profiles, screenshots and reports are
+local scratch under `ui/build/side-resize/`; the committed tests retain the
+regressions without depending on those artifacts.
 
 ## Paragraph grids, never fixed columns
 
