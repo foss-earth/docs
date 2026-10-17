@@ -27,7 +27,7 @@ prompt that starts an agent on this work.
 | Loading screen | — | None. A campus page is an empty `<div id="root">` until the whole bundle has run |
 | Failure and stall screen | `browserRecovery()` from `@foss-earth/ui/vite`, inline in `<head>`, 45 s stall limit | Built; it is the natural owner of the boot terminal |
 | Log with progress bars | `createGameLog` in `@foss-earth/ui` (`progress: number \| null` per line), map and scene loading lines | Built |
-| Renderer diagnostics | Renderer tab: secure context, `navigator.gpu`, `IsSupportedAsync`, fallback error | Built, but only in the tab: nothing in the log says WebGL was a fallback |
+| Renderer diagnostics | Renderer tab: secure context, `navigator.gpu`, `IsSupportedAsync`, fallback error | Built. Until 17 October 2026 only in the tab: nothing in the log said WebGL was a fallback (now `describeRendererStart`, section 3) |
 | Startup items in the optimization backlog (`docs/optimization-backlog.md`, Loading, network and startup) | S1 (import only the Babylon modules used), S2 (lazy panels), S3 (compile shaders during loading), S4 (fetch only one shader chunk) | Open |
 
 ### Measured: what the Minneapolis page loads before it can draw
@@ -195,18 +195,30 @@ dev server at `http://192.168.0.103:5173`. That origin is not a secure
 context, so `navigator.gpu` is absent and the app silently drew with WebGL.
 The Renderer tab says so, but the log does not, so nobody noticed.
 
-### Two defects to fix in code first
+### Two defects, fixed first (built 17 October 2026)
 
-- **A fallback is saved as the preference.** `createWebGlSelection` in
-  `renderer/src/babylon/createRendererMode.ts` calls
-  `persistWorkingRenderer`, so one failed WebGPU start stores `webgl2` under
-  `foss-earth:renderer-preference`. From then on, automatic mode starts
-  straight in WebGL on that origin and never tries WebGPU again. Save a
-  fallback with its reason and time instead, and try WebGPU again when the
-  reason no longer holds (for example, now a secure context with
-  `navigator.gpu`) or after a few days. Test both paths.
-- **The log says nothing.** Print the fallback, and any advice, into the game
-  log when the renderer starts.
+- **A fallback was saved as the preference.** `createWebGlSelection` in
+  `renderer/src/babylon/createRendererMode.ts` called
+  `persistWorkingRenderer`, so one failed WebGPU start stored `webgl2` under
+  `foss-earth:renderer-preference`, and automatic mode then started straight
+  in WebGL on that origin and never tried WebGPU again. Now only WebGPU is
+  saved as the preference. A failure is saved as a fallback
+  (`foss-earth:renderer-fallback`): the WebGL mode, the reason, the time, and
+  what it depended on (`isSecureContext`, `navigator.gpu`, the user agent).
+  Automatic mode starts WebGL from it without waiting for WebGPU to fail again,
+  and tries WebGPU again once the page is a secure context, `navigator.gpu`
+  appears, the user agent changes, or three days pass
+  (`staleFallbackReason`). A chosen WebGL is no longer saved either, and a
+  `webgl2` or `webgl` preference saved by an earlier build is ignored and
+  removed, so visitors already caught by the old trap get WebGPU back.
+  Switching the Renderer tab back to Auto-detect forgets both.
+- **The log said nothing.** `describeRendererStart` (renderer core) words one
+  line for a start on WebGL, and `createGlobeApp` prints it in the game log,
+  so the app, the tour and 0sfs all show it. It is a warning when WebGPU was
+  wanted and did not start (an insecure page, a saved fallback with the date
+  WebGPU is tried again, a failure with its reason), and information when
+  WebGL is right (a chosen WebGL, a headset, a browser without WebGPU). The
+  Renderer tab also shows a saved fallback's date and its retry date.
 
 ### Advice
 
@@ -230,7 +242,7 @@ the Renderer tab lists them all.
 | Id | When | Says | Fix |
 | --- | --- | --- | --- |
 | `insecure-origin` | Not a secure context, in a Chromium-based browser that ships WebGPU on this platform | WebGL is used because WebGPU needs HTTPS | The HTTPS address, or for a dev server: [WebGPU on a phone](../development.md#webgpu-on-a-phone) |
-| `stale-preference` | Auto mode started WebGL from a saved fallback while `navigator.gpu` is present | WebGL is used from an earlier fallback | Retried automatically once the code fix above lands; until then, Renderer → WebGPU |
+| `stale-preference` | Auto mode started WebGL from a saved fallback while `navigator.gpu` is present | WebGL is used from an earlier fallback | Retried automatically from the date the log gives; sooner: Renderer → WebGPU |
 | `software-gl` | The WebGL renderer string matches SwiftShader, llvmpipe, "Software" or "Basic Render Driver" | The browser draws without the GPU | Turn on the browser's graphics acceleration (in Chrome: Settings → System → "Use graphics acceleration when available") and relaunch |
 | `adapter-blocked` | `navigator.gpu` is present but `requestAdapter()` gives null | This GPU is not on the browser's WebGPU list | Info only. Point to the browser's WebGPU status page (`chrome://gpu`), and don't recommend unsafe flags to visitors |
 | `old-browser` | Safari or iOS before the version that ships WebGPU, or Firefox on a platform where it is not yet on by default | WebGPU arrives with an update | Update the browser or OS |
@@ -239,14 +251,34 @@ the Renderer tab lists them all.
 Check the version thresholds against current browser release notes when this
 is built. They change, and this table was written from memory in October 2026.
 
-One risk to check first: since renderer 7c61ef0 (17 October 2026, the VR
-headset work), automatic mode chooses WebGL on any device that answers
-`navigator.xr.isSessionSupported("immersive-vr")` with true
-(`immersiveVrRequirement` in `renderer/src/babylon/browserRenderer.ts`). It is
-pushed but not deployed yet. Find what Android Chrome on an ordinary phone
-answers before the next deploy, because phones answering true would lose
-WebGPU. If they do, ask for WebGL only when a session is about to start, or
-only on a headset's browser.
+### Phones and `immersive-vr` (checked 17 October 2026)
+
+Since renderer 7c61ef0 (the VR headset work), automatic mode chooses WebGL on
+any device that answers `navigator.xr.isSessionSupported("immersive-vr")`
+with true (`immersiveVrRequirement` in
+`renderer/src/babylon/browserRenderer.ts`). **Chrome on an ordinary Android
+phone answers true.** Chromium registers a Google Cardboard VR runtime on
+every Android build without looking at the device: `enable_cardboard`
+defaults to on for Android on ARM and x86 (`device/vr/buildflags/buildflags.gni`),
+`ChromeXrIntegrationClient` adds a `CardboardDeviceProvider` unless another
+runtime is forced, and its `Initialize` adds the runtime unconditionally
+(`components/webxr/android/cardboard_device_provider.cc`, read at the
+148.0.7778.96 tag). So, on HTTPS, 7c61ef0 would have put every Android phone on
+WebGL.
+
+Fixed before any deploy: on Android, only a headset's browser counts. A
+browser whose user agent names `OculusBrowser`, `PicoBrowser` or `Wolvic`, or
+carries the `VR` token Meta and Samsung use, or whose
+`userAgentData.getHighEntropyValues(["formFactors"])` includes `XR` (Chrome on
+an Android XR headset: `GetFormFactorsClientHint` in
+`components/embedder_support/user_agent_utils.cc`) is a headset. Any other
+Android browser is a phone, and is not asked about immersive VR at all, which
+also saves the query at startup. Other platforms keep the rule: a desktop with
+a PC headset, and Safari on Apple Vision Pro. On a phone the VR tab already
+says to choose WebGL 2 and reload, which is what Cardboard needs. This was
+read from Chromium's source, not tried on a phone: before the next deploy, a
+phone on an HTTPS build should show WebGPU in the HUD and no WebGL line in the
+log.
 
 ## Order of work
 

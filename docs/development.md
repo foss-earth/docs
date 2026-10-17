@@ -121,11 +121,13 @@ knows as text, and `?report` in the address shows it when the app does not stay 
   enter the origin (such as `http://192.168.0.103:5173`), enable it and relaunch Chrome. Remove it
   when done.
 
-A fallback is remembered: the first start without WebGPU saves `webgl2` as that origin's
-renderer preference (`foss-earth:renderer-preference`), and automatic mode keeps using WebGL
-there afterwards. After fixing the origin, choose Settings → Renderer → WebGPU once, or clear the
-site's data. The [startup proposal](proposals/startup-loading.md#3-renderer-advisor) plans to
-retry WebGPU on its own and to say so in the log.
+The log says when the globe draws with WebGL, and why. A failed WebGPU start is remembered for
+that origin with its reason (`foss-earth:renderer-fallback`), so the next start goes straight to
+WebGL; WebGPU is tried again once the page is a secure context, `navigator.gpu` appears, the
+browser changes, or three days pass. Switching Settings → Renderer back to Auto-detect from another
+choice forgets it at once.
+Builds before 17 October 2026 saved the fallback as the preference instead, and kept WebGL for good;
+a newer build ignores that.
 
 ### Developer tools
 
