@@ -355,12 +355,18 @@ renderer knows its language.
 | S1: only the Babylon modules used (`babylonBarrels()`) | renderer `dfbfb8d`, app `b062e0e` | 42 files, 912.6 KiB | 52 files, 921.2 KiB | 108.4 / 108.4 KiB, both at startup |
 | S4: one shader chunk per language | renderer `721f4fa`, `4f061bf` | 42 files, 817.6 KiB | 52 files, 826.2 KiB | 61.9 / 59.7 KiB, one language |
 | React and the tab overlay after the globe starts | app `d0c1211` | 50 files, 752.2 KiB | 52 files, 754.6 KiB | 61.9 / 59.7 KiB |
+| PBR materials told by class name, not `instanceof` | engine `5d0356f`, app `0a48abd` | 45 files, 716.6 KiB (755.0 KiB rebuilt just before) | measured with the next row | 61.9 / 59.7 KiB |
+| Babylon's builders called by name, not through `MeshBuilder` | engine `64c31ed`, renderer `2da3af9`, app `bf2e4a0` | 45 files, 698.1 KiB | 47 files, 700.7 KiB | 61.9 / 59.7 KiB |
 
-So the JavaScript before the first frame is about half what it was (1.43
-MiB to 0.74 MiB on both pages), which meets section 2's first goal. 0sfs's
+So the JavaScript before the first frame is under half what it was (1.43
+MiB to 0.68 MiB on both pages), which meets section 2's first goal. 0sfs's
 flight, which loads its globe in a lazy chunk, went from 82 files and
 2.12 MiB to 64 files and 1.43 MiB with S1 (0sfs `dbfa84e`), and fetches
-63.4 KiB (WGSL) or 60.6 KiB (GLSL) of shaders instead of 195.2 KiB.
+63.4 KiB (WGSL) or 60.6 KiB (GLSL) of shaders instead of 195.2 KiB. Its
+aircraft, exhaust and ground contact packages calling the builders by name
+took another 15.0 KiB brotli (60.3 KiB raw) off the flight's chunks
+(exhaust `194d7fb`, aircraft `6630dff`, ground-contact `9e10d9c`); the
+flight keeps the PBR materials, which its glTF aircraft use.
 
 - **S4.** `babylonShaderChunks()` now makes four groups: the shader store
   alone (the code that compiles shaders imports it), the shaders that code
@@ -387,6 +393,19 @@ flight, which loads its globe in a lazy chunk, went from 82 files and
   download while the globe starts instead of before it: 66 KiB off the
   startup JavaScript. `scripts/check-startup-chunks.mjs` fails the build if
   either is imported statically again.
+- **PBR materials** (38.4 KiB brotli, 5 files). The terrain light plugin
+  asked `instanceof PBRMaterial`, which kept Babylon's PBR materials in the
+  startup graph though only glTF models (3D Tiles, loaded later) use them.
+  It now walks the material's prototypes and compares each class's own
+  `getClassName()`, so it needs no import.
+- **MeshBuilder** (18.4 KiB brotli, 76 KiB raw). Calling
+  `MeshBuilder.CreateSphere` keeps all 23 builders, since the object refers
+  to each. The globe, the compass, the headset tour and the vector debug
+  drawing now import `CreateSphere`, `CreatePlane`, `CreateLines`,
+  `CreateDisc`, `CreateCylinder` and `CreateTube`, which `@babylonjs/core`
+  exports with the same signatures. The rest is left to the panorama
+  viewer, a lazy chunk. `check-startup-chunks.mjs` fails the build if
+  either returns to the startup graph.
 
 Timings for these steps are only indicative so far: they come from smoke
 runs on a machine that other work was using, not an exclusive run.
@@ -407,6 +426,18 @@ globe at 2.47 s.
   85 ms, terrain image decoding on the main thread 61 ms, imagery geometry
   55 ms, the settings panel's sections, controls and number formatting about
   90 ms, the game log 25 ms. The panels are step 5's targets.
+
+Two of those are fixed (scenes `713ae9a`, app `3d90acd`, ui `1ccb7a2`).
+The scenes panel starts off screen (`shown: false`): it restores its saved
+scope and selection at once, but builds its cards only when the Scenes tab
+opens (`setShown`, from the overlay's `onTabVisibility`). The settings
+panel's `formatNumber` made an `Intl.NumberFormat` for every value it
+printed; it now keeps one. Profiled the same way afterwards, the globe came
+at 2.38 s instead of 2.47 s, the first frame 0.69 s after the renderer, of
+which the atmosphere's tables take 208 ms. What is left between the first
+frame and the globe is the engine's terrain and imagery work, spread across
+many functions (terrain image decoding 62 ms, imagery geometry 50 ms, the
+imagery selector 44 ms), and no single panel.
 
 ## 3. Renderer advisor
 
