@@ -34,9 +34,11 @@ source from usable integration and qualified measurements.
 User direction, 17 October: W0's battery/exclusive window does not block Rust
 conversion, functionality parity tests, or switchable JavaScript/WASM A/B
 work. Those proceed independently; power and whole-app performance claims
-still require their own qualified measurements. The latest direction is to
-defer testing and benchmarks for now and focus on Rust/WASM implementation.
-The JavaScript references and opt-in ports remain available for later A/B work.
+still require their own qualified measurements. The current continuation
+authorizes focused functional/browser checks and shared-machine relative A/B
+for the connected paths. The earlier testing pause is historical. The tier and
+shared-memory architecture below describes the target; current app default is
+TypeScript and shared/threaded Rust builds remain absent.
 
 ## Goal
 
@@ -165,15 +167,15 @@ when it finishes: the date, what was measured, and where the evidence is.
 | 0 | In progress, 2026-10-17 | Tuned low route passes simulation at 13.97 m versus 20 m limit; UI/geometry/mask source checks pass; user deferred live window and selected 0% brightness; baseline unqualified | [W0 evidence](../../build/webassembly/W0/2026-10-16/summary.md) |
 | 1 | Not started | | |
 | 2 | Not started | | |
-| 3 | Not started | | |
-| 4 | In progress, 2026-10-17 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress; threaded builds and full qualification pending | [Native source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
-| 5 | In progress, partial slice, 2026-10-17 | Terrarium Rust/WASM decoding wired to the existing worker with selectable tier and fallback; Terrain mesh Rust/WASM core built with opt-in geometry worker ports; existing raster runtime remains TypeScript; new tests deferred by user | [Implementation evidence](../../build/webassembly/W0/2026-10-16/summary.md) |
-| 6 | In progress, numeric core, 2026-10-17 | Rust BVH construction and batched finite-ray queries built; worker generation/lifetime protocol; scene integration, grid walker and frame cache pending; unvalidated | [Implementation handoff](../../build/webassembly/W0/2026-10-16/summary.md) |
-| 7 | In progress, numeric core, 2026-10-17 | Rust GLB envelope/accessor decoding built; worker profile and JPEG ports; Babylon loader/renderer adapter pending; unvalidated | [Implementation handoff](../../build/webassembly/W0/2026-10-16/summary.md) |
-| 8 | In progress, 2026-10-17 | Rust raymarch, fans, irradiance and all three atmosphere table builders compiled; optional worker injection; app wiring/validation pending | [Implementation handoff](../../build/webassembly/W0/2026-10-16/summary.md) |
+| 3 | In progress, 2026-10-18 | Dev/preview isolation only: `crossOriginIsolation()` in app, tour and fly, off unless `FOSS_EARTH_ISOLATION=enforce` (COEP `credentialless` by default). Isolated Earth, tour and fly loaded with 0 blocked requests. Service-worker header injection for deployed pages (GitHub Pages sends none) not done; deployed threaded requests fall back to single with `not-cross-origin-isolated` | [Shared-memory handoff](implementation/webassembly-shared-memory-ui-handoff.md#isolation-and-deployment-todo) |
+| 4 | In progress, 2026-10-18 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress. Compact Component execution UI separates implementation, placement and worker parallelism, with component inheritance and explicit Apply and reload; Components combines settings and real status in expanded titles, with name-only collapsed titles and persistent trailing ? help. Expanded titles join the control grid as its first item; expanded components sort before minimized ones. Components filter live by basemap mode while retaining hidden overrides and reports. Desktop/phone functional checks pass. UI cleanup checkpoint complete for the verified baseline. Sky shared-memory build (atomics, fixed 4 MiB shared memory) with `native.threads`, plan/report `threads`/`sharedMemory`/`threadedFallback`/`shared`, budgeted helpers and a reasoned threaded → single → TS ladder. UI for threads/shared status and full qualification remain | [Native source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
+| 5 | In progress, 2026-10-18 | Terrain targets selectable/parity checked; paired worker placement regressed ~1.8 s, auto TS. Added sparse adopted-grid imagery batches with exact f64/cache/page fallback, 176 dense/sparse cases / 147,110 coordinates; full-grid copies removed. Whole-app A/A drift is 5–5.5 s; no imagery gain qualified, auto TS. Raster auto now TS after slower WASM evidence. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
+| 6 | In progress, 2026-10-18 | Worker TS/WASM BVH build connected to synchronous scene query adapter with immutable index export, current transforms, ties, normals, mutation invalidation and original-picker fallback. 514 actual native/snapshot/reference rays match; index-update invalidation tested. App fixed-ray fixture query cost −40%, both query arms TS; WASM build slower. Raster walker/flight cache retained; representative flight gate remains. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
+| 7 | In progress, 2026-10-18 | TS/WASM Google worker connected through lazy Babylon adapter; hierarchy/material/container lifetime checked. Chrome WebGL2/WebGPU 48 exact pixel cases: 36 actual WASM, 12 explicit ICC-original fallback. EXIF also original. Packing and real Google view/performance gates remain. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
+| 8 | In progress, 2026-10-18 | Selectable worker sky and exact TS star colors with synchronous billboards; full 9,096-star GPU buffers match. Final repeated app mean page task 12.04→7.37 s (−38.8%): placement gain; star batching adds observed −9.1%. WASM sky 7.44 s, no whole-app gain. Shared-memory threaded sky, exact in every arm and integrated in Earth, tour and fly: per-job worker sky work 3.05→1.73–1.83 ms (4 threads), round trip −0.2 to −0.4 ms, no page/frame gain beyond A/A, total sky CPU up. Global default TS. | [Native state](implementation/webassembly-native-state.md#measured-results) |
 | 9 | Not started | | |
 | 10 | Not started | | |
-| 11 | In progress, numeric core, 2026-10-17 | Rust RGB reprojection/sampling/coordinate kernels built; optional preparation ports in three sphere libraries; worker host and validation pending | [Implementation handoff](../../build/webassembly/W0/2026-10-16/summary.md) |
+| 11 | In progress, 2026-10-18 | Bounded exact source windows support unchanged 8192×4096 RGB through actual sphere-image CLI worker preparation. 378 cases / 2,683,584 f32 values and 264 encoded outputs match; peak WASM payload 60.5 MB / memory 95.6 MB. Observed WASM slower; no speed gate complete. Browser direct photos already sample textures on GPU. | [Native state](implementation/webassembly-native-state.md#known-blockers-and-useful-next-work) |
 | 12 | Not started | | |
 
 ## 0. Measure against Google Earth

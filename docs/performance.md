@@ -315,10 +315,11 @@ speedups above.
 `research/scripts/benchmarks/scene-ab` already opens a page with
 `set.renderer.profiling.*`, cross-origin isolation, and a CDP trace.
 Isolation is what makes `performance.now()` finer than 100 µs and what
-`performance.measureUserAgentSpecificMemory` requires. The published apps
-are to be isolated too, with the headers from their service worker, since
-GitHub Pages cannot send them: [WebAssembly builds](proposals/webassembly.md#3-isolation-from-the-service-worker),
-step 3. Until then, isolation is only on the capture harness.
+`performance.measureUserAgentSpecificMemory` requires. The apps' builds are
+isolated too, with the headers from their service worker, since GitHub Pages
+cannot send them: [WebAssembly builds](proposals/webassembly.md#3-isolation-from-the-service-worker),
+step 3, built on 18 October 2026. Until the published apps are deployed with
+it, isolation there is only on the capture harness.
 
 Resource Timing keeps 250 entries unless the page raises the buffer. A long
 tile load can drop entries. The observer does not ask for entries that

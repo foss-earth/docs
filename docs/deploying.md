@@ -73,6 +73,38 @@ different repository and this command does not publish it.
 cd ~/gh/UMN-VR/tour && npm run deploy
 ```
 
+## Cross-origin isolation
+
+The published apps isolate their pages, so the threaded WebAssembly sky can share memory with
+its workers. GitHub Pages cannot send the headers that do it, so the app's service worker adds
+them, and a first visit reloads once to be answered by it
+([app-files.md](https://github.com/foss-earth/ui/blob/main/docs/app-files.md#cross-origin-isolation)).
+A build does this unless `FOSS_EARTH_ISOLATION` says otherwise when it is built: `report-only`
+sends only the report-only headers, which block nothing, and `off` builds the app as it was
+before. Both deploys pass the variable to the build:
+
+```sh
+cd ~/gh/foss-earth/foss-earth.github.io && FOSS_EARTH_ISOLATION=off npm run deploy
+```
+
+After a deploy, check that the page starts with the script and that the worker may isolate:
+
+```sh
+curl -s https://foss-earth.github.io/app/ | grep -o '<script data-foss-earth-isolation="[a-z-]*"'
+curl -s https://foss-earth.github.io/app/foss-earth-sw.js | grep -o '"isolation":"[a-z-]*"'
+```
+
+Both say `enforce`. Then open the app in a browser with the threaded sky asked for,
+<https://foss-earth.github.io/app/?set.native.core.sky=threaded> (the default is still
+TypeScript): the first visit reloads once, the console's `crossOriginIsolated` is `true`, and
+Copy report says
+`Isolation: isolated (crossOriginIsolated true, enforce, setting on, after one reload)`, and
+its `Component execution:` line gives the sky's `actual` as `threaded (worker)`. On the tour
+the same holds for <https://umn-vr.github.io/tour/twin-cities/?set.native.core.sky=threaded>.
+A browser that cannot be isolated, as a private window without service workers, starts at
+once without the reload, the sky runs single-threaded, and the report says why. A visitor can
+turn isolation off in Settings → App files → Cross-origin isolation.
+
 ## When the page is blank
 
 Asset URLs in `app/dist/index.html` must start with `/app/`. That base is set

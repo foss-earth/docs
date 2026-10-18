@@ -1,6 +1,10 @@
 # Fresh-agent prompt: finish the useful Rust/WASM paths for A/B
 
-Prepared 17 October 2026. Start the new conversation in
+Prepared 17 October 2026. A session has since worked this prompt: to continue
+from where it stopped, use the [resume prompt](webassembly-ab-resume.md)
+instead. This assignment's scope and constraints still apply.
+
+Start the new conversation in
 `/Users/felg/gh/foss-earth` or `/Users/felg/gh/0sfs`, then paste the prompt below.
 The linked state documents preserve the implementation knowledge; the previous
 chat is not required. These are local working-tree documents, not committed or
