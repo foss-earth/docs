@@ -133,3 +133,4 @@ held by a gesture:
 - **Never on 2-finger sphere swipes:** Because a two-finger trackpad swipe in a
   360 sphere is an unanchored angular impulse, it hides any existing marker and
   never displays one.
+

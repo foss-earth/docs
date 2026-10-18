@@ -213,10 +213,34 @@ regressions without depending on those artifacts.
 
 ## Paragraph grids, never fixed columns
 
-Lay out every set of controls (toggles, chips, buttons, short fields, cards) as a
-**paragraph grid**: each item at its own natural width, placed left to right,
-wrapping onto the next line when the row is full, the way words wrap in a
-paragraph.
+Arrange controls and explanation as compactly as practical. Prefer natural
+widths, short labels and shared rows; do not add empty space, padding, repeated
+text, one-control-per-line blocks or extra action buttons without a need.
+A paragraph grid is often the right layout: items fill the available line and
+wrap together when it runs out. Choose it when it saves space while preserving
+readability, meaningful grouping, keyboard/focus and usable hit targets.
+Compactness is a default design requirement, not an optional polishing pass.
+
+Use a **paragraph grid** by default for compact groups of controls (toggles,
+chips, buttons, short fields, cards): each item at its natural width, placed
+left to right and wrapping when the line is full, the way words wrap in a
+paragraph. Choose another arrangement when it reads more naturally or improves
+meaningful grouping and interaction.
+
+For an expanded component or small control group, its title is the **first
+naturally sized item in that same paragraph grid**, followed by the controls.
+Let controls sit beside the title when they fit and wrap in reading order when
+they do not. Do not reserve a separate full-width header row or body gap for
+these titles. Keep disclosure semantics, keyboard access and trailing help.
+**Full section headings are the exception:** they may retain a separate row
+above the section body. This distinction applies by default throughout the UI.
+
+For paragraph grids containing expandable/minimizable components, override the
+visual order to show **expanded items first, then minimized items** by default.
+Keep the original relative order within each group. Use the current expansion
+state (for example, `order: -1` on an open component), without recreating items,
+losing focus or resetting controls. This grouping does not move full sections
+around or change their separate heading treatment.
 
 ```css
 .group {
@@ -243,16 +267,119 @@ sprite size tuner". Equal columns give every item the same share, which leaves
 empty space beside short labels, cuts long ones off, and stops at the column count
 however much room is left on the line.
 
-Something that needs the whole width takes a whole line, as a paragraph break
-does: a group heading (`flex-basis: 100%`), a slider, a text field that needs
-room, a sentence of explanation, or a nested paragraph grid such as the
-sensitivity cards.
+Only something that needs the whole width takes a whole line, as a paragraph
+break does: a full section heading, a continuous track, a text field that needs
+room, or essential explanatory text. A nested grid may take the whole width
+when its content needs it; its component title still starts its own paragraph
+flow rather than forcing a separate header row.
 
-A toggle in a paragraph grid is a pill: the checkbox and its label in one rounded
-chip (`.settings-checkbox`), outlined in the accent colour while it is on. A
-choice of one among several is the same pill around a radio button
-(`.foss-earth-choice`, built by `createChoiceGroup`), as in the Map and Renderer
-tabs.
+Independent toggles and mutually exclusive choices keep their different
+semantics. Mutually exclusive choices use the compact segmented design below;
+do not render them as separate checkbox/radio pills.
+
+Each logical component placed in a paragraph grid has its **own compact rounded
+rectangle** by default, so its label, control and help read as one group.
+Component overrides each have their own rounded enclosure, including when
+collapsed. Inside a group, all segments of one choice stay together in the
+slider's single track; this does not mean a separate enclosure around every
+segment. Use natural widths and minimal padding, and preserve the visible
+boundary when groups wrap. Do not replace these groups with unbounded text
+scattered across the paragraph or with only a top separator.
+
+### Compact segmented choices
+
+This is the default design for every discrete choice control in every host app.
+The user explicitly requires compact text segments inside **one rounded
+rectangle**, with selection shown by the segment's fill and inset outline.
+It must not become a collection of separate pills or visible radio circles.
+
+- One container sizes itself to its text. Its adjacent segments have natural
+  widths; never stretch them to equal columns or across the panel. Use the
+  existing 2 px inner track padding, 8 px outer radius, 6 px segment radius,
+  1 px by 5 px segment padding and 22 px segment minimum height. Selection uses
+  fill plus an inset outline, with light/dark contrast and visible focus.
+- Button text is as short as possible while remaining understandable. Component
+  modes are **Global / Auto / Manual**. Inherited fields say **Global**, never
+  **Use global settings**, **As global settings**, or a sentence. Prefer **WASM**,
+  **Default / Workers**, and **1 worker / Pool** where the control's label gives
+  the context. Put explanation in help text and fuller accessible names when
+  needed. Do not repeat the heading inside every segment. Use digits for counts
+  (**1 worker**, not **One worker**).
+- Implementation choices use their technology colors when selected: TypeScript
+  blue (`#3178c6`) and WebAssembly purple (`#654ff0`), with white text. Unselected
+  choices stay neutral. Apply this to global and component implementation fields
+  in both light and dark themes; other settings keep their ordinary accent.
+  Component containers also use the **actual running** implementation color for
+  their outline and a light translucent fill, expanded or collapsed. Pending
+  choices do not recolor an active service. Mixed TS/WASM uses both colors;
+  not-started, starting and unavailable status stays neutral.
+- Arrange label text and the control in the order that reads naturally as a
+  phrase. Usually the label comes first: **Implementation [TS / WASM] ?** reads
+  better than **[TS / WASM] Implementation ?**. This is a reading guideline,
+  not a fixed DOM/CSS order for every parameter: text may precede and follow
+  a control when that makes grammatical sense (for example a quantity and its
+  unit). Do not enforce a universal slider-first or label-first layout.
+  Keep the phrase in one natural-width wrapping row when it fits; **?** is
+  the **last item**. Do not give headings or
+  short controls an unnecessary full row. Related segments remain inside the
+  same container when a narrow width requires wrapping; never split them into
+  unrelated pills, clip labels or add horizontal scrolling.
+- There is **no separate source-link button/icon in the control row**. Put the
+  existing source-link **icon** inline at the end of the **?** tooltip's text,
+  like a final character, with the description, default/reason, current value,
+  provenance, setting ID, limits and restart/pending behavior. The tooltip holds
+  explanation and links, not another copy of the control.
+- Use existing recognizable **icons** for familiar actions by default, rather
+  than replacing an icon with verbose visible text. A source link keeps its
+  external-link icon inside help; do not label it “Source code” or a full file
+  path. Give icon actions a full accessible name and hover title. Use visible
+  words for the actual setting choices (Global/Auto/Manual, etc.) and when an
+  icon would be ambiguous; compactness must preserve meaning and keyboard access.
+- Use a compact **?** button by default for supplementary information,
+  diagnostics and long explanations. Do not introduce wordy **Details** or
+  **More info** actions for the same purpose. Keep help last in its title/row,
+  visible even when its component is collapsed, and ensure opening help does
+  not expand/collapse that component. Do not repeat descriptions, scope, architecture, caveats or rationale
+  under every control. Show text immediately only when proper UX requires it:
+  a current error/fallback, unavailable capability, pending/apply state, or a
+  short instruction needed to make a correct decision. Keep visible messages
+  terse and put the full explanation behind the action. Never hide information
+  someone must see to understand the current state or avoid a mistake.
+- Preserve native mutually exclusive radio behavior, keyboard arrows, focus,
+  accessible names and disabled semantics. Native inputs may be visually clipped
+  to 1 px; never use `display:none`, `hidden` or `aria-hidden` to remove the
+  interactive inputs from keyboard or assistive technology. The selected fill
+  replaces the visible radio glyph. Disabled choices explain their limitation.
+- Reuse `createChoiceGroup` and the shared compact-choice styles in `ui`, or the
+  standard parameter control that uses the same track. The shared container is
+  `.foss-earth-parameter__pills` under `.foss-earth-parameter--compact-choice`;
+  `.foss-earth-choice` labels are its segments. Do not copy a per-app variant.
+  Continuous numeric/range tracks retain their existing semantics.
+- Protect the shared factory and real rendering: one container, one selected
+  segment, hidden glyphs, keyboard/focus, disabled states, credit links, compact
+  labels, last help button, source inside help, narrow widths and both themes.
+  When changing a setting's behavior, preserve these design checks; changing its
+  value or backend must not accidentally rebuild it as separate radio pills.
+
+The [app-wide cleanup assignment](proposals/implementation/ui-compact-controls-handoff.md)
+carries these rules into a fresh conversation and defines the audit/verification
+scope for the remaining panels.
+
+Cleanup tracking (18 October 2026):
+
+- [x] Make shared `createChoiceGroup` use the same compact segmented track as
+  standard parameter choices, fixing the Renderer API choice at its shared UI
+  source rather than introducing a renderer-only lookalike. Browser verification
+  is recorded with Component execution evidence.
+- [x] Component execution: short Global/Auto/Manual and field labels, compact
+  track, last help button, inline source icon inside help, no empty stable-state
+  banner. Components combines running status and per-component settings; long
+  explanations remain behind **?**.
+- [ ] Audit remaining manually built radio/pill groups in Map, Sky, Interface,
+  host-specific panels and legacy compatibility controls. Convert one-choice
+  groups to the shared factory without changing selected values or behavior.
+- [ ] Check remaining custom help rows for a leading **?** or separate source
+  button. Move help last and source into its tooltip; preserve focus/keyboard.
 
 ### Dropdowns fit their own text
 
@@ -396,19 +523,20 @@ Every setting lives in exactly one place, a section of a tab.
   every section of their tab a host's parameters are homed in, such as 0sfs's
   Renderer → Instruments, so a host never builds a second copy of the tab.
 - Controls are drawn from the parameter's kind, and each has one
-  implementation: a switch is a pill with a checkbox; a choice is a heading and
-  pills; a number is a value track with its readout as a field, the default
-  ticked and any named values ("Off", "Normal") as pills; discrete priorities use
+  implementation: independent switches retain their boolean semantics; a choice
+  is a compact segmented control; a number is a value track with its readout as
+  a field, the default ticked and any named values ("Off", "Normal") as compact
+  segments; discrete priorities use
   compact numeric fields; a range is a range
-  track; text is a field, never showing a secret. Beside each control are a
-  `?` button, label and source-link icon, at their own widths in that order in
-  the same wrapping row. Controls precede text so changing label lengths cannot
-  move their buttons in a single-column view. A custom priority field comes
-  before the visibility buttons; the source icon stays last. `?` opens an
-  explanation tooltip with the description,
+  track; text is a field, never showing a secret. Text and controls form a
+  compact, naturally reading phrase, with `?` **last**. Source links belong inside
+  that tooltip; never add a separate source-link button. A custom priority field
+  comes before the visibility segments. `?` opens an explanation tooltip with
+  the description,
   default and its reason, current value and provenance, parameter ID, limits
   and restart notes. It closes on another click, Escape or a click outside.
-  The tooltip contains explanation only; the setting keeps its single home.
+  The tooltip contains explanation and its inline source icon; the setting
+  keeps its single home.
   Hosts use `createHelpTooltip` from the public `foss-earth/shell` export for the
   same behavior. Its `label` is the button's complete accessible name, `content`
   is the explanation HTMLElement, and optional `onOpen` refreshes that text when
@@ -422,7 +550,7 @@ Every setting lives in exactly one place, a section of a tab.
   to a panel before that panel collapses or detaches, while leaving another
   panel's explanation alone.
   An invalid edit opens its explanation so the rejection is visible. The source
-  icon retains its accessible name and opens the code in a new tab. Per-setting
+  link inside that explanation has an accessible name and opens in a new tab. Per-setting
   reset buttons are removed; Reset all remains in the section's transfer controls.
 - A quantity that comes round again, the time of day or the day of the year, is a
   dial (`createDial` in `src/shell/dial.ts`): a knob on a ring, which a press on the
@@ -461,6 +589,58 @@ Every setting lives in exactly one place, a section of a tab.
   its edges, and with many tabs the + sits at the strip's right end, so a menu
   drawn inside the panel was cut off there and the globe or a panorama showed in
   its place.
+
+## Settings describe one decision and its current effect
+
+Use names people recognize from the work being configured. Sky, terrain and
+Google tiles are **components**; call their individual settings **Component
+overrides**. Reserve CPU core and thread for hardware/execution concepts. A
+user-facing name must explain the purpose without knowledge of an internal
+package name such as `native`.
+
+A control answers one question. Execution policy (Auto or Manual), implementation
+(TypeScript or WebAssembly), placement (main thread or background workers) and
+parallelism are different decisions. Do not encode their combinations as one
+ordered performance scale. A background worker runs on another thread with
+either implementation; several independent worker instances and one shared-memory
+computation pool are different architectures. Describe their scope explicitly.
+Keep memory ownership an implementation detail unless choosing it helps the
+person make a meaningful decision. Show unsupported combinations with a reason;
+a future threaded backend must not look like an available faster setting.
+
+Offer a global default and component overrides that explicitly inherit it.
+Automatic choices explain what is currently selected. Keep timing, parity,
+payload and other diagnostic detail secondary to the controls and a readable
+summary of what is running.
+
+A saved selection and a running service are separate states. Apply a change live
+when its resource lifecycle supports it. Otherwise, immediately show **Changes
+pending** beside the affected setting and an explicit action such as **Apply and
+reload**. Identify what is running now and what will run after that action; a
+footnote or help tooltip alone is insufficient. Clear the pending state only
+when the new configuration is active. Report a fallback with its reason, and
+distinguish it from pending changes and a component with no work yet.
+
+The 18 October 2026 execution-settings feedback is recorded in the
+[native state document](proposals/implementation/webassembly-native-state.md#execution-settings-feedback-18-october-2026).
+The user selected **Component execution**. Its sections are Global defaults and
+Components. Each component combines its settings and real running status, with
+diagnostics behind the trailing **?** button. A collapsed component shows only
+its name and **?**; an expanded title reads, for example, **Terrain heights: TS
+(2 workers) ?** or **Terrain geometry: TS (main) ?**. Show actual measured
+execution once in the title, without a duplicate Running line. Preserve mixed
+worker/main execution and fallback information. Separate manual choices and visible
+Apply and reload behavior implement these requirements; shared-memory WASM
+threading remains unavailable.
+
+Show only components relevant to the selected map mode, updating immediately
+when `map.source.basemap` changes. Raster basemaps show Terrain heights, Terrain
+geometry and Imagery heights; Google 3D Tiles shows Google tile preparation.
+Sky and Ground spatial index are shared and remain visible in both modes (finite
+ray queries use the ground pipeline for either surface). Preserve hidden
+components' overrides, expansion state and complete diagnostic reports. Close
+help belonging to an item that becomes hidden and move focus to a visible control
+if necessary; changing the map must not discard pending execution choices.
 
 ## A control uses its input or passes it on
 
