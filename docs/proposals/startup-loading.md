@@ -1,7 +1,7 @@
 # Startup: instant feedback, a boot terminal, code on demand
 
 Status: proposal, 17 October 2026, being built in its order of work (steps 1
-to 4 are built, step 6 is begun). Nothing below is built yet unless it says so. It covers four
+to 5 are built, step 6 is begun). Nothing below is built yet unless it says so. It covers four
 requests that share one goal, a FOSS Earth page that
 answers a click at once and is in its 3D scene as early as possible:
 
@@ -110,6 +110,42 @@ An idle queue, started on the scene's first settled frame, prefetches the
 Engine features such as the compass center ball keep their own `import()`,
 because the engine does not depend on the app; the app can still list the
 engine's chunk for prefetch through the same plugin.
+
+**Built 17 October 2026** (app `2a7f04a`, ui `6d8ae31`, the tour
+`593b3ecad`), with these changes from the proposal:
+
+- The map is not a virtual module but a JSON
+  `<script id="foss-earth-lazy-features">` in each built page, like the shader
+  chunks' map: `lazyFeatures()` in `foss-earth/vite` finds the
+  `defineLazyFeature({ id: "…", …, load: () => import("…") })` calls as it
+  transforms the code, resolves each import, and in `transformIndexHtml` walks
+  the bundle from the page's entry. Each page lists the features it can load,
+  with only the chunks it does not already load, and their size. So `id` and
+  `load` must be literals at the call.
+- A feature names the tabs it belongs to (`tabs: ["controls"]`), and intent
+  is the pointer or focus reaching an element with that `data-tab-id`: the
+  overlay's tab buttons and the + menu's items carry it. An `idle` feature is
+  fetched on intent too.
+- The queue adds one `modulepreload` at a time, intent ahead of idle, idle
+  ones in `requestIdleCallback` (5 s timeout). It starts at `boot:settled`,
+  waits while the page is hidden, and does nothing under `saveData` or 2G.
+- On a `?dev=1` page the game log says "Loaded the pose editor (33 KB)".
+
+On it so far:
+
+- The controller bindings editor (`@felipegalind0/gamepad-tools/ui`, 16 KB),
+  `intent` on the Controls tab. It was mounted at startup; it now mounts the
+  first time that tab is shown.
+- The pose editor (32 KB, 2 files), `idle` and `devOnly`.
+- The scene thumbnails (2 KB), `intent` on the Scenes tab.
+
+Left out, and why: the panorama viewer and its tabs are created at startup
+because restoring a saved scene needs them; the bug report and date and time
+panels hand their elements to the overlay as it starts, and would save about
+3 to 4 KiB brotli each; the Dev tab's views already mount only while it is
+open. The startup JavaScript went from 698.1 to 695.1 KiB brotli on the app
+and from 700.7 to 697.5 KiB on the tour. 0sfs builds its own page around the
+flight and names no features yet, so it needs no plugin.
 
 ### Two kinds of developer tool
 
@@ -357,6 +393,7 @@ renderer knows its language.
 | React and the tab overlay after the globe starts | app `d0c1211` | 50 files, 752.2 KiB | 52 files, 754.6 KiB | 61.9 / 59.7 KiB |
 | PBR materials told by class name, not `instanceof` | engine `5d0356f`, app `0a48abd` | 45 files, 716.6 KiB (755.0 KiB rebuilt just before) | measured with the next row | 61.9 / 59.7 KiB |
 | Babylon's builders called by name, not through `MeshBuilder` | engine `64c31ed`, renderer `2da3af9`, app `bf2e4a0` | 45 files, 698.1 KiB | 47 files, 700.7 KiB | 61.9 / 59.7 KiB |
+| Step 5: the controller bindings editor on demand | app `2a7f04a`, ui `6d8ae31`, the tour `593b3ecad` | 695.1 KiB | 697.5 KiB | 61.9 / 59.7 KiB |
 
 So the JavaScript before the first frame is under half what it was (1.43
 MiB to 0.68 MiB on both pages), which meets section 2's first goal. 0sfs's
@@ -545,7 +582,9 @@ log.
 4. One shader chunk (S4), and the unused Babylon modules out of the startup
    graph (start of S1). Done 17 October 2026: see Startup measurements.
 5. `defineLazyFeature`, the chunk-map plugin and the idle queue. Move the
-   pose editor, the closed panels and the Dev tab's views onto it (S2).
+   pose editor, the closed panels and the Dev tab's views onto it (S2). Done
+   17 October 2026, with the panels that restoring a scene needs left at
+   startup: see Code on demand and idle prefetch.
 6. The empty scene first: the boot chunk split. Begun 17 October 2026 with
    the presentation probe skipped once passed, and React and the tab overlay
    loaded while the globe starts.
