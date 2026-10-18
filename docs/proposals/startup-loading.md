@@ -1,7 +1,7 @@
 # Startup: instant feedback, a boot terminal, code on demand
 
 Status: proposal, 17 October 2026, being built in its order of work (steps 1
-to 5 are built, step 6 is begun). Nothing below is built yet unless it says so. It covers four
+to 5 and 7 are built, step 6 is begun). Nothing below is built yet unless it says so. It covers four
 requests that share one goal, a FOSS Earth page that
 answers a click at once and is in its 3D scene as early as possible:
 
@@ -502,7 +502,8 @@ The Renderer tab says so, but the log does not, so nobody noticed.
   Switching the Renderer tab back to Auto-detect forgets both.
 - **The log said nothing.** `describeRendererStart` (renderer core) words one
   line for a start on WebGL, and `createGlobeApp` prints it in the game log,
-  so the app, the tour and 0sfs all show it. It is a warning when WebGPU was
+  so the app and the tour show it, and 0sfs since step 7 (`b584ff7`), which
+  starts its own app. It is a warning when WebGPU was
   wanted and did not start (an insecure page, a saved fallback with the date
   WebGPU is tried again, a failure with its reason), and information when
   WebGL is right (a chosen WebGL, a headset, a browser without WebGPU). The
@@ -536,8 +537,42 @@ the Renderer tab lists them all.
 | `old-browser` | Safari or iOS before the version that ships WebGPU, or Firefox on a platform where it is not yet on by default | WebGPU arrives with an update | Update the browser or OS |
 | (none) | A WebXR requirement chose WebGL (headset) | Nothing: WebGL is right there | — (test that no advice is given) |
 
-Check the version thresholds against current browser release notes when this
-is built. They change, and this table was written from memory in October 2026.
+**Built 17 October 2026** (renderer `b782380`, app `e41a900`, 0sfs `b584ff7`).
+`adviseRenderer` and `identifyBrowser` are in `renderer/src/rendererAdvice.ts`;
+`reportRendererStart` (app, exported from `foss-earth/shell`) reads the facts,
+prints the log lines and returns the advice for `createRendererPanel`'s
+`advice`. The app, the tour and 0sfs's flight all call it. Changes from the
+proposal:
+
+- The GPU's name is Babylon's `engine.getInfo().renderer`: WebGL's unmasked
+  renderer, or the WebGPU adapter's architecture. `software-gl` also matches
+  `lavapipe`, `softpipe` and "Software Rasterizer". It is the one advice
+  given whatever the renderer, a chosen WebGL included.
+- Advice that explains the WebGL replaces the start line; `software-gl` is
+  printed beside it. "How to fix" opens the line in place to show the steps,
+  with "Open the guide" where the advice has one. "Don't show again" saves
+  the id under `foss-earth:renderer-advice-dismissed`, for every later visit.
+- `insecure-origin` is given for any browser that has WebGPU on its
+  platform, not only Chromium, since every one hides `navigator.gpu` on an
+  insecure page. On a private address or a `.local` name it points to
+  [WebGPU on a phone](../development.md#webgpu-on-a-phone); elsewhere to the
+  page's `https://` address.
+- `adapter-blocked` is `navigator.gpu` present and `IsSupportedAsync` false;
+  it names `chrome://gpu` or Firefox's `about:support`.
+- `old-browser` uses these thresholds, checked on 17 October 2026 against
+  the [gpuweb implementation status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status)
+  and the browsers' notes: Chrome 113 on Windows, macOS and ChromeOS, 121 on
+  Android, some GPUs only on Linux (144 Intel Gen12 and newer, 147 NVIDIA
+  under Wayland, so Linux gets no version advice); Safari 26 on macOS and iOS
+  (every iOS browser is WebKit); Firefox 141 on Windows and 145 on macOS
+  (Apple silicon on macOS 26). Firefox on Linux and Android has no WebGPU by
+  default yet, and is told so. Chrome's reduced user agent always says
+  Android 10, so Android before 12, where Chrome has no WebGPU, is not
+  advised.
+
+A headless run of a built tour showed it end to end: at `http://campus.local`
+the warning, its steps and guide, and after "Don't show again" nothing on the
+next visit; on SwiftShader, `software-gl` beside the start line.
 
 ### Phones and `immersive-vr` (checked 17 October 2026)
 
@@ -588,4 +623,5 @@ log.
 6. The empty scene first: the boot chunk split. Begun 17 October 2026 with
    the presentation probe skipped once passed, and React and the tab overlay
    loaded while the globe starts.
-7. The renderer advisor's rules and the log entries.
+7. The renderer advisor's rules and the log entries. Done 17 October 2026:
+   see Advice.
