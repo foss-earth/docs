@@ -61,12 +61,12 @@ the middle of the shutdown, and Chrome dies before it starts the cleanup helper.
 
 ## Checking and clearing
 
-On the maintainer's Mac, the `chrome-clones` Claude Code skill does both, and is safe to run
-while Chrome is open:
+[`scripts/chrome-clones.sh`](https://github.com/foss-earth/browser-testing/blob/main/scripts/chrome-clones.sh)
+in browser-testing does both, and is safe to run while Chrome is open:
 
 ```sh
-~/.claude/skills/chrome-clones/chrome-clones.sh          # list the clones, mark the stranded ones
-~/.claude/skills/chrome-clones/chrome-clones.sh --clean  # remove the stranded ones
+~/gh/foss-earth/browser-testing/scripts/chrome-clones.sh          # list the clones, mark the stranded ones
+~/gh/foss-earth/browser-testing/scripts/chrome-clones.sh --clean  # remove the stranded ones
 ```
 
 A running Chrome holds no open file in its clone, so the script matches by time: it keeps
@@ -74,7 +74,7 @@ every clone born within ten minutes after a running browser started and removes 
 The maintainer wants stranded clones cleared without being asked. Run `--clean` after any
 run of the installed Chrome that you stopped or that timed out, whoever's clones they are.
 
-Without the skill, count them:
+Without the script, count them:
 
 ```sh
 ls "$(getconf DARWIN_USER_TEMP_DIR)../X/com.google.Chrome.code_sign_clone" | wc -l
