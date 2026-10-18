@@ -25,6 +25,16 @@ The first two could be static builds of each library hosted at fixed URLs (for
 example on GitHub Pages, one per LTS release and one for `main`), which the app
 loads through an import map instead of from `node_modules`.
 
+## Terrain LOD priority and proximity decoupling
+
+When orbiting or looking toward the horizon, low-LOD tiles lingering on screen and
+safe-space upward jolts over low-detail terrain occur due to coupled quadtree metrics,
+coarse stand-in overwrites, and aggressive LRU eviction. An opt-in mitigation exists
+under `map.terrain.robustOrbitLOD`. The architecture to decouple visible view detail
+from under-eye proximity detail, enforce independent LOD floors, and separate the
+3D renderer detail slider from proximity settings is in
+[proposals/terrain-view-proximity-priority-lod.md](proposals/terrain-view-proximity-priority-lod.md).
+
 ## Performance
 
 The JavaScript speedups, the proof they match the shipped pixels, the
