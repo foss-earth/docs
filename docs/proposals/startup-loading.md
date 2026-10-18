@@ -622,6 +622,14 @@ log.
    startup: see Code on demand and idle prefetch.
 6. The empty scene first: the boot chunk split. Begun 17 October 2026 with
    the presentation probe skipped once passed, and React and the tab overlay
-   loaded while the globe starts.
+   loaded while the globe starts. Its first goal is met: 0.68 MiB of
+   JavaScript before the first frame, from 1.44 MiB. What is left before the
+   first frame, largest first: on a first visit and after each browser
+   update, the WebGPU presentation probe (about 0.42 s; skipping it there too
+   would trade it for a reload on the rare device whose WebGPU cannot
+   present); the atmosphere's tables (about 0.21 s at 4× slowdown, in the
+   WebAssembly work, or shipped precomputed by the build); and running the
+   entry chunk itself (475 KiB brotli, 1.9 MB), whose panels the profile
+   no longer singles out.
 7. The renderer advisor's rules and the log entries. Done 17 October 2026:
    see Advice.
