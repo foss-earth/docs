@@ -1,7 +1,7 @@
 # Startup: instant feedback, a boot terminal, code on demand
 
 Status: proposal, 17 October 2026, being built in its order of work (steps 1
-to 3 are built). Nothing below is built yet unless it says so. It covers four
+to 4 are built, step 6 is begun). Nothing below is built yet unless it says so. It covers four
 requests that share one goal, a FOSS Earth page that
 answers a click at once and is in its 3D scene as early as possible:
 
@@ -29,7 +29,7 @@ prompt that starts an agent on this work.
 | Failure and stall screen | `browserRecovery()` from `@foss-earth/ui/vite`, inline at the start of `<body>` after the boot terminal (in `<head>` until 17 October 2026), 45 s stall limit | Built; its offers show inside the boot terminal while it is there |
 | Log with progress bars | `createGameLog` in `@foss-earth/ui` (`progress: number \| null` per line), map and scene loading lines | Built |
 | Renderer diagnostics | Renderer tab: secure context, `navigator.gpu`, `IsSupportedAsync`, fallback error | Built. Until 17 October 2026 only in the tab: nothing in the log said WebGL was a fallback (now `describeRendererStart`, section 3) |
-| Startup items in the optimization backlog (`docs/optimization-backlog.md`, Loading, network and startup) | S1 (import only the Babylon modules used), S2 (lazy panels), S3 (compile shaders during loading), S4 (fetch only one shader chunk) | Open |
+| Startup items in the optimization backlog (`docs/optimization-backlog.md`, Loading, network and startup) | S1 (import only the Babylon modules used), S2 (lazy panels), S3 (compile shaders during loading), S4 (fetch only one shader chunk) | S1 and S4 built 17 October 2026 (Startup measurements); S2 and S3 open |
 
 ### Measured: what the Minneapolis page loads before it can draw
 
@@ -342,6 +342,72 @@ What this shows:
   with no tile missing from the opening view means every tile of it, down to
   the finest, has arrived over Fast 4G.
 
+**Step 4 (S1 and S4) and the first of step 6, 17 October 2026.** Bytes are
+from the built pages, brotli at quality 11. "Startup" is the entry script
+plus its preloads, the JavaScript that has to arrive before the app's code
+runs. "Shader JS" is what a renderer fetches for its language: before S4
+both chunks loaded at startup, after it one does, preloaded once the
+renderer knows its language.
+
+| Build | Commits | App `/app/` startup | Tour `/tour/minneapolis/` startup | Shader JS (WGSL / GLSL) |
+| --- | --- | --- | --- | --- |
+| Before S1 | app `e12a91d` | 69 files, 1461.6 KiB | 71 files, 1462.3 KiB | 194.6 / 194.6 KiB, both at startup |
+| S1: only the Babylon modules used (`babylonBarrels()`) | renderer `dfbfb8d`, app `b062e0e` | 42 files, 912.6 KiB | 52 files, 921.2 KiB | 108.4 / 108.4 KiB, both at startup |
+| S4: one shader chunk per language | renderer `721f4fa`, `4f061bf` | 42 files, 817.6 KiB | 52 files, 826.2 KiB | 61.9 / 59.7 KiB, one language |
+| React and the tab overlay after the globe starts | app `d0c1211` | 50 files, 752.2 KiB | 52 files, 754.6 KiB | 61.9 / 59.7 KiB |
+
+So the JavaScript before the first frame is about half what it was (1.43
+MiB to 0.74 MiB on both pages), which meets section 2's first goal. 0sfs's
+flight, which loads its globe in a lazy chunk, went from 82 files and
+2.12 MiB to 64 files and 1.43 MiB with S1 (0sfs `dbfa84e`), and fetches
+63.4 KiB (WGSL) or 60.6 KiB (GLSL) of shaders instead of 195.2 KiB.
+
+- **S4.** `babylonShaderChunks()` now makes four groups: the shader store
+  alone (the code that compiles shaders imports it), the shaders that code
+  imports statically (such as the WebGPU clear quad) which load with Babylon,
+  and one lazy chunk per language. The page names the language chunks in a
+  JSON `<script id="babylon-shader-chunks">`, and the renderer adds a
+  `modulepreload` for its language as soon as it knows it (WGSL after
+  `IsSupportedAsync`, GLSL when it creates a WebGL engine). Babylon's WebGPU
+  engine fetches glslang and twgsl only when it must translate GLSL, which
+  the globe never asks, so they cost nothing at startup.
+- **The WebGPU presentation probe, skipped once it has passed** (renderer
+  `70c13ac`). Every WebGPU start drew three frames on an offscreen canvas and
+  waited four more and 75 ms for a presentation error, about 0.42 s before
+  the first frame, so that a broken WebGPU could still fall back to WebGL on
+  the page's canvas. A pass is now remembered per browser
+  (`foss-earth:renderer-webgpu-verified`: the options, the user agent, the
+  time) for 30 days. A start with the same options and browser skips the
+  probe and watches the page canvas's first frames instead; a presentation
+  error there forgets the record and reloads, so the next start probes again
+  and can fall back. Auto-detect in the Renderer tab forgets it too. The first
+  visit, and the first after a browser update, still pay the probe.
+- **React and the tab overlay** (app `d0c1211`) are imported with `import()`
+  when `mountGlobeApp` starts, and awaited after `createGlobeApp`, so they
+  download while the globe starts instead of before it: 66 KiB off the
+  startup JavaScript. `scripts/check-startup-chunks.mjs` fails the build if
+  either is imported statically again.
+
+Timings for these steps are only indicative so far: they come from smoke
+runs on a machine that other work was using, not an exclusive run.
+
+**Where the time goes after the modules run.** A CPU profile of a warm
+`/tour/minneapolis/` visit at 4× slowdown, with source maps, on WebGPU with
+the probe skipped: `boot:renderer` at 0.22 s, the first frame at 0.96 s, the
+globe at 2.47 s.
+
+- Renderer to first frame (0.74 s): the atmosphere's tables
+  (`sky/src/atmosphere.ts`) take 233 ms on the main thread, the terrain mesh
+  59 ms, Babylon's WebGPU buffers 55 ms, garbage collection 35 ms. The
+  atmosphere is already in the WebAssembly work's scope (native atmosphere
+  tables in workers, `implementation/webassembly-ab-handoff.md`), and
+  `createAtmosphereFromTables` would also let a build ship them precomputed.
+  That is the largest single cost left before the first frame.
+- First frame to globe (1.51 s): the scenes panel (`scenes/src/panel.ts`)
+  85 ms, terrain image decoding on the main thread 61 ms, imagery geometry
+  55 ms, the settings panel's sections, controls and number formatting about
+  90 ms, the game log 25 ms. The panels are step 5's targets.
+
 ## 3. Renderer advisor
 
 The phone case that prompted this: Chrome on Android opened the tour from the
@@ -446,8 +512,10 @@ log.
    end of the HTML instead: see The boot terminal, The click and Startup
    measurements.
 4. One shader chunk (S4), and the unused Babylon modules out of the startup
-   graph (start of S1).
+   graph (start of S1). Done 17 October 2026: see Startup measurements.
 5. `defineLazyFeature`, the chunk-map plugin and the idle queue. Move the
    pose editor, the closed panels and the Dev tab's views onto it (S2).
-6. The empty scene first: the boot chunk split.
+6. The empty scene first: the boot chunk split. Begun 17 October 2026 with
+   the presentation probe skipped once passed, and React and the tab overlay
+   loaded while the globe starts.
 7. The renderer advisor's rules and the log entries.
