@@ -315,6 +315,12 @@ checkout (gitignored, so it is copied here in outline):
   for a second after the first frame. It depends on the tile servers.
 - The local server has no tour media: `public/` is not in `dist/`, and its
   ~400 requests answer 404. So the tour's settled time misses that media.
+- Since ui `4b125b0` (18 October 2026) a built page's first visit registers
+  the service worker that makes it cross-origin isolated, waits up to 4 s for
+  it, and reloads once (`ui/src/browser/isolation.ts`). Since 19 October 2026
+  the script times a page that reloads from its first navigation: the HTML,
+  the terminal and the first paint from the first load, the other marks from
+  the last, and the bytes over both.
 
 All numbers are medians of 3 runs, in seconds from navigation. The runs
 agreed within 2%, except warm settled, which varied by up to 50%.
@@ -553,10 +559,26 @@ flow-graph chunks, `LoaderBase`, `workerPool`: 22 files from 2.28 to
 2.99 s), then its plugins (`index.core-plugins`, to 3.18 s), before the
 globe starts: `app/src/app/browserRuntime.ts` awaits
 `loadBrowserGlobeGoogleProviders()` there, with or without a Google key.
-The first terrain tile is requested at 3.83 s. Without a key the page could
-start its globe without them and fetch them after the first frame. It needs
-the engine's `createGlobeRuntime` to wait for them when a key arrives later,
-since a key can be set while the page runs. Not done yet.
+The first terrain tile is requested at 3.83 s.
+
+Done 19 October 2026: the app awaits that code before the globe only where
+the globe starts on Google (a key in the page's options or saved, and Google
+preferred), and otherwise loads it when Google is first chosen. The engine's
+Google ports take an optional `ready()`, and `createGlobeRuntime` waits for it
+when a key arrives while the page runs, keeping the map it shows; a later map
+choice or a cleared key drops the wait, and code that fails to load falls back
+to the plain globe with a message. An A/B of `/app/` with and without the
+app's change, both built from the same checkouts the same day, two runs each,
+indicative (other work was using the machine):
+
+| Visit | | Modules run | Renderer | First 3D frame | Globe | Bytes before first frame |
+| --- | --- | --- | --- | --- | --- | --- |
+| cold | before → after | 2.32 → 2.32 | 2.47 → 2.45 | 3.90 → **2.74** | 5.78 → **4.57** | 1.26 → **1.09 MiB** |
+| warm | before → after | 0.19 → 0.18 | 0.32 → 0.31 | 0.64 → 0.60 | 2.17 → 2.11 | 0 → 0 |
+
+The runs of each agreed within 0.05 s. A cold first frame now comes 0.3 s
+after the renderer instead of 1.4 s. A warm visit had the code in its cache
+already, so it gains little.
 
 ## 3. Renderer advisor
 
@@ -709,11 +731,14 @@ log.
    probe went from automatic mode altogether, for a reload on the rare
    device whose WebGPU cannot present, the WebGPU adapter is asked for while
    the page parses, and the default atmosphere's tables ship precomputed:
-   see Startup measurements. What is left before the first frame, largest
-   first: on a cold visit, the Google 3D Tiles code the page waits for with
-   or without a key (about 0.9 s at Fast 4G, see Startup measurements);
-   Babylon's WebGPU buffers and the first terrain mesh (about 0.3 s at 4×
-   slowdown); and running the entry chunk itself (475 KiB brotli, 1.9 MB),
-   whose panels the profile no longer singles out.
+   see Startup measurements. On 19 October 2026 the Google 3D Tiles code
+   left the first frame unless the globe starts on Google (a cold first
+   frame 1.2 s sooner, see Startup measurements). What is left before the
+   first frame, largest first: on a first visit, the reload that makes the
+   page cross-origin isolated (ui `4b125b0`), after which the modules run at
+   2.3 s instead of 2.0 s; Babylon's WebGPU buffers and the first terrain
+   mesh (about 0.3 s at 4× slowdown); and running the entry chunk itself
+   (475 KiB brotli, 1.9 MB), whose panels the profile no longer singles
+   out.
 7. The renderer advisor's rules and the log entries. Done 17 October 2026:
    see Advice.
