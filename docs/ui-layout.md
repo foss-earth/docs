@@ -268,8 +268,9 @@ empty space beside short labels, cuts long ones off, and stops at the column cou
 however much room is left on the line.
 
 Only something that needs the whole width takes a whole line, as a paragraph
-break does: a full section heading, a continuous track, a text field that needs
-room, or essential explanatory text. A nested grid may take the whole width
+break does: a full section heading, a continuous track, a free-text field with
+no natural length (a search box, a bug report's description), or essential
+explanatory text. A nested grid may take the whole width
 when its content needs it; its component title still starts its own paragraph
 flow rather than forcing a separate header row.
 
@@ -372,14 +373,24 @@ These cases were settled during the compact-controls cleanup (18 October 2026):
   for a two-option choice.
 - **Every parameter row** gets its own rounded enclosure, not just choice groups
   and components.
-- **Slider-first** is opt-in per parameter with `controlFirst: true`. It is used
-  where the phrase reads better that way, as in Interface → Toolbar's
-  **[On / Auto / Off] Label** rows. Without it, the label comes first.
+- **Control-first** is opt-in per parameter with `controlFirst: true`, for
+  choices, numbers, tracks and text fields alike. It is used where the phrase
+  reads better that way, as in Interface → Toolbar's **[On / Auto / Off] Label**
+  rows. Without it, the label comes first.
+- **Fields read as a phrase too**, like sliders. A number or text field follows
+  its label, with its unit after it: **Resolution [1] × ?**, **Date (UTC)
+  [2026-04-20] Save Clear ?**. Named values sit between the label and the number
+  they stand for, **Frame rate cap [Off | Value] 60 fps ?**, and a chosen named
+  value is not repeated in the readout. A slider's track follows its phrase and
+  wraps to the next line when it does not fit; the phrase itself wraps at its
+  words rather than squeezing them.
 - **One decision is one track**, even when it has categories. The Map basemap
   is a single track, 3D then 2D. It does not use separate tracks that share a
   radio name.
 - A **label too long** to share its line with its track wraps. The track moves
-  to the next line, followed by **?**. Segments never shrink or clip.
+  to the next line, followed by **?**. Segments never shrink or clip. The
+  shared slider does not yet put **?** after its track; see
+  [Sliders](#sliders).
 - A **section's purpose** goes behind a **?** after its title. It does not go
   in an intro paragraph. Pass `help` (and `helpLabel`) on the section entry.
   The **?** is placed in `.foss-earth-panel-section__frame`, outside the
@@ -387,9 +398,10 @@ These cases were settled during the compact-controls cleanup (18 October 2026):
   section.
 - A value that applies **on the next start** is saved at once. The section then
   shows **Changes pending** with **Apply & reload** and **Discard**. A single
-  control does not reload the page by itself. Renderer → API follows this rule.
-- **Editor and debug panels** (pose and link editors, Fly Debug, Performance
-  debug) follow the same rules as user panels.
+  control does not reload the page by itself. The Renderer tab's main controls
+  share one **Apply & reload**.
+- **Editor and debug panels** (pose and link editors, Fly Debug, Renderer →
+  Debug) follow the same rules as user panels.
 - React hosts use `ChoiceTrack`, `IconButton` and `HelpTip` from
   `@foss-earth/ui/react` (also re-exported by `foss-earth/shell`). These draw
   the same track, icon action and **?** as `createChoiceGroup`,
@@ -442,6 +454,19 @@ Cleanup tracking (18 October 2026):
     registry parameters yet.
   - gamepad-tools' **Show 3D controller** is still a native checkbox. That
     package is external.
+- [x] Renderer: the renderer, resolution, antialiasing and frame rate cap are the
+  tab's main section, with one **Apply & reload**; Work-saving experiments and
+  Performance debug are now Experiments and Debug (19 October 2026).
+- [ ] Other tabs' sections against the rule on sections and terse titles,
+  awaiting review: Interface → Compass holds one everyday control; Map → Source
+  holds the everyday basemap and elevation choices; long titles include
+  Atmosphere and illumination, Exposure and display, Loading and memory,
+  Automatic adjustment, Imagery selection, Terrain selection, Mouse and
+  trackpad, Moon and stars and Position readout. Fly's and the native page's
+  tabs are not yet listed.
+- [ ] [Sliders](#sliders): **?** after the track, tracks on demand, and a handle
+  that is the field, with a constant character count. The
+  [handoff](proposals/implementation/slider-handle-field-handoff.md) carries it.
 
 ### Dropdowns fit their own text
 
@@ -468,6 +493,61 @@ changes. It is sized by its options, not by the one showing, so choosing a
 longer one does not move the controls after it. 0sfs's aircraft level of detail,
 FOSS Earth's airport position and runway, and gamepad-tools' profile and
 controller lists follow it.
+
+### Fields fit their own text
+
+A text or number field is as wide as its text, like a dropdown, and no wider. A
+number field fits its digits (`size` and `--field-chars`, set by the shared
+control as the value changes). A text field fits its value, or its placeholder
+while empty, and grows as it is typed into (`size`, with `field-sizing:
+content` where the browser has it). Never give a field a fixed width, `width:
+100%` or `flex: 1`; `max-width: 100%` lets it shrink on a narrow panel.
+Placeholders are terse because they set the width: **Paste key**, not **Paste
+the key**; **New key**, not **Enter a new key to replace it**. A state shown
+another way is not repeated: an empty key field with Clear disabled already says
+there is no key, so it has no **Not set** beside it. A field's actions, status
+and **?** wrap as one unit (`.foss-earth-parameter__tail`), so **?** never sits
+alone on a line.
+
+The exception is free text with no natural length, such as a search box or a
+bug report's title and description, which may take its line.
+
+### Sliders
+
+The user set this design on 19 October 2026. The shared slider does not follow
+it yet; the [handoff](proposals/implementation/slider-handle-field-handoff.md)
+carries the work.
+
+- **? is the last item of the whole control**, after the track. Today
+  `placeSlider` (`ui/src/shell/settings/controls.ts`) builds the phrase line
+  (`.foss-earth-parameter__slider-line`: label, field, unit, named values) and
+  appends the track after that line, while the control's help wrapper appends
+  status and **?** to the end of the phrase line (or the text field's
+  `.foss-earth-parameter__tail`, or the header). So on a slider the track comes
+  last. Tests in `ui/src/shell/settings/parameterSection.test.ts` pin **?** as the
+  last item of the line, not of the control; they change with it.
+- **A track is shown on demand by default.** Most tracks are rarely needed: a
+  number reads **Label [value] unit ?**. Its track shows in a popover while the
+  pointer is over the control, and stays, whatever the pointer does, once the
+  control is selected by a click, until a click elsewhere or Escape. Keyboard
+  focus selects it as a click does. All of Renderer → Debug's tracks are on
+  demand, for example.
+- **A track shown all the time** is the exception, chosen per parameter, for a
+  setting people set by feel, such as Resolution. Its handle is the field: the
+  value is written on the thumb. A press and release on the thumb without
+  moving selects it and shows it as an editable field, and a further click
+  types into it. A press that moves is an ordinary drag. The slider keeps its
+  keys and its native range semantics for keyboards and screen readers.
+- **The value keeps one character count across its range**, with leading zeros
+  and the step's fixed decimals, in tabular figures: **010** to **240** fps,
+  **0.25** to **2.00** ×. The thumb's label then never resizes as it moves.
+- Until then, a slider's field starts as wide as the widest end of its range and
+  never narrows. A field that narrowed while a drag changed its digits moved the
+  track under the pointer, which changed the value and the field again.
+- **Open question:** where an always-shown track sits in its phrase. The user
+  asked whether such sliders should come first. The recommendation is
+  **Label [track, value on its thumb] unit ?**, the track taking the value's
+  place, with label first as everywhere else.
 
 ## The HUD defaults to one row
 
@@ -560,25 +640,38 @@ Every setting lives in exactly one place, a section of a tab.
   `HudBarMenuItem` is deprecated.
 - Nothing floats in a screen corner behind a launcher button. Controls go in a
   tab, where the dock layout manages the space.
-- A tab that holds several groups is built from collapsible sections
-  (`SectionsPanel` from `foss-earth/shell`, or `createSectionsElement` for a tab
-  whose content is an element). A section starts closed unless people usually
-  arrive wanting it, as Input method does when its toolbar button opens
-  Controls, and Source and Detail do in the Map tab.
+- A tab's everyday controls go on the tab itself, in its **main** section
+  (section `main` in a parameter's home). `createSectionsElement` draws an
+  entry with id `main` or `<tab>.main` without a disclosure or title. Add a
+  collapsible section (`SectionsPanel` from `foss-earth/shell`, or
+  `createSectionsElement` for a tab whose content is an element) only where it
+  helps: to group related controls among several groups, or to tuck away
+  advanced and debug settings that most people never need, such as Renderer →
+  Depth range, Experiments and Debug. Do not put controls in a section just
+  because. A one-control section is not justified unless it tucks that control
+  away, and a section titled like its tab (Renderer → Renderer) never is. A
+  section starts closed unless people usually arrive wanting it, as Input
+  method does when its toolbar button opens Controls, and Source and Detail do
+  in the Map tab.
+- Section titles are as terse as their meaning allows: **Resolution/FPS**, not
+  **Resolution and frame rate**; **Debug**, not **Performance debug**, where the
+  tab already says what it is about.
 - Each section is a parameter section (`createParameterSection`, see the
   [settings spec](proposals/settings.md#implementation)): its own controls,
   then a control for every main-level parameter homed in it that those don't
   cover, hosts' included, then **Show all parameters**. The Map tab
   (`createMapSourcePanel`) is Source, Detail, Automatic adjustment, Loading
   and memory, Imagery selection and Terrain selection; the
-  Renderer tab (`createRendererPanel`) is Renderer, Resolution and frame
-  rate, Depth range and Performance debug; the Sky tab (`createSkyPanel`) is a
+  Renderer tab (`createRendererPanel`) is its main controls (the renderer,
+  resolution, antialiasing and frame rate cap, with one **Apply & reload**),
+  then Depth range, Experiments and Debug; the Sky tab (`createSkyPanel`) is a
   line saying where the Sun is, with a button that opens Date and time, then
   Atmosphere and illumination, Moon and stars, Ground and Exposure and display; the
   Date and time tab (`createDateTimePanel`) is one section, its two dials; the Scenes tab is Content, Image links
   (only when editing is enabled), Orbs, Motion, Loading and memory, Tiled images, Saved images and Credits; the Controls tab is Input method,
   Camera, Orbit, Mouse and trackpad, Touch and Controller; the Interface tab
-  is Toolbar, Position readout, Log and Search; and the Settings tab is Presets, Saved settings, App files and Diagnostics. About is
+  is its theme and window controls, then Compass, Toolbar, Position readout and
+  Log; the Location tab is Search; and the Settings tab is Presets, Saved settings, App files and Diagnostics. About is
   a tab of its own (`createAboutPanel`): which version runs and what it is built from, as a tree from the app
   down, where someone looking for the version looks for it, under +. Map and
   Renderer add a section for
@@ -633,7 +726,7 @@ Every setting lives in exactly one place, a section of a tab.
   requirement stripes the part of the range it refuses. `createTrack` draws all
   of them.
 - Interface → Toolbar holds all configurable toolbar visibility, including
-  performance readouts. Renderer → Performance debug holds tuners and profiling.
+  performance readouts. Renderer → Debug holds tuners and profiling.
   Auto items fit by the priority above; On and Off take precedence.
   Hiding a button never hides what it opened; its tab stays under
   +. The same section holds one two-position theme slider, with sun and moon icons,

@@ -7,12 +7,16 @@ Component execution runtime-integration assignment remains separate. The compact
 Component execution cleanup is complete; the shared-memory agent is still active.
 Preserve that finished UI when auditing other panels.
 
-**Status (18 October 2026):**
+**Status (19 October 2026):**
 
-- The fix pass is implemented, but nothing is committed. The work is on the
-  `ui-compact-controls` branch in foss-earth app, docs, engine, renderer,
-  scenes, sky, sphere-image, toolbar and ui, and in 0sfs fly, aircraft,
-  ground-contact and controls.
+- The fix pass is committed, not pushed, on the `ui-compact-controls` branch
+  in foss-earth app, docs, engine, renderer, scenes, sky, sphere-image, toolbar
+  and ui, and in 0sfs fly, aircraft, ground-contact and controls. A second
+  commit in app, docs, renderer and ui fits fields to their text, puts the
+  Renderer tab's everyday controls on the tab itself, and adds the rules on
+  sections and terse titles.
+- The slider redesign the user asked for next is in
+  [slider-handle-field-handoff.md](slider-handle-field-handoff.md).
 - The settled rule questions and the remaining exceptions are recorded in
   [ui-layout.md](../../ui-layout.md#compact-segmented-choices).
 - The audit and the status of each item are in

@@ -169,7 +169,7 @@ the manifest are what the comparison holds equal. Compare with
 ## Streamgraphs
 
 On `renderer` `main`, pushed as `6c435ce`. The frame budget
-(Renderer → Performance debug; in 0SFS, Debug → Frame budget) draws five
+(Renderer → Debug; in 0SFS, Debug → Frame budget) draws five
 graphs of the last minute, one sample every 250 ms, above the section table:
 
 | Graph | Unit | Where the numbers come from |

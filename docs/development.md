@@ -167,6 +167,24 @@ directions, the deadzone, and capture suppression.
 
 See [Manual QA checklist](manual-qa.md) for what to exercise by hand before a release.
 
+### Committing beside someone else's work in progress
+
+When another person or agent has uncommitted changes in the same files, stage only your own
+hunks, not the files. For each shared file:
+
+1. Build the file as it was before your edits: start from `HEAD`'s copy (`git show HEAD:path`)
+   and apply the other work's diff, or keep a copy of the file from before you started.
+2. Merge your change alone onto `HEAD`:
+   `git merge-file -p <HEAD copy> <before your edits> <current file> > mine`. The result is
+   `HEAD` plus your hunks only.
+3. Stage that content without touching the working tree:
+   `git update-index --cacheinfo 100644,$(git hash-object -w mine),path`.
+
+Check the staged tree before committing. `git checkout-index -a --prefix=build/staged/` writes
+it out, and a typecheck there tests exactly what the commit holds. Delete that copy afterwards,
+before a dev server runs: Vite scans its root for HTML and `tsconfig.json`, so a copy under
+`build/` resets its cache and the page fails with "Failed to fetch dynamically imported module".
+
 ## Running your own copy
 
 You generally should not need to. The hosted site is the same code, it updates automatically, and
