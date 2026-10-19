@@ -30,6 +30,12 @@ under that contact:
   common-space unit ray through the surface-local contact point (or two-touch
   midpoint) and solve heading, pitch, and FOV (`anchorSphereCamera`) so that
   image point stays under the finger at any FOV ($10^\circ\text{–}150^\circ$).
+  This is the default **Drag → Grab** mode. The optional **Scroll** mode maps
+  one-finger and mouse drag deltas to heading and pitch regardless of contact
+  position, scaled with FOV and viewport height. It keeps the horizon upright
+  and the same release inertia, without a grab anchor. This explicit preference
+  avoids the unstable geometry of grabbing near a sphere pole through the top
+  or bottom of the screen. Two-touch pinches retain their midpoint anchor.
 - **On release:** If the finger was moving within the release window
   (`GLIDE_RELEASE_WINDOW_MS = 80` ms in a sphere, `MOMENTUM_WINDOW_MS = 120` ms
   on the globe), the camera carries the actual angular or surface velocity it

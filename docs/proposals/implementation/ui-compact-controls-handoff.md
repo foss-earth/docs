@@ -7,6 +7,19 @@ Component execution runtime-integration assignment remains separate. The compact
 Component execution cleanup is complete; the shared-memory agent is still active.
 Preserve that finished UI when auditing other panels.
 
+**Status (18 October 2026):**
+
+- The fix pass is implemented, but nothing is committed. The work is on the
+  `ui-compact-controls` branch in foss-earth app, docs, engine, renderer,
+  scenes, sky, sphere-image, toolbar and ui, and in 0sfs fly, aircraft,
+  ground-contact and controls.
+- The settled rule questions and the remaining exceptions are recorded in
+  [ui-layout.md](../../ui-layout.md#compact-segmented-choices).
+- The audit and the status of each item are in
+  `docs/build/ui-compact-audit/violations.md`.
+- UMN-VR's native-panel patch has not been applied yet. It is at
+  `UMN-VR/app/.local/build/ui-compact-controls/panels-after-foss-earth-bump.patch`.
+
 ```text
 Find and fix violations of the user's compact UI design throughout FOSS Earth,
 the UMN tour and 0SFS fly. Implement the fixes in their owning shared libraries

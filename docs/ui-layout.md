@@ -361,6 +361,58 @@ It must not become a collection of separate pills or visible radio circles.
   When changing a setting's behavior, preserve these design checks; changing its
   value or backend must not accidentally rebuild it as separate radio pills.
 
+These cases were settled during the compact-controls cleanup (18 October 2026):
+
+- **Independent booleans** use the shared switch, label first: **Label [switch] ?**.
+  It is a native checkbox clipped inside `.foss-earth-choice.foss-earth-switch`,
+  and `.foss-earth-switch__knob` is its knob. When it is on, it fills with the accent.
+  The standard boolean parameter and **Show all parameters** both draw it.
+  Do not draw a visible checkbox box.
+- The **two-position slider** (`choiceControl: "two-position"`) remains allowed
+  for a two-option choice.
+- **Every parameter row** gets its own rounded enclosure, not just choice groups
+  and components.
+- **Slider-first** is opt-in per parameter with `controlFirst: true`. It is used
+  where the phrase reads better that way, as in Interface → Toolbar's
+  **[On / Auto / Off] Label** rows. Without it, the label comes first.
+- **One decision is one track**, even when it has categories. The Map basemap
+  is a single track, 3D then 2D. It does not use separate tracks that share a
+  radio name.
+- A **label too long** to share its line with its track wraps. The track moves
+  to the next line, followed by **?**. Segments never shrink or clip.
+- A **section's purpose** goes behind a **?** after its title. It does not go
+  in an intro paragraph. Pass `help` (and `helpLabel`) on the section entry.
+  The **?** is placed in `.foss-earth-panel-section__frame`, outside the
+  `<summary>`, so it does not join the summary's name and does not open the
+  section.
+- A value that applies **on the next start** is saved at once. The section then
+  shows **Changes pending** with **Apply & reload** and **Discard**. A single
+  control does not reload the page by itself. Renderer → API follows this rule.
+- **Editor and debug panels** (pose and link editors, Fly Debug, Performance
+  debug) follow the same rules as user panels.
+- React hosts use `ChoiceTrack`, `IconButton` and `HelpTip` from
+  `@foss-earth/ui/react` (also re-exported by `foss-earth/shell`). These draw
+  the same track, icon action and **?** as `createChoiceGroup`,
+  `createIconButton` and `createHelpTooltip`. Do not draw a lookalike.
+- **Exempt:**
+  - Image card galleries, such as Fly's aircraft picker and the tour landing
+    page's campus cards. These are authored content, not controls.
+  - Destructive confirmations ("Clear this site's browser data", "Return
+    without clearing"). Their full wording prevents mistakes.
+
+To check a change in the browser:
+
+- Open every affected tab at desktop and phone width (360 px), in both
+  themes. `?set.interface.theme=light` picks the theme from the URL, and
+  `?dev=1` adds the editors.
+- Give each screenshot its own fresh browser profile. A panel saves whether
+  its sections are open, so a shared profile carries that state from one shot
+  into the next.
+- The brand palette (`ui/assets/theme.css`, `[data-ui-theme]`) loads after
+  `ui.css`. A rule in `ui.css` that a palette also colors, such as a checked
+  switch, needs a matching rule in `theme.css` that is at least as specific.
+  Otherwise the palette's rule wins in one theme.
+
 The [app-wide cleanup assignment](proposals/implementation/ui-compact-controls-handoff.md)
 carries these rules into a fresh conversation and defines the audit/verification
 scope for the remaining panels.
@@ -375,11 +427,21 @@ Cleanup tracking (18 October 2026):
   track, last help button, inline source icon inside help, no empty stable-state
   banner. Components combines running status and per-component settings; long
   explanations remain behind **?**.
-- [ ] Audit remaining manually built radio/pill groups in Map, Sky, Interface,
+- [x] Audit remaining manually built radio/pill groups in Map, Sky, Interface,
   host-specific panels and legacy compatibility controls. Convert one-choice
   groups to the shared factory without changing selected values or behavior.
-- [ ] Check remaining custom help rows for a leading **?** or separate source
+  These are in Map, Sky, Scenes, Sphere image, Renderer, Interface, the
+  headset, pose and link editors, and in 0sfs Fly, aircraft and ground
+  contact. UMN-VR's native panels have a matching patch waiting to be applied.
+- [x] Check remaining custom help rows for a leading **?** or separate source
   button. Move help last and source into its tooltip; preserve focus/keyboard.
+- [ ] Open exceptions:
+  - The legacy `MapCachePanel` (engine) is exported but never mounted, and it
+    is not converted.
+  - Fly's Weather wind sliders are still raw ranges, because wind has no
+    registry parameters yet.
+  - gamepad-tools' **Show 3D controller** is still a native checkbox. That
+    package is external.
 
 ### Dropdowns fit their own text
 
