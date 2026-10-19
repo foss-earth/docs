@@ -1,6 +1,6 @@
 # Rust/WASM implementation state and next-agent handoff
 
-Updated 18 October 2026. This records implementation progress, evidence and
+Updated 19 October 2026. This records implementation progress, evidence and
 known gaps in the current local checkouts. Read it with the
 [implementation brief](webassembly-agent.md), [program plan](../webassembly.md)
 and [optimization backlog](../../optimization-backlog.md). The separate
@@ -35,12 +35,55 @@ first in-app A/B. Its results are below, and the
 URLs, equal-work commands and evidence locations are collected in the
 [18 October comparison guide](webassembly-ab-results-2026-10-18.md).
 
-The global default remains `typescript`; no visual defaults changed. Six
+Since 19 October 2026 the global default is `single`, WebAssembly in worker
+pools, with the sky's shared-memory build and shared terrain heights on
+([Defaults](#defaults-webassembly-in-worker-pools-with-shared-memory-19-october-2026)).
+Renderer and visual-quality settings are unchanged. Six
 selectable app cores now cover raster, sky, terrain targets, imagery heights,
 Google preparation and ground index construction. Six development packages split the
 five audited CPU families because raster decoding and terrain geometry are
 separate slices. This is not six shipping downloads, a settled final package
 layout, or a measured percentage of total CPU time.
+
+## Defaults: WebAssembly in worker pools with shared memory, 19 October 2026
+
+The user chose these defaults after trying them on a Mac and an Android phone,
+and judged that they work well enough. A visitor with no saved choice gets:
+
+- **`native.tier` = `single`.** Every core runs its single-threaded WASM in
+  background workers, with worker pools (`native.parallelism` = `auto`). Each
+  core is still admitted only after its first result equals the TypeScript
+  reference, and otherwise returns to TypeScript and says why.
+- **`native.sharedSky` = on** (engine `src/settings/catalogue/native.ts`).
+  A sky that runs WASM runs its shared-memory build, with `native.threads`
+  threads. It changes only a WASM sky, so the TypeScript arms of an A/B are
+  unchanged; set it off for a single-threaded WASM arm. Sky → Shared memory
+  and the global Shared memory set it. They ask for `native.core.sky=threaded`
+  only when the sky would not run WASM.
+- **`native.sharedHeights` = on.** Terrain heights go into shared memory,
+  which the terrain mesh workers that `single` starts read.
+- **`native.workers`** now counts the default selection's own workers. It is
+  the elevation recommendation and the imagery worker, as before, plus the
+  sky, imagery heights, Google, ground, two mesh workers and the shared sky's
+  helpers. Before, `single` left the elevation pool nothing on a device with
+  10 or fewer hardware threads, so every elevation tile decoded on the page:
+  an isolated 10-thread Mac reserved 10 of its 10 workers. That Mac now gets
+  19 workers and 9 decoders, as many decoders as TypeScript gives it.
+- **Where the page can't share memory** both uses fall back as before: the sky
+  runs single-threaded WASM and reports the fallback, and heights are
+  transferred. The switches show the default's request as Off, grayed, with ?
+  saying why. A request from the URL or a saved choice shows On, so it can be
+  turned off.
+- **Not a speed claim.** Paired runs measured Terrain heights and Terrain
+  geometry slower in WASM than in TypeScript, and the shared sky saved worker
+  time without a page or frame gain ([Measured results](#measured-results)).
+  Auto still takes each core's recorded choice. Google tiles are now prepared
+  in a worker by default. Unit tests match the loader's hierarchy,
+  transforms, materials and metadata; there is no visual qualification beyond
+  the user's own use.
+- **Checked.** Engine 1204 tests, app 432 and tour 75, with typecheck and lint.
+  Fly's own tests have 14 failures, the same with the old defaults; they come
+  from the flight panel work in progress.
 
 ## UI checkpoint: safe to close this conversation, 18 October 2026
 
@@ -63,7 +106,9 @@ Commands and earlier broader-check limitations are retained in
 `app/build/component-execution/functional.md`; ignored build evidence is local.
 These UI checks make no new threading or performance claim.
 
-Next: the shared-memory agent has finished; its contract and results are in
+Next (done 19 October, see
+[Component execution shared memory](#component-execution-shared-memory-19-october-2026)):
+the shared-memory agent has finished; its contract and results are in
 [the shared-memory UI handoff](webassembly-shared-memory-ui-handoff.md). Use
 [the Component execution continuation](webassembly-ui-handoff.md) with it.
 Inspect its actual plan/report/isolation/worker-budget contract before adding
@@ -73,12 +118,161 @@ The [other UI audit](ui-compact-controls-handoff.md) remains a separate task.
 Do not redo this cleanup, interrupt the shared-memory work or interpret a new
 binary on disk as completed app integration or a measured gain.
 
+## Terrain copies and shared heights, 19 October 2026
+
+Built and tested, not committed or deployed. Visual defaults and the default
+tier are unchanged. No speed claim: nothing here has been measured in an A/B.
+
+- **Typed positions (R2).** Terrain targets, new meshes and refinement steps
+  are float32 from the start (`engine/src/babylon/terrainMesh.ts`,
+  `meshRefinement.ts`), and Babylon stores the same bits
+  (`tests/terrainMeshIdentity.test.ts`).
+  - Stitched seams stay float64 on the CPU. Rounding them moved the
+    antimeridian seam 6.7 µm off its plane, and Babylon's exact bounding-box
+    check then rejected a ray along it (the `rasterSurfaceSampler` dateline
+    test caught this).
+- **One topology per segment count (R1, CPU half).** `terrainTopology`
+  keeps the indices and UVs of the last 4 segment counts, with 16-bit indices
+  up to 255 segments. GPU buffers stay one per tile: a shared Babylon index
+  buffer leaves picking without its indices, and nothing rebuilds it after a
+  lost context.
+- **Worker targets (R3).**
+  - The page no longer works out its own target for every worker job, only
+    for the one parity check.
+  - Worker geometry is adopted without a copy, both in the worker (TypeScript
+    output only; native output may be a view the core reuses) and on the page.
+  - A target prepared before a segment-count change is no longer uploaded to
+    the rebuilt mesh. The page path had this race too.
+    `tests/terrainMeshWorkerIntegration.test.ts` fails without the guard.
+- **Shared heights (plan step 5.6).**
+  - Component execution → Terrain heights → **Shared memory**
+    (`native.sharedHeights`, app `terrainNativeWorkerConfig.ts`) is off until
+    the user has tried it, and applies after a reload like the other
+    execution choices. The policy (`app/src/app/browserPolicy.ts`) reads it. It is passed on
+    only when terrain targets are prepared in mesh workers: where the page
+    builds them, a transfer already costs nothing and sharing would add a
+    copy. Decode workers get it in their name and
+    use it only when `crossOriginIsolated`. They then copy heights into a
+    `SharedArrayBuffer` and post it without a transfer. Mesh workers receive
+    grids by structured clone, so on an isolated page they read the same
+    memory instead of a copy.
+  - Without isolation, or when allocating shared memory throws, heights are
+    transferred as before.
+  - The switch says "Needs geometry workers" while Terrain geometry would run
+    on the page, and "Not isolated" on a page that isn't. Terrain heights'
+    details report "N in shared memory".
+  - Nothing writes a grid's heights after decoding. A consumer audit found no
+    storage, crypto, Blob or GPU upload of heights. The only check that
+    rejects shared heights is the full-grid path of the height-batch worker,
+    and the page never uses it: it sends sparse copies.
+  - `native-terrain` `core.js` and `heightSampler.js` accept shared heights
+    and snapshot them. The rebuilt `terrain.wasm` is byte-identical (sha256
+    `24e02faa…aba1`), and only its receipt changed. `npm run check:terrain`
+    builds 25 cases from shared heights, and `check:height-batches` samples a
+    shared grid; both match bit for bit.
+- **Decode worker budget.** `terrainDecodeWorkers()` is capped at the slots
+  the worker budget leaves for decoders. A worker refused by the budget made
+  the pool unavailable for good, so every later tile decoded on the page.
+  This happened in every worker and WASM tier once the decode count exceeded
+  its slots: 3 in workers and 111 on the page before the fix, 108 and 1 after.
+- **Checked.**
+  - Engine: 1201 tests, typecheck and lint.
+  - App: 424 tests, typecheck and lint.
+  - Native: 43 tests, `check:terrain` and `check:height-batches`.
+  - Headless Chrome on the user's tour dev server (localhost:5173, not
+    isolated), default and `typescript-worker` arms: terrain loaded, page and
+    worker heights matched, 0 exceptions, and the only console message was
+    the missing Google key.
+  - Headless Chrome on an isolated tour dev server (localhost:5374, started
+    with `FOSS_EARTH_ISOLATION=enforce`), `typescript-worker` with the
+    setting on: `crossOriginIsolated`, 114 of 114 worker tiles arrived in
+    shared memory, 1 page decode (the parity tile), page and worker heights
+    matched, and mesh workers built 49 targets from the shared grids, with 0
+    exceptions. With the setting off, 0 tiles were shared. That run's first
+    load also logged "The tour could not start": Vite bundled new
+    dependencies and reloaded the page while it started.
+  - After the setting moved to Component execution (`native.sharedHeights`),
+    the same server: 113 of 113 tiles shared with it on, 0 with it off and 0
+    in the default tier. With the tab opened from the + menu, the switch sat
+    under Terrain heights: On with no status in `typescript-worker`, Off with
+    "Needs geometry workers" by default. A second later the details read
+    "223 in shared memory".
+  - Evidence: `app/build/perf-optimizations/`. The script reuses the running
+    server and never starts one.
+- **Default.** On since 19 October 2026
+  ([Defaults](#defaults-webassembly-in-worker-pools-with-shared-memory-19-october-2026)).
+  - A paired A/B of memory and tile-arrival cost.
+
+## Component execution shared memory, 19 October 2026
+
+Component execution now shows the shared-memory sky (`app/src/app/nativePanel.ts`;
+[what it shows, checks and commands](webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)):
+
+- **The controls.** Components → Sky → **Shared memory [Off|On] ?** comes after
+  Implementation. The standard **Shared-memory threads** (`native.threads`)
+  shows while it is on. Both are pending until Apply and reload, and Discard
+  restores them.
+- **Availability** comes from the page's `crossOriginIsolated`. When the page
+  isn't isolated, the slider is disabled with "Not isolated" and a reason. A
+  URL's threaded request can still be turned off.
+- **Running status** comes from the report:
+  - "Sky: WASM (4 shared threads)";
+  - "3 of 4" when fewer threads are ready;
+  - "· fallback" with a short reason.
+
+  Memory, threads, batches, rows by thread, waits and parity are behind ?.
+- **Checked** in headless Chrome on dev servers:
+  - Earth and the tour, isolated: TS → 4 shared threads → 2 → TS at 1280 and
+    390 px, in both themes;
+  - fly, unisolated: the fallback shows and the slider is disabled after Off;
+  - all of them: 0 exceptions and 0 blocked loads;
+  - Renderer choices: unchanged.
+
+  Evidence: `app/build/sw-isolation/runs/`.
+- **Speed.** No speed claim. The defaults changed later the same day
+  ([Defaults](#defaults-webassembly-in-worker-pools-with-shared-memory-19-october-2026)).
+
+## On a phone: twist and HTTPS, 19 October 2026
+
+- **Two-finger twist over Google tiles.** On an Android phone, turning two
+  fingers in place over Google tiles did not orbit the ground anchor in the
+  tiers that prepare Google tiles in a worker
+  (`nativePlans.google.placement === "worker"`). A worker-prepared tile (renderer
+  `src/babylon/googleTilePreparation.ts`) put its glTF pointers in the node's
+  `metadata.gltf`; Babylon's loader keeps them in `_internalMetadata`. Picking
+  (engine `src/sprites/picking.ts`) takes any metadata key outside
+  `GROUND_METADATA_KEYS` for a point of interest, so `beginAnchorPan` refused
+  the twist.
+  - Prepared tiles now record pointers and extras where the loader does.
+    renderer `tests/googleTilePreparation.test.ts` compares every node's,
+    mesh's and material's `metadata` and `_internalMetadata` with the
+    loader's, with and without extras.
+  - Picking also counts `gltf` as ground, since the loader keeps a tile's
+    extras there (engine `tests/picking.test.ts`).
+  - The user confirmed the twist on the phone.
+- **HTTPS for other devices.** A phone that opens `http://<this machine>:<port>`
+  gets a page that is not secure, so it has no WebGPU and no isolation. A dev
+  server started with `--host` now serves HTTPS with a self-signed certificate
+  ([how](webassembly-shared-memory-ui-handoff.md#isolation-and-deployment)).
+  Component execution has a global Shared memory switch. On such a page it
+  reads "Not secure", and its ? says how to fix that
+  ([UI](webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)).
+- **Checked.**
+  - Tests: app 432, engine 1203, renderer 415, and ui's isolation tests.
+  - Typecheck and lint pass in the app and the tour.
+  - Headless Chrome opened the tour at `https://192.168.0.103:5374/tour/minneapolis/`
+    and went past the warning. The page was secure and isolated, with
+    `SharedArrayBuffer` and a WebGPU adapter. Evidence:
+    `app/build/https-dev/runs/`.
+
 ## Shared-memory threaded sky, 18 October 2026
 
 The sky has a real shared-memory, multithreaded Rust/WASM build. It is
 integrated in Earth, the tour and fly; [contract, results and commands for the
 UI agent](webassembly-shared-memory-ui-handoff.md). The program is not complete:
-isolation is built but not deployed, Safari is unchecked, and its UI remains.
+isolation is built and checked in Chrome, Firefox and Safari, but not
+deployed. Component execution shows it
+([below](#component-execution-shared-memory-19-october-2026)).
 
 - **Build.** `native/crates/earth-sky-shared` shares
   `crates/earth-sky-kernel` with the single build.
@@ -130,7 +324,7 @@ isolation is built but not deployed, Safari is unchecked, and its UI remains.
 - **Checks.**
   - `native`: `npm run check:sky-shared` and `npm test`, including
     `tests/sky-shared.test.mjs`.
-  - `app`: `skySharedHelpers`, `nativeReport`, `skyWorkerConfig`,
+  - `app`: `nativePanel`, `skySharedHelpers`, `nativeReport`, `skyWorkerConfig`,
     `browserPolicy` and `vite/crossOriginIsolation` tests.
   - `engine`: `tests/nativeTier.test.ts`.
 
@@ -280,7 +474,7 @@ Three fresh-conversation assignments preserve scope and coordination:
 Six app cores follow the startup selection in the Earth app, the UMN tour
 (which runs the app) and 0SFS fly (which uses the app's runtime):
 
-| Core | `typescript` (default) | `typescript-worker` | `single` |
+| Core | `typescript` | `typescript-worker` | `single` (default) |
 | --- | --- | --- | --- |
 | `raster`: Terrarium RGBA to heights | TS in the decode workers (its original placement) | Same as `typescript` | WASM in the same decode workers after first-tile parity |
 | `sky`: atmosphere tables, illumination, dome radiance | TS on the page, as before | TS in one sky worker | WASM in that sky worker after first-use parity |
@@ -644,7 +838,8 @@ Useful source entry points:
 
 `native.tier` offers `typescript`, `typescript-worker`, `single`, `auto` and
 `threaded` as a reload-only control, with per-core overrides; see
-[In-app A/B](#in-app-ab-what-exists-now). Its default is **typescript**. For
+[In-app A/B](#in-app-ab-what-exists-now). Its default is **single** since 19
+October 2026, with `native.sharedSky` on. For
 the Terrarium worker: forced single performs lazy startup and
 exact first-input native/reference comparison per worker; the first result is
 the reference's. Compile/start/decode failure or parity mismatch selects a

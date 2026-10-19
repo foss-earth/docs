@@ -167,12 +167,12 @@ when it finishes: the date, what was measured, and where the evidence is.
 | 0 | In progress, 2026-10-17 | Tuned low route passes simulation at 13.97 m versus 20 m limit; UI/geometry/mask source checks pass; user deferred live window and selected 0% brightness; baseline unqualified | [W0 evidence](../../build/webassembly/W0/2026-10-16/summary.md) |
 | 1 | Not started | | |
 | 2 | Not started | | |
-| 3 | In progress, 2026-10-18 | Dev/preview isolation only: `crossOriginIsolation()` in app, tour and fly, off unless `FOSS_EARTH_ISOLATION=enforce` (COEP `credentialless` by default). Isolated Earth, tour and fly loaded with 0 blocked requests. Service-worker header injection for deployed pages (GitHub Pages sends none) not done; deployed threaded requests fall back to single with `not-cross-origin-isolated` | [Shared-memory handoff](implementation/webassembly-shared-memory-ui-handoff.md#isolation-and-deployment-todo) |
-| 4 | In progress, 2026-10-18 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress. Compact Component execution UI separates implementation, placement and worker parallelism, with component inheritance and explicit Apply and reload; Components combines settings and real status in expanded titles, with name-only collapsed titles and persistent trailing ? help. Expanded titles join the control grid as its first item; expanded components sort before minimized ones. Components filter live by basemap mode while retaining hidden overrides and reports. Desktop/phone functional checks pass. UI cleanup checkpoint complete for the verified baseline. Sky shared-memory build (atomics, fixed 4 MiB shared memory) with `native.threads`, plan/report `threads`/`sharedMemory`/`threadedFallback`/`shared`, budgeted helpers and a reasoned threaded → single → TS ladder. UI for threads/shared status and full qualification remain | [Native source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
+| 3 | Built, not deployed, 2026-10-18 | The app's service worker adds COOP, COEP `require-corp` and CORP to built pages, their workers and kept files; a first visit reloads once. Earth, tour and fly builds served as Pages serves them: isolated from the first visit in Chrome 155, Firefox 158 and Safari 27, threaded sky 4/4. Every map, search, airports and the tour's photos loaded with 0 blocked requests in Chrome and Firefox. In Safari, which shows a check no requests, every map and photo drew with no tile error or COEP report, and search and airports showed results. In Chrome, the 0SFS site's landing page and phone controller also work in fly's worker's scope. A frame, no service worker and the setting off start unisolated on single WASM, with no reload loop. Carto now answers every origin with an "API key required" tile, isolated or not. Not run in Safari: Shift-reload, no service worker, the 0SFS site. Safari on the iPhone is the user's check | [Step 3, Checked](#3-isolation-from-the-service-worker) |
+| 4 | In progress, 2026-10-18 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress. Compact Component execution UI separates implementation, placement and worker parallelism, with component inheritance and explicit Apply and reload; Components combines settings and real status in expanded titles, with name-only collapsed titles and persistent trailing ? help. Expanded titles join the control grid as its first item; expanded components sort before minimized ones. Components filter live by basemap mode while retaining hidden overrides and reports. Desktop/phone functional checks pass. UI cleanup checkpoint complete for the verified baseline. Sky shared-memory build (atomics, fixed 4 MiB shared memory) with `native.threads`, plan/report `threads`/`sharedMemory`/`threadedFallback`/`shared`, budgeted helpers and a reasoned threaded → single → TS ladder. Component execution, 19 October: Sky has Shared memory [Off\|On] and Shared-memory threads. The slider is disabled with "Not isolated" on an unisolated page; titles show the shared threads that ran ("WASM (4 shared threads)") and short fallbacks. Checked in Earth and the tour (isolated) and in fly (unisolated), desktop and phone ([UI](implementation/webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)). Full qualification remains | [Native source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
 | 5 | In progress, 2026-10-18 | Terrain targets selectable/parity checked; paired worker placement regressed ~1.8 s, auto TS. Added sparse adopted-grid imagery batches with exact f64/cache/page fallback, 176 dense/sparse cases / 147,110 coordinates; full-grid copies removed. Whole-app A/A drift is 5–5.5 s; no imagery gain qualified, auto TS. Raster auto now TS after slower WASM evidence. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
 | 6 | In progress, 2026-10-18 | Worker TS/WASM BVH build connected to synchronous scene query adapter with immutable index export, current transforms, ties, normals, mutation invalidation and original-picker fallback. 514 actual native/snapshot/reference rays match; index-update invalidation tested. App fixed-ray fixture query cost −40%, both query arms TS; WASM build slower. Raster walker/flight cache retained; representative flight gate remains. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
 | 7 | In progress, 2026-10-18 | TS/WASM Google worker connected through lazy Babylon adapter; hierarchy/material/container lifetime checked. Chrome WebGL2/WebGPU 48 exact pixel cases: 36 actual WASM, 12 explicit ICC-original fallback. EXIF also original. Packing and real Google view/performance gates remain. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
-| 8 | In progress, 2026-10-18 | Selectable worker sky and exact TS star colors with synchronous billboards; full 9,096-star GPU buffers match. Final repeated app mean page task 12.04→7.37 s (−38.8%): placement gain; star batching adds observed −9.1%. WASM sky 7.44 s, no whole-app gain. Shared-memory threaded sky, exact in every arm and integrated in Earth, tour and fly: per-job worker sky work 3.05→1.73–1.83 ms (4 threads), round trip −0.2 to −0.4 ms, no page/frame gain beyond A/A, total sky CPU up. Global default TS. | [Native state](implementation/webassembly-native-state.md#measured-results) |
+| 8 | In progress, 2026-10-18 | Selectable worker sky and exact TS star colors with synchronous billboards; full 9,096-star GPU buffers match. Final repeated app mean page task 12.04→7.37 s (−38.8%): placement gain; star batching adds observed −9.1%. WASM sky 7.44 s, no whole-app gain. Shared-memory threaded sky, exact in every arm and integrated in Earth, tour and fly: per-job worker sky work 3.05→1.73–1.83 ms (4 threads), round trip −0.2 to −0.4 ms, no page/frame gain beyond A/A, total sky CPU up. Global default since 19 October: `single` with the shared sky and shared heights, not a speed claim. | [Native state](implementation/webassembly-native-state.md#measured-results) |
 | 9 | Not started | | |
 | 10 | Not started | | |
 | 11 | In progress, 2026-10-18 | Bounded exact source windows support unchanged 8192×4096 RGB through actual sphere-image CLI worker preparation. 378 cases / 2,683,584 f32 values and 264 encoded outputs match; peak WASM payload 60.5 MB / memory 95.6 MB. Observed WASM slower; no speed gate complete. Browser direct photos already sample textures on GPU. | [Native state](implementation/webassembly-native-state.md#known-blockers-and-useful-next-work) |
@@ -384,20 +384,52 @@ Owner: 0SFS (F6), with the fork. Done when:
 
 ## 3. Isolation from the service worker
 
-**Today.**
+**Built, 18 October 2026, not deployed.** The changes below are built in
+`ui/vite/appFilesWorker.js` (the worker), `ui/src/browser/isolation.ts` (the
+first script) and `app/vite/appFiles.ts`, behind Settings → App files →
+Cross-origin isolation (`app.isolation`, on by default). How it works:
+[ui's app-files.md](https://github.com/foss-earth/ui/blob/main/docs/app-files.md#cross-origin-isolation).
+It differs from the plan here:
 
-- The worker's source is `ui/vite/appFilesWorker.js`. The `appFiles()` plugin
-  (`ui/vite/index.mjs`) writes it into each app's build as `foss-earth-sw.js`,
-  with the build's file list inlined. Development builds have no worker.
-- The FOSS Earth app wraps that plugin in `app/vite/appFiles.ts`, exported as
-  `foss-earth/vite`, and the tour uses it from there. 0SFS has no service
-  worker yet.
-- `app/src/app/appFiles.ts` registers it through `ui/src/browser/keptFiles.ts`,
-  only while Settings → App files → Keep the app's files is on (on by default).
-- It answers navigations from the network, through navigation preload, and the
-  app's listed files from its cache. It adds no headers.
-- Its "forget" switch is a flag in the worker's memory, so it is lost whenever
-  the browser stops the worker.
+- **Headers only where they count.** The worker adds them to navigations,
+  including the navigation preload's answer, to the app's own worker scripts,
+  and to the files it keeps. It doesn't add them to every same-origin
+  response: under `require-corp` a page loads its own site's files without
+  CORP. Status 0, `opaque` and `opaqueredirect` responses pass untouched.
+- **Enforced from the first release.** No report-only release came first
+  (item 6), because the browser check below loaded every map, search, airports
+  and the tour's photos isolated, with nothing blocked.
+  `FOSS_EARTH_ISOLATION=report-only` still builds a worker that sends the
+  `-Report-Only` headers and doesn't reload. The page doesn't collect those
+  reports (no `ReportingObserver`); the browser's console names them.
+- **The build decides; there is no separate `isolation()` plugin** (items 5
+  and 8). `appFiles({ isolation })` writes the policy into the worker and the
+  first script into every page. FOSS Earth's `appFiles()` enforces unless
+  `FOSS_EARTH_ISOLATION=report-only` or `off` is set at build time
+  (`deployedIsolation()`).
+- **0SFS** uses `appFiles({ keepFiles: false, isolation: deployedIsolation(),
+  cacheNamespace: "0sfs-app-files" })`. Its worker keeps nothing and only
+  isolates, so the page removes it when the setting is off. The `/`, `/fly/`
+  and `/rc/` pages that `copyIndexToPagesPaths()` writes each start with the
+  first script.
+- **Development** has `crossOriginIsolation()` in `foss-earth/vite`, off
+  unless `FOSS_EARTH_ISOLATION=enforce`, with COEP `credentialless` by default
+  (`FOSS_EARTH_COEP=require-corp` for the deployed policy).
+- **A browser that won't isolate is remembered.** If the worker answered the
+  reload and the page still isn't isolated, `localStorage`
+  `foss-earth.isolation-refused.v1` keeps the user agent for 7 days. That
+  browser's pages start without the reload until then, or until it updates.
+- **Chrome's back/forward cache.** In Chrome 155 a later reload could bring
+  back the page from before the isolating reload, frozen while it waited. A
+  waiting page listens on the `BroadcastChannel` `foss-earth.isolation`, and
+  every page posts on it as it loads, so Chrome evicts the cached page. A page
+  restored anyway asks once more, and the second time starts unisolated.
+- **A Shift-reload** skips the worker in Chrome and Firefox. That page reloads
+  once through the worker and is isolated again.
+- **Inside another site's frame,** Chrome gives the app partitioned storage.
+  The worker registers and controls the framed page there, but can't isolate
+  it under a parent that isn't isolated, so the page starts at once.
+- **Not measured:** the first visit's extra round trip on the published site.
 
 **Changes.**
 
@@ -524,8 +556,9 @@ Cross-origin loads checked on 16 October 2026, with an `Origin` header:
   polled by fetch rather than through the window, so COOP doesn't affect it.
 - YouTube embeds won't load in an isolated page; the tour's roadmap, item 4,
   has that.
-- The report-only release checks what the table can't: `<img>`, CSS and font
-  addresses on other origins that don't ask for CORS.
+- The table can't check `<img>`, CSS and font addresses on other origins that
+  don't ask for CORS. With no report-only release, the browser check below
+  did: nothing was blocked in the pages and flows it ran.
 
 The engine's
 [performance notes](https://github.com/foss-earth/engine/blob/main/docs/performance-notes.md)
@@ -552,6 +585,73 @@ isolated; it changes when this step ships.
   app's `browser-functional` suite blocks outside requests, so it covers the
   app's own behaviour but not the maps.
 - The user checks Safari on the tour's iPhone XS Max by hand.
+
+**Checked, 18 October 2026,** on macOS, with the builds of Earth (`/app/`),
+the UMN tour (`/tour/twin-cities/`) and 0SFS fly (`/fly/`), and with the
+0SFS site that `0sfs.github.io`'s build makes from that fly build. Each was
+served as GitHub Pages serves it: no COOP, COEP or CORP,
+`Cache-Control: max-age=600`, ETag, and a folder redirected to its slash. Each
+page asked for the threaded sky with 4 threads
+(`set.native.core.sky=threaded&set.native.threads=4`); the sky's default stays
+TypeScript. The scripts are local and not committed:
+`app/build/sw-isolation/check.mjs` in FOSS Earth's checkout,
+`build/sw-isolation/fly-probe.mjs` in fly's, and
+`build/sw-isolation/build-site.mjs` in `0sfs.github.io`'s. Safari ran
+through its own WebDriver, `safaridriver`, whose automation window starts
+each session with no history or storage, like a private window.
+
+| Case | Chrome 155 | Firefox 158 | Safari 27 |
+| --- | --- | --- | --- |
+| Earth, first visit | Isolated after one reload; `crossOriginIsolated` in the page and in a worker; threaded sky, 4 of 4 threads | The same | The same |
+| A reload; a later visit | Isolated, without a reload; the later visit in a new tab, with the worker stopped | The same; the later visit in a new Firefox on the same profile | The same; the later visit in a new tab, the first one closed, with the worker running: WebDriver can't stop it |
+| Shift-reload | Skipped the worker, reloaded once, isolated | The same; the server saw `no-cache` without navigation preload | Not run: WebDriver has no Shift-reload |
+| Setting off | Reloaded once; `off`; worker `isolate=0`; single WASM sky, `not-cross-origin-isolated` | The same | The same |
+| Setting on again | Reloaded once; isolated | The same | The same |
+| Inside another site's frame | Started at once, `unavailable`; single WASM sky | The same | The same |
+| No service worker: an `http:` address other than localhost | Started at once, `unavailable` | The same, and with service workers turned off | Not run |
+| A reload the worker doesn't answer | `unavailable` after one reload, no loop | Not run | Not run |
+| Keep the app's files off | Isolated | Not run | Not run |
+| Every map, network on | Google 3D Tiles; USGS Imagery, Imagery Topo and Topo, OSM, both Carto styles and OpenTopoMap over Mapterhorn; USGS Imagery over AWS Terrarium. Each loaded isolated, nothing blocked | The same | The same, each map in a tab of its own: isolated, no tile error, no COEP report |
+| Search and airports | Nominatim and freeairportdb answered, nothing blocked | The same | Nominatim and freeairportdb answered, and the results showed |
+| Tour | Isolated after one reload; all 60 previews; 111 and 113 photo tiles in two places; Google tiles; nothing blocked | Isolated after one reload; all 60 previews; 110 photo tiles in one place; Google tiles; nothing blocked | Isolated after one reload; all 60 previews; 132 and 133 photo tiles in two places, all answered 200; Google tiles; no COEP report |
+| Fly | First visit, reload, setting off (worker removed), on again: the page and every app worker that answered matched, the threaded sky's included; Mapterhorn and USGS loaded; nothing blocked | The same, read from the page and a worker | The same, read from the page and a worker, and a later visit in a new tab |
+| 0SFS site: its landing page replaces fly's `/`, so fly's worker answers it too | The landing page started unisolated before the worker. Once the worker answered it, it was isolated with all 3 images and nothing blocked, also after a reload. Start flying kept the address's settings and reloaded once. `/rc/` and an old `?mode=remote` link were isolated with no reload. A phone's first visit from a QR, new or `?mode=remote`, reloaded once, and the controller still got the invitation in the address's `#` | Not run | Not run |
+| Renderer, asked for auto | WebGPU | WebGL2: `WebGPUEngine.IsSupportedAsync` returned false | WebGPU |
+
+- **Carto** answered every tile, from any origin or none, with an image that
+  says "API KEY REQUIRED, carto.com/basemaps/apikey". The check counted those
+  answers as loaded. This isn't caused by isolation: a request from
+  `foss-earth.github.io` gets the same image. Both Carto styles need a key.
+  [Carto's free key](https://carto.com/basemaps/apikey) is emailed without an
+  account, allows 5 million requests a month for non-commercial use, and goes
+  in each tile address as `?key=`, like the Google key, with the attribution
+  "© OpenStreetMap contributors, © CARTO".
+- **Switching basemap after start isn't drawn:** the view keeps the first
+  basemap. The published app does the same, so each map was opened in a page
+  of its own.
+- **Firefox on macOS.** macOS quits an app with no windows about 31 s after it
+  starts, unless it may run in the background. Headless Firefox has no
+  windows, so each Firefox case ran in a session of its own, 4 to 10 s long,
+  on one profile. None was quit.
+- **Safari** needs `safaridriver --enable`, and `safaridriver` needs the
+  `com.apple.webinspectord` agent. That agent was off on this Mac; it was
+  turned on for the check and off again after it. WebDriver shows no
+  requests, so in Safari a refusal could only show in the page: a tile error
+  from the app, a COEP report to a `ReportingObserver`, or a map, photo or
+  result missing from the case's screenshot. None did. The page's resource
+  entries named the other sites it loaded from, but Safari gives them no
+  status, so they can't show a refusal.
+- **Safari stopped answering once.** In one run it stopped answering
+  WebDriver on the seventh page opened in one tab, Carto Positron's, and
+  every command after that timed out. A run of its own, 28 pages in one
+  tab, didn't repeat it. The check now opens each map in a new tab, and
+  starts a new session if Safari stops answering. In the last run all nine
+  maps, search and airports ran in one session, and Safari never stopped.
+- **Not checked:** the published sites, since they aren't deployed;
+  Playwright's WebKit, which isn't installed here; and Safari on a phone.
+  Nor is pairing a phone with a computer: the check's invitation names a
+  computer that doesn't exist. With isolation on or off, the controller
+  reached the pairing service and reported the same thing.
 
 Done when the published apps are isolated from the first visit in Chrome,
 Firefox and Safari, every map loads, and the report names the tier.
@@ -773,6 +873,38 @@ the actual tier.
    time shows it matters.
 6. **Shared heights.** In the threaded tier, height grids are written into
    shared memory for step 6.
+
+**Status, 19 October 2026 (built and tested, not committed).**
+
+- Step 1: worker targets are adopted without a copy on either side. The page
+  works out its own target only for the one parity check, no longer for every
+  worker job. A target prepared before a segment-count change is no longer
+  uploaded to the rebuilt mesh; the page path had the same race. Mesh workers
+  are still opt-in.
+- Step 2 (R2): done. Targets, new meshes and refinement steps are float32 from
+  the start, and Babylon stores the same bits (identity digest). Stitched seams
+  stay float64 on the CPU, because rounding them moves an antimeridian or
+  equator seam just off its plane, where Babylon's exact box check rejects a
+  ray along it.
+- Step 3 (R1): partly done. The CPU indices and UVs are built once per segment
+  count, with 16-bit indices up to 255 segments. The GPU buffers stay one per
+  tile, because a shared Babylon index buffer loses picking's indices and is
+  not rebuilt after a lost context.
+- Step 6: built for isolated pages whose terrain is prepared in workers, not
+  only the threaded tier. Decode workers copy heights into a
+  `SharedArrayBuffer` and post it without a transfer, so mesh workers read the
+  page's grids without a copy (Component execution → Terrain heights → Shared
+  memory, `native.sharedHeights`, on by default since 19 October 2026, applies after a reload). Where targets are built on the page a transfer already
+  costs nothing, so the setting does nothing there. Without isolation heights
+  are transferred as before. Nothing writes a grid after decoding. The native
+  terrain core and sampler accept shared heights and snapshot them; the binary
+  is unchanged. Checked in Node, in the native parity checks and in headless
+  Chrome on an isolated tour dev server: 114 of 114 tiles arrived shared and
+  49 mesh targets were built from them.
+- The decode pool now asks for no more workers than the worker budget leaves
+  it. Before, a refused worker made the pool decode every later tile on the
+  page. In the worker and WASM tiers that happened after the first few
+  workers.
 
 **Proof.**
 

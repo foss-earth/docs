@@ -1,5 +1,15 @@
 # Fresh-agent prompt: finish Component execution after shared-memory integration
 
+**Done, 19 October 2026.** Component execution shows the shared-memory sky in
+Earth, the tour and fly. Sky has Shared memory [Off|On] after Implementation,
+and Shared-memory threads while it is on. The slider is disabled with "Not
+isolated" on a page that isn't cross-origin isolated, and the title shows the
+shared threads that ran. Everything is checked on dev servers at desktop and
+phone widths, in both themes. What it shows, the checks, commands and the
+remaining TODOs are in
+[the shared-memory UI handoff](webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026).
+The prompt below stays as the record of the requirements.
+
 Prepared 18 October 2026. Use **after** the agent working from
 [the shared-memory assignment](webassembly-shared-memory-handoff.md) has finished
 and updated its actual runtime contract/evidence. Start in
