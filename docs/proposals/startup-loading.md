@@ -425,6 +425,31 @@ flight keeps the PBR materials, which its glTF aircraft use.
   error there forgets the record and reloads, so the next start probes again
   and can fall back. Auto-detect in the Renderer tab forgets it too. The first
   visit, and the first after a browser update, still pay the probe.
+- **No presentation probe in automatic mode** (renderer `3cca1fd`, 18
+  October 2026). Automatic mode now starts WebGPU on the page's canvas on
+  every visit, the first included, and watches its first frames for the
+  probe's errors. Before the first frame it saves the options it starts
+  with; a presentation error saves what the next start tries and reloads:
+  first the safe options (no antialiasing, no device pixels), then WebGL. So
+  the rare device whose WebGPU cannot present reloads once or twice on its
+  first visit, and then starts as saved for 30 days, or for three days on
+  WebGL, before it tries the defaults again. A start whose saved options do
+  not read back (no storage), a host without `reload`, a chosen WebGPU and a
+  retry after a WebGL fallback still probe. The page's first inline script
+  also asks for the WebGPU adapter (`window.__fossEarthWebGpuSupport`), so
+  it comes while the modules load instead of when the renderer starts: the
+  first adapter of a fresh headless Chrome profile took 36–83 ms.
+- **The default atmosphere's tables, precomputed** (sky `d319dd5`, 18
+  October 2026). The tables of light scattered more than once and of the
+  sky's light on level ground were most of what `createAtmosphere` spent
+  before the first frame. The build now ships them for the settings'
+  default atmosphere (`src/precomputedAtmosphereTables.ts`, 9 KB more
+  JavaScript, made by `npm run generate:atmosphere-tables`), so that
+  building it computes only the transmittance: about 115 ms to 26 ms
+  without slowdown. Other parameters still build them. A test fails when
+  the kept tables are no longer, bit for bit, what the code builds. A
+  WebAssembly build of the same loops gave identical tables and was no
+  faster, so the work is not done at all rather than done in WebAssembly.
 - **React and the tab overlay** (app `d0c1211`) are imported with `import()`
   when `mountGlobeApp` starts, and awaited after `createGlobeApp`, so they
   download while the globe starts instead of before it: 66 KiB off the
@@ -444,8 +469,33 @@ flight keeps the PBR materials, which its glTF aircraft use.
   viewer, a lazy chunk. `check-startup-chunks.mjs` fails the build if
   either returns to the startup graph.
 
-Timings for these steps are only indicative so far: they come from smoke
-runs on a machine that other work was using, not an exclusive run.
+Timings for these steps are only indicative so far: one run of
+`measure.mjs` on 18 October 2026, as above, on a machine that other work
+was using (load average about 1.8), not an exclusive run of three. The
+builds were renderer `3cca1fd`, sky `d319dd5`, with the WebAssembly work
+then in the app's, the engine's and the sky's checkouts, since committed.
+Each cell is after step 3 → now, so it covers steps 4 and 5 as well as
+step 6 so far.
+
+| Page | Visit | First paint | Modules run | Renderer | First 3D frame | Globe | Content | Bytes before first frame |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/tour/minneapolis/` | cold | 0.23 → 0.29 | 4.03 → **2.57** | — → 2.81 | 5.58 → **4.72** | 7.24 → 6.85 | 7.24 → 6.85 | 1.95 → **1.23 MiB** |
+| `/tour/minneapolis/` | warm | 0.06 → 0.11 | 0.34 → 0.21 | — → 0.43 | 1.45 → 1.34 | 3.21 → 3.10 | 3.21 → 3.11 | 276 B → 276 B |
+| FOSS Earth app `/app/` | cold | 0.22 → 0.25 | 2.99 → **2.02** | — → 2.26 | 4.56 → **4.05** | 6.25 → 6.24 | 60.6 → 60.4 | 1.95 → **1.23 MiB** |
+| FOSS Earth app `/app/` | warm | 0.07 → 0.08 | 0.31 → 0.33 | — → 0.57 | 1.45 → 1.50 | 2.97 → 4.12 | 5.54 → 9.23 | 276 B → 276 B |
+| 0sfs `/fly/` | cold | 0.24 → 0.25 | 3.71 → **3.16** | — → 3.26 | 5.19 → **4.58** | 7.36 → 8.16 | 25.0 → 23.8 | 2.92 → **1.55 MiB** |
+| 0sfs `/fly/` | warm | 0.06 → 0.08 | 0.35 → 0.50 | — → 0.78 | 1.71 → 1.98 | 3.20 → 4.92 | 3.59 → 5.48 | 0 B → 0 B |
+
+- On a cold visit the modules run 0.5 to 1.5 s sooner and the first frame
+  comes 0.5 to 0.9 s sooner: 0.7 MiB less to fetch (steps 4 to 6) on the
+  tour and the app, 1.4 MiB less on the flight, and no probe.
+- Warm visits fetch nothing before their first frame, and it moved by no
+  more than one run on a busy machine varies.
+- The warm globe came 1.1 to 1.7 s later on the app and the flight, and
+  not on the tour. The profile above finds the time in the engine's
+  terrain and imagery work, which the WebAssembly work changed in those
+  builds, not in the renderer or the atmosphere; an exclusive A/B run
+  would tell.
 
 **Where the time goes after the modules run.** A CPU profile of a warm
 `/tour/minneapolis/` visit at 4× slowdown, with source maps, on WebGPU with
@@ -475,6 +525,38 @@ which the atmosphere's tables take 208 ms. What is left between the first
 frame and the globe is the engine's terrain and imagery work, spread across
 many functions (terrain image decoding 62 ms, imagery geometry 50 ms, the
 imagery selector 44 ms), and no single panel.
+
+With no probe and the atmosphere's tables precomputed (18 October 2026), a
+warm `/app/` visit profiled the same way had `boot:renderer` at 0.41 s, the
+first frame at 1.44 s and the globe at 4.06 s. The build held the
+WebAssembly work then in the app's, the engine's and the sky's checkouts,
+since committed (app `e398745`, engine `b6fc621`, sky `0af6bda`).
+
+- Renderer to first frame (1.03 s, 1.03 s sampled): Babylon's WebGPU
+  buffers (`setRawData`, `createIndexBuffer`, `setVerticesData`) about
+  160 ms, the terrain mesh (`createTerrainMesh`, `terrainSurface`,
+  `meshPositions`) about 140 ms, the atmosphere 136 ms, of which building
+  the transmittance (`buildAtmosphere` and the optical depths of `logMean`)
+  is 84 ms, and garbage collection 45 ms. No single cost is left as large as the
+  atmosphere's tables were.
+- First frame to globe (2.62 s, 2.62 s sampled): the main thread is busy
+  the whole time, with the engine's terrain and imagery work spread over
+  many functions: terrain image decoding 115 ms, `applyWorldViewport` 77 ms
+  (it reads the canvas's `clientWidth` and `clientHeight` every frame),
+  edge stitching 45 ms, the imagery selector 42 ms, imagery geometry 38 ms.
+
+**The Google 3D Tiles code before the first frame.** On a cold `/app/`
+visit (the indicative run above), the renderer is ready at 2.26 s and the
+page then downloads `3d-tiles-renderer`'s Babylon adapter and the glTF
+loader it brings (`index.babylonjs`, `pbrMaterial`, Babylon's audio and
+flow-graph chunks, `LoaderBase`, `workerPool`: 22 files from 2.28 to
+2.99 s), then its plugins (`index.core-plugins`, to 3.18 s), before the
+globe starts: `app/src/app/browserRuntime.ts` awaits
+`loadBrowserGlobeGoogleProviders()` there, with or without a Google key.
+The first terrain tile is requested at 3.83 s. Without a key the page could
+start its globe without them and fetch them after the first frame. It needs
+the engine's `createGlobeRuntime` to wait for them when a key arrives later,
+since a key can be set while the page runs. Not done yet.
 
 ## 3. Renderer advisor
 
@@ -623,13 +705,15 @@ log.
 6. The empty scene first: the boot chunk split. Begun 17 October 2026 with
    the presentation probe skipped once passed, and React and the tab overlay
    loaded while the globe starts. Its first goal is met: 0.68 MiB of
-   JavaScript before the first frame, from 1.44 MiB. What is left before the
-   first frame, largest first: on a first visit and after each browser
-   update, the WebGPU presentation probe (about 0.42 s; skipping it there too
-   would trade it for a reload on the rare device whose WebGPU cannot
-   present); the atmosphere's tables (about 0.21 s at 4× slowdown, in the
-   WebAssembly work, or shipped precomputed by the build); and running the
-   entry chunk itself (475 KiB brotli, 1.9 MB), whose panels the profile
-   no longer singles out.
+   JavaScript before the first frame, from 1.44 MiB. On 18 October 2026 the
+   probe went from automatic mode altogether, for a reload on the rare
+   device whose WebGPU cannot present, the WebGPU adapter is asked for while
+   the page parses, and the default atmosphere's tables ship precomputed:
+   see Startup measurements. What is left before the first frame, largest
+   first: on a cold visit, the Google 3D Tiles code the page waits for with
+   or without a key (about 0.9 s at Fast 4G, see Startup measurements);
+   Babylon's WebGPU buffers and the first terrain mesh (about 0.3 s at 4×
+   slowdown); and running the entry chunk itself (475 KiB brotli, 1.9 MB),
+   whose panels the profile no longer singles out.
 7. The renderer advisor's rules and the log entries. Done 17 October 2026:
    see Advice.
