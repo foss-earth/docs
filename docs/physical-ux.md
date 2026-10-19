@@ -17,25 +17,29 @@ Different physical gestures express different intent. Treating every gesture as
 a cursor-anchored ray solve—or treating every gesture as an unanchored angular
 turn—breaks the physical illusion.
 
-### One-finger press-and-drag and two-touch pinch (Direct grab)
+### One-finger drags and two-touch pinches
 
-When a person presses a mouse button or touches the screen with one or two
-fingers, they are physically grabbing the point on the world or image directly
-under that contact:
+On the globe, and in a panorama's Grab mode or two-touch pinch, pressing or
+touching physically grabs the point on the world or image under that contact:
 
 - **On the globe:** `beginAnchorPan` and `stepAnchorPan` cast a ray to the
   displayed terrain surface and solve the camera pose each frame so that exact
   3D ground point stays under the pointer.
-- **Inside a 360 sphere:** `LookModel.drag` and `LookModel.touchPinch` cast a
+- **Inside a 360 sphere:** the default **Drag → Scroll** mode maps one-finger
+  and mouse drag deltas to heading and pitch regardless of contact position,
+  scaled with FOV and viewport height. It keeps the horizon upright and the
+  same release inertia, without a grab anchor. This avoids unstable geometry
+  near a sphere pole through the top or bottom of the screen.
+  Scroll became the default after phone testing on 19 October 2026: equal
+  movements respond consistently wherever contact starts, while an exact
+  upright grab can accelerate and stall near a pole. Explicit saved Grab
+  choices remain valid. The [gesture guide's decision and reproduction](https://github.com/foss-earth/sphere-image/blob/main/docs/gesture-anchors.md#why-scroll-became-the-default)
+  records the evidence and the remaining Grab reversal limitation.
+  In the optional **Grab** mode, `LookModel.drag` and `LookModel.touchPinch` cast a
   common-space unit ray through the surface-local contact point (or two-touch
   midpoint) and solve heading, pitch, and FOV (`anchorSphereCamera`) so that
   image point stays under the finger at any FOV ($10^\circ\text{–}150^\circ$).
-  This is the default **Drag → Grab** mode. The optional **Scroll** mode maps
-  one-finger and mouse drag deltas to heading and pitch regardless of contact
-  position, scaled with FOV and viewport height. It keeps the horizon upright
-  and the same release inertia, without a grab anchor. This explicit preference
-  avoids the unstable geometry of grabbing near a sphere pole through the top
-  or bottom of the screen. Two-touch pinches retain their midpoint anchor.
+  Two-touch pinches retain their midpoint anchor in either mode.
 - **On release:** If the finger was moving within the release window
   (`GLIDE_RELEASE_WINDOW_MS = 80` ms in a sphere, `MOMENTUM_WINDOW_MS = 120` ms
   on the globe), the camera carries the actual angular or surface velocity it
