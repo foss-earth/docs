@@ -287,6 +287,33 @@ segment. Use natural widths and minimal padding, and preserve the visible
 boundary when groups wrap. Do not replace these groups with unbounded text
 scattered across the paragraph or with only a top separator.
 
+### Nested rectangles show what holds what
+
+What a part holds sits inside it, never indented under it. A component's
+overrides sit inside the component, and a package sits inside the part that
+brought it in. Each one is a rounded rectangle inside its owner's, as
+matryoshka dolls hold each other. The user set this on 19 October 2026.
+
+- Each part is one rounded rectangle, the parameter row's enclosure (a 1 px
+  border and a faint fill). It holds its own line first, then its parts'
+  rectangles.
+- Nothing is indented: no `padding-left`, `margin-left` or list indent that
+  sets a part further in than its owner's padding. The padding is the same on
+  both sides, so a level costs a few pixels at each edge rather than a column
+  on the left.
+- Each level is a step smaller and tighter, so five levels fit a 360 px
+  phone:
+  - Radius 10 px with 3 px 6 px padding.
+  - Then 8 px with 2 px 5 px.
+  - Then 6 px with 2 px 4 px, which deeper levels keep.
+- A part's parts form a paragraph grid with a 3 px gap. Closed parts keep
+  their own widths and wrap as words do. An open part takes the whole line.
+- A list laid out this way keeps `role="list"`, because WebKit drops a list's
+  role when it has `list-style: none`. Disclosure keeps its keyboard access
+  and its **?**.
+- The About tab's **Built from** tree (`.foss-earth-about__part` in
+  `about/styles/panel.css`) is the reference.
+
 ### Compact segmented choices
 
 This is the default design for every discrete choice control in every host app.
@@ -378,19 +405,18 @@ These cases were settled during the compact-controls cleanup (18 October 2026):
   reads better that way, as in Interface → Toolbar's **[On / Auto / Off] Label**
   rows. Without it, the label comes first.
 - **Fields read as a phrase too**, like sliders. A number or text field follows
-  its label, with its unit after it: **Resolution [1] × ?**, **Date (UTC)
-  [2026-04-20] Save Clear ?**. Named values sit between the label and the number
-  they stand for, **Frame rate cap [Off | Value] 60 fps ?**, and a chosen named
-  value is not repeated in the readout. A slider's track follows its phrase and
-  wraps to the next line when it does not fit; the phrase itself wraps at its
-  words rather than squeezing them.
+  its label, with its unit after it: **First readiness check [00016] ms ?**,
+  **Date (UTC) [2026-04-20] Save Clear ?**. Named values sit between the label
+  and the number they stand for, **Frame rate cap [Off | Value] [060] fps ?**,
+  and a chosen named value is not repeated in the readout. The phrase wraps at
+  its words rather than squeezing them. Where a slider's track goes is set in
+  [Sliders](#sliders).
 - **One decision is one track**, even when it has categories. The Map basemap
   is a single track, 3D then 2D. It does not use separate tracks that share a
   radio name.
-- A **label too long** to share its line with its track wraps. The track moves
-  to the next line, followed by **?**. Segments never shrink or clip. The
-  shared slider does not yet put **?** after its track; see
-  [Sliders](#sliders).
+- A **label too long** to share its line with its track wraps. The track and
+  its unit move to the next line, and the words after them, the status and **?**
+  follow as one unit. Segments never shrink or clip.
 - A **section's purpose** goes behind a **?** after its title. It does not go
   in an intro paragraph. Pass `help` (and `helpLabel`) on the section entry.
   The **?** is placed in `.foss-earth-panel-section__frame`, outside the
@@ -420,6 +446,9 @@ To check a change in the browser:
 - Give each screenshot its own fresh browser profile. A panel saves whether
   its sections are open, so a shared profile carries that state from one shot
   into the next.
+- Drag each always-shown track across its whole range with real pointer
+  input. At each step, record the handle's width and the track's position.
+  Neither may change.
 - The brand palette (`ui/assets/theme.css`, `[data-ui-theme]`) loads after
   `ui.css`. A rule in `ui.css` that a palette also colors, such as a checked
   switch, needs a matching rule in `theme.css` that is at least as specific.
@@ -464,9 +493,23 @@ Cleanup tracking (18 October 2026):
   Automatic adjustment, Imagery selection, Terrain selection, Mouse and
   trackpad, Moon and stars and Position readout. Fly's and the native page's
   tabs are not yet listed.
-- [ ] [Sliders](#sliders): **?** after the track, tracks on demand, and a handle
-  that is the field, with a constant character count. The
-  [handoff](proposals/implementation/slider-handle-field-handoff.md) carries it.
+- [x] [Sliders](#sliders), in the shared factory (19 October 2026):
+  - **?** comes after the track.
+  - Tracks show on demand.
+  - A handle is its field, with a constant character count.
+  - Units sit outside the track.
+  - An I-beam marks the value in use.
+  - Large numbers are compact.
+
+  It was checked in FOSS Earth, 0SFS fly and the UMN tour at desktop and
+  360 px, in both themes. The
+  [handoff](proposals/implementation/slider-handle-field-handoff.md) has the
+  prompt.
+- [ ] Sliders, still open:
+  - Frame rate cap's steps count from 10, so a drag from 60 passes 057 and
+    067. Its default is Off, not a number it can land on.
+  - The Map detail panel's **Saved default [Normal | Custom] ↶ ⟲** row leaves
+    its **?** alone on a line.
 
 ### Dropdowns fit their own text
 
@@ -500,8 +543,10 @@ A text or number field is as wide as its text, like a dropdown, and no wider. A
 number field fits its digits (`size` and `--field-chars`, set by the shared
 control as the value changes). A text field fits its value, or its placeholder
 while empty, and grows as it is typed into (`size`, with `field-sizing:
-content` where the browser has it). Never give a field a fixed width, `width:
-100%` or `flex: 1`; `max-width: 100%` lets it shrink on a narrow panel.
+content` where the browser has it). A slider's value is the exception: it keeps
+one character count across its whole range (see [Sliders](#sliders)). Never
+give a field a fixed width, `width: 100%` or `flex: 1`; `max-width: 100%` lets
+it shrink on a narrow panel.
 Placeholders are terse because they set the width: **Paste key**, not **Paste
 the key**; **New key**, not **Enter a new key to replace it**. A state shown
 another way is not repeated: an empty key field with Clear disabled already says
@@ -514,40 +559,104 @@ bug report's title and description, which may take its line.
 
 ### Sliders
 
-The user set this design on 19 October 2026. The shared slider does not follow
-it yet; the [handoff](proposals/implementation/slider-handle-field-handoff.md)
-carries the work.
+The user set this design on 19 October 2026. The shared factory draws it for
+FOSS Earth, 0SFS fly and the UMN tour: `controls.ts`, `track.ts` and
+`trackPopover.ts` in `ui/src/shell/settings`, and `numberFaces` and
+`parseShownNumber` in `ui/src/settings/values.ts`.
 
-- **? is the last item of the whole control**, after the track. Today
-  `placeSlider` (`ui/src/shell/settings/controls.ts`) builds the phrase line
-  (`.foss-earth-parameter__slider-line`: label, field, unit, named values) and
-  appends the track after that line, while the control's help wrapper appends
-  status and **?** to the end of the phrase line (or the text field's
-  `.foss-earth-parameter__tail`, or the header). So on a slider the track comes
-  last. Tests in `ui/src/shell/settings/parameterSection.test.ts` pin **?** as the
-  last item of the line, not of the control; they change with it.
-- **A track is shown on demand by default.** Most tracks are rarely needed: a
-  number reads **Label [value] unit ?**. Its track shows in a popover while the
-  pointer is over the control, and stays, whatever the pointer does, once the
-  control is selected by a click, until a click elsewhere or Escape. Keyboard
-  focus selects it as a click does. All of Renderer → Debug's tracks are on
-  demand, for example.
-- **A track shown all the time** is the exception, chosen per parameter, for a
-  setting people set by feel, such as Resolution. Its handle is the field: the
-  value is written on the thumb. A press and release on the thumb without
-  moving selects it and shows it as an editable field, and a further click
-  types into it. A press that moves is an ordinary drag. The slider keeps its
-  keys and its native range semantics for keyboards and screen readers.
-- **The value keeps one character count across its range**, with leading zeros
-  and the step's fixed decimals, in tabular figures: **010** to **240** fps,
-  **0.25** to **2.00** ×. The thumb's label then never resizes as it moves.
-- Until then, a slider's field starts as wide as the widest end of its range and
-  never narrows. A field that narrowed while a drag changed its digits moved the
-  track under the pointer, which changed the value and the field again.
-- **Open question:** where an always-shown track sits in its phrase. The user
-  asked whether such sliders should come first. The recommendation is
-  **Label [track, value on its thumb] unit ?**, the track taking the value's
-  place, with label first as everywhere else.
+- **? is the last item of the whole control**, after the track. The words
+  after the value, its reading, its status and **?** wrap as one unit
+  (`.foss-earth-parameter__tail`), so **?** never sits alone on a line.
+- **A track is shown on demand by default.** A number reads **Label [value]
+  unit ?**, as in **Maximum readiness check [00250] ms ?**. All of Renderer →
+  Debug works this way.
+  - While the pointer is over the control, its track shows in a popover under
+    the value. The pointer has 150 ms to cross from the control to the
+    popover.
+  - A click, keyboard focus or a tap pins the popover. It stays open until a
+    press elsewhere or Escape.
+  - One popover shows at a time in a document. It overlays the panel in the
+    top layer and never moves the layout.
+  - The phrase doesn't change when the popover opens. Only a new value changes
+    it.
+  - A closed popover is clipped to nothing, not hidden. Tab still reaches its
+    thumbs, and focusing one pins the popover open.
+- **A track shown all the time** is the exception. It is set per parameter
+  with `alwaysShowTrack: true`, for a setting people set by feel more than by
+  typing.
+  - These are Resolution, Field of view (the globe's and fly's) and Frame rate
+    cap. The Map → Detail tracks draw the same handles.
+  - The track takes the value's place, with the label first as elsewhere:
+    **Resolution [——1.00——] × ?**.
+  - The track and its unit keep one line (`.foss-earth-parameter__track-value`).
+    The track is a fixed 140 px long (`--foss-earth-slider-length`) and
+    shrinks only on a narrower panel. A label too long to share its line moves
+    them to the next line, and the tail follows as one unit.
+  - Nothing in that line changes width. A status that comes and goes after it
+    never moves the track under a drag.
+- **The handle is the field**: the value is written on the thumb. These open
+  an editor over the handle, with its text selected:
+  - A press and release that moves 4 px or less.
+  - Enter.
+  - Typing a digit while the thumb has focus.
+
+  In the editor, Enter or leaving the field sets the value, and Escape keeps
+  the old one. A press that moves further than 4 px is an ordinary drag.
+- **A value keeps one character count across its range**, in tabular figures.
+  Neither the handle nor the phrase's field changes width as the value moves.
+  This replaces the interim `fieldChars`, which only stopped a field from
+  narrowing. `numberFaces` writes the values like this, and a host's own track,
+  such as the Map detail panel's, uses it too:
+  - Leading zeros fill up to the widest end of the range and are drawn faint:
+    **010** to **240** fps.
+  - Values have the step's fixed decimals: **0.25** to **2.00** ×. On a log2
+    scale, they have enough decimals that one step up from the small end
+    shows a new value.
+  - When the range goes below zero, every value has a sign, and zero shows
+    **±**: **−3.00** to **+1.00**.
+  - From 100,000 in the unit shown, values have three significant figures and
+    k, M, G or T: **10.7M**, not **10,737,418**. `parseShownNumber` reads a
+    typed **1.5k** or **10,737,418**.
+- **Units sit outside the track by default** (`unitPlacement`):
+  - For a number, the unit comes after the value as the next word: **[060]
+    fps**.
+  - For a two-thumb range, it goes in brackets after the label: **Fixed depth
+    range (m) [00.10] to [10.7M] ?**.
+  - Writing the unit under the value on the handle, as the toolbar's FPS chip
+    does, is opt-in with `"handle"`.
+  - `textAfter` adds words after the value and unit, where the phrase needs
+    them to read as a sentence.
+- **The value in use, where it differs from the one set**, is marked on the
+  track with an I-beam (`.foss-earth-track__in-use`), as on the map's detail
+  rail. The thumb stays at the value set.
+  - A host gives this value with a reading of `{ text, inUse }`.
+  - Auto frame time goal, Terrain mesh default detail and Frame rate cap report
+    one. The cap reports the rate reached once rendering has run for 60
+    frames.
+  - Readings refresh with the host's tick, and only while their section is
+    open.
+  - A value in use that rounds to the one set shows no I-beam.
+- **Both ends and the default can be reached.** A native range input counts
+  its steps from its minimum, so the top of a log2 track, or a default between
+  steps, can fall off its step grid. The last step lands on the top end. A
+  step within half a step of a numeric default lands on the default.
+- **Every slider keeps:**
+  - Native range inputs, never `hidden`, `display:none` or `aria-hidden`.
+  - Arrow keys and focus outlines.
+  - Disabled explanations and the pending/apply state.
+  - Named values (**Off | Value**).
+  - Reset, import and export, provenance, and setting IDs.
+  - Pointer and trackpad routing between the panel and the globe, and touch.
+- **Tests:**
+  - `ui/src/shell/settings/sliders.test.ts` and `parameterSection.test.ts` pin:
+    - **?** last, after the track.
+    - The line that keeps a shown track and its unit together.
+    - The popover's states: open, pinned and closed.
+    - Click versus drag on a handle.
+    - The constant character count.
+    - Both ends and the default reached.
+    - The I-beam.
+  - `engine/tests/mapDetailPanel.test.ts` pins the detail track's handles.
 
 ## The HUD defaults to one row
 
@@ -785,8 +894,23 @@ its name and **?**; an expanded title reads, for example, **Terrain heights: TS
 (2 workers) ?** or **Terrain geometry: TS (main) ?**. Show actual measured
 execution once in the title, without a duplicate Running line. Preserve mixed
 worker/main execution and fallback information. Separate manual choices and visible
-Apply and reload behavior implement these requirements; shared-memory WASM
-threading remains unavailable.
+Apply and reload behavior implement these requirements.
+
+Sky is the one component with a shared-memory build:
+
+- **Shared memory [Off|On] ?** comes right after its Implementation.
+- While Shared memory is on, the standard **Shared-memory threads** count
+  (`native.threads`, which counts the coordinator) shows beside it.
+- The title comes from the report: **Sky: WASM (4 shared threads)**, or **WASM
+  (3 of 4 shared threads)** when fewer are ready.
+- **A page that isn't cross-origin isolated** disables the slider, with the
+  terse status **Not isolated**, a title giving the reason, and help that says
+  how to isolate the page. If the URL already asks for shared memory, the
+  slider stays on so it can be turned off.
+- **A fallback** reads, for example, **Fallback: page not cross-origin
+  isolated**, and After reload names what will run.
+- Memory, ready threads, batches, rows by thread and waits stay behind **?**.
+- Other components show no Shared memory control.
 
 Show only components relevant to the selected map mode, updating immediately
 when `map.source.basemap` changes. Raster basemaps show Terrain heights, Terrain
