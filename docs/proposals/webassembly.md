@@ -661,6 +661,11 @@ reload loop. Deployment remains a separate user-approved action.
 
 ## 4. Toolchain, packages and loader
 
+**Update, 19 October 2026.** The cores no longer live in one repository. Each
+Rust twin sits beside its TypeScript reference, in `<name>-WASM/` next to
+`<name>-TS/`, in the repository that owns the core. See
+[WebAssembly cores](../webassembly-cores.md). The plan below is kept as written.
+
 **Repository.** A new repository, `foss-earth/native`, holds one Cargo
 workspace. One repository keeps:
 

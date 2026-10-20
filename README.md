@@ -27,6 +27,7 @@ Guides and rules:
 - [UI layout](docs/ui-layout.md)
 - [Render on demand](docs/render-on-demand.md)
 - [Development](docs/development.md)
+- [WebAssembly cores](docs/webassembly-cores.md): the TypeScript and Rust twins, where each lives, the apps' execution settings and the toolchain
 - [Read previous agent conversations](docs/agent-conversations.md): local Claude/Codex JSONL reader, session discovery, search and bounded excerpts
 - [Deploying](docs/deploying.md)
 - [CI/CD](docs/ci-cd.md)
