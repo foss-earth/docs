@@ -18,7 +18,8 @@ for (const link of manifest.links) {
   if (!text.includes(link.newTarget)) throw new Error("Recorded link absent from " + link.document + ": " + link.newTarget);
   const result = documentTarget(link.document, link.newTarget, manifest.owner);
   if (result.kind === "external") {
-    if (link.status === "routed-public-owner-navigation; publication availability pending") {
+    if (link.status === "routed-public-owner-navigation; publication availability pending"
+      || link.status === "routed-public-component-navigation; publication availability pending") {
       const target = publicOwnerDocumentTarget(result.target);
       if (target.owner !== link.owner || target.path !== link.destinationPath) throw new Error("Public navigation disagrees with recorded owner: " + result.target);
       publicNavigation++; declaredPending++;

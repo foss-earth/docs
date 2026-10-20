@@ -1,0 +1,1768 @@
+{
+  "date": "2026-10-20",
+  "engineCommit": "33e897eb1818ee87a018e8f2a73e50fbd5e6fba2",
+  "baseline": "Saved implementation before optimization, not Git HEAD",
+  "scope": "Live-provider desktop Chrome WebGPU map updates; geometry sets can differ; no phone or power claim",
+  "method": {
+    "viewport": [
+      1280,
+      800
+    ],
+    "dpr": 1,
+    "latDeg": 44.977753,
+    "lonDeg": -93.265011,
+    "zoomMeters": 600,
+    "pitchDeg": 23.1,
+    "turnDegreesPerSecond": 45,
+    "secondsPerBlock": 8,
+    "warmupSeconds": {
+      "google": 30,
+      "raster": 15
+    },
+    "settlingPerToggleSeconds": 6,
+    "automaticDetail": false,
+    "frameCap": 0,
+    "cpuSamplingMicroseconds": 1000
+  },
+  "receipts": {
+    "googleBefore": {
+      "localArtifact": "production-final/before-google-browser.json",
+      "sha256": "84b6705ab848ed893d0ff8c6cf7776c5a220628132ed3a9d69e0e5bbbbf1bf7f"
+    },
+    "googleAfter": {
+      "localArtifact": "production-final/after-google-browser.json",
+      "sha256": "70440647000d3c5f1f329f3909f4c977c8b9b6e4ab4a76ecc97a18d78127b47b"
+    },
+    "rasterBefore": {
+      "localArtifact": "production/before-raster-browser.json",
+      "sha256": "52bcf68acd8f7690af4fe6cd7c23f08ea62929f721923ea63b7e287671376502"
+    },
+    "rasterAfter": {
+      "localArtifact": "production/after-raster-browser.json",
+      "sha256": "38a4c8622c28efdb584ac5d6160d55d13122eb167a907789312ec330f073813f"
+    }
+  },
+  "browser": {
+    "googleBefore": {
+      "variant": "before",
+      "map": "google",
+      "browser": "Chrome/155.0.8059.85",
+      "errors": [],
+      "close": {
+        "code": 0,
+        "signal": null
+      },
+      "blocks": [
+        {
+          "robust": false,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 357,
+            "activeTiles": 611
+          },
+          "errorTarget": 20,
+          "loadedError": 65221770943138.86,
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.94319126819126,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 149.99499999999534
+          },
+          "measuredMeanMs": 4.648347193758602,
+          "mapUpdate": {
+            "meanMs": 1.2933887726551778,
+            "p50Ms": 1.2799999713897705,
+            "p95Ms": 1.4150000214576721,
+            "p99Ms": 1.5,
+            "maxMs": 2.0199999809265137,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.0763367863929716,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": false,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 391,
+            "activeTiles": 609
+          },
+          "errorTarget": 20,
+          "loadedError": 29.614628299025608,
+          "frames": 482,
+          "frameInterval": {
+            "meanMs": 16.804315352697095,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 83.32999999999447
+          },
+          "measuredMeanMs": 6.803153525744237,
+          "mapUpdate": {
+            "meanMs": 2.8543879661817275,
+            "p50Ms": 2.9899999499320984,
+            "p95Ms": 3.5,
+            "p99Ms": 3.800000011920929,
+            "maxMs": 4.814999997615814,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.16986041420149842,
+            "activeFrames": 482
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 675,
+            "activeTiles": 806
+          },
+          "errorTarget": 20,
+          "loadedError": 60.36245595494668,
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 17.01248440748442,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 183.3249999999971
+          },
+          "measuredMeanMs": 12.117422038453036,
+          "mapUpdate": {
+            "meanMs": 6.71756756826151,
+            "p50Ms": 6.625,
+            "p95Ms": 7.360000014305115,
+            "p99Ms": 8.264999985694885,
+            "maxMs": 11.019999980926514,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.39486105658419907,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 660,
+            "activeTiles": 793
+          },
+          "errorTarget": 20,
+          "loadedError": 94.24695538597669,
+          "frames": 181,
+          "frameInterval": {
+            "meanMs": 45.670331491712716,
+            "p50Ms": 49.99499999999534,
+            "p95Ms": 50,
+            "p99Ms": 66.66000000000349,
+            "maxMs": 249.99000000000524
+          },
+          "measuredMeanMs": 40.21317679677879,
+          "mapUpdate": {
+            "meanMs": 32.65309392417992,
+            "p50Ms": 32.980000019073486,
+            "p95Ms": 36.01500004529953,
+            "p99Ms": 42.394999980926514,
+            "maxMs": 51.464999973773956,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.7149738759856629,
+            "activeFrames": 181
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        }
+      ]
+    },
+    "googleAfter": {
+      "variant": "after",
+      "map": "google",
+      "browser": "Chrome/155.0.8059.85",
+      "errors": [],
+      "close": {
+        "code": 0,
+        "signal": null
+      },
+      "blocks": [
+        {
+          "robust": false,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 357,
+            "activeTiles": 611
+          },
+          "errorTarget": 20,
+          "loadedError": 65221770943138.86,
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.943180873180868,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 149.99500000000262
+          },
+          "measuredMeanMs": 5.401881499250813,
+          "mapUpdate": {
+            "meanMs": 1.3144074845710565,
+            "p50Ms": 1.3450000286102295,
+            "p95Ms": 1.5,
+            "p99Ms": 1.5849999785423279,
+            "maxMs": 1.8600000143051147,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.0775773743082454,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "typescript (page)",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": false,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 393,
+            "activeTiles": 610
+          },
+          "errorTarget": 20,
+          "loadedError": 37.25949575889675,
+          "frames": 482,
+          "frameInterval": {
+            "meanMs": 16.769730290456437,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 66.66500000000087
+          },
+          "measuredMeanMs": 6.289948130791614,
+          "mapUpdate": {
+            "meanMs": 2.127821575680214,
+            "p50Ms": 2.14000004529953,
+            "p95Ms": 2.6299999952316284,
+            "p99Ms": 3.009999990463257,
+            "maxMs": 4.759999990463257,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.12688466295078973,
+            "activeFrames": 482
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "typescript (page)",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 551,
+            "activeTiles": 679
+          },
+          "errorTarget": 20,
+          "loadedError": 42.47801526163851,
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.94319126819126,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.670000000012806,
+            "maxMs": 149.99499999999534
+          },
+          "measuredMeanMs": 8.137640332233882,
+          "mapUpdate": {
+            "meanMs": 3.833523909168283,
+            "p50Ms": 3.740000009536743,
+            "p95Ms": 4.524999976158142,
+            "p99Ms": 5.0450000166893005,
+            "maxMs": 5.655000030994415,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.22625748883359703,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "typescript (page)",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "google-tiles",
+          "tiles": {
+            "visibleTiles": 661,
+            "activeTiles": 790
+          },
+          "errorTarget": 20,
+          "loadedError": 60.35968198402487,
+          "frames": 398,
+          "frameInterval": {
+            "meanMs": 20.476570351758802,
+            "p50Ms": 16.66500000000815,
+            "p95Ms": 33.3350000000064,
+            "p99Ms": 33.3350000000064,
+            "maxMs": 149.99499999999534
+          },
+          "measuredMeanMs": 16.891432164751706,
+          "mapUpdate": {
+            "meanMs": 10.478592965770606,
+            "p50Ms": 10.600000023841858,
+            "p95Ms": 12.175000011920929,
+            "p99Ms": 12.764999985694885,
+            "maxMs": 19.514999985694885,
+            "section": "map/google tiles",
+            "name": "google tiles",
+            "depth": 1,
+            "shareOfFrame": 0.5117357441096362,
+            "activeFrames": 398
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "typescript (page)",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "unchecked",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single",
+              "parity": "same",
+              "fallbackReason": "Unsupported Google profile: primitive count"
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single worker build; TypeScript synchronous queries",
+              "parity": {
+                "build": "same",
+                "scene": "same"
+              },
+              "fallbackReason": null
+            }
+          ]
+        }
+      ]
+    },
+    "rasterBefore": {
+      "variant": "before",
+      "map": "raster",
+      "browser": "Chrome/155.0.8059.85",
+      "errors": [],
+      "close": {
+        "code": 0,
+        "signal": null
+      },
+      "blocks": [
+        {
+          "robust": false,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 181,
+            "activeTiles": 236
+          },
+          "frames": 471,
+          "frameInterval": {
+            "meanMs": 17.232144373673037,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000189,
+            "p99Ms": 33.33499999999913,
+            "maxMs": 116.66000000000349
+          },
+          "measuredMeanMs": 4.708450102375823,
+          "mapUpdate": {
+            "meanMs": 3.819702760935336,
+            "p50Ms": 2.3199999928474426,
+            "p95Ms": 26.125,
+            "p99Ms": 33.730000019073486,
+            "maxMs": 34.7849999666214,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.2216614878628228,
+            "activeFrames": 471
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": false,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 94,
+            "activeTiles": 208
+          },
+          "frames": 469,
+          "frameInterval": {
+            "meanMs": 17.163486140724952,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000189,
+            "p99Ms": 33.330000000001746,
+            "maxMs": 50
+          },
+          "measuredMeanMs": 9.034552238897474,
+          "mapUpdate": {
+            "meanMs": 7.9597441364707215,
+            "p50Ms": 3.790000021457672,
+            "p95Ms": 20.560000002384186,
+            "p99Ms": 27.560000002384186,
+            "maxMs": 42.410000026226044,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.46376033815089024,
+            "activeFrames": 469
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 161,
+            "activeTiles": 232
+          },
+          "frames": 480,
+          "frameInterval": {
+            "meanMs": 16.909052083333336,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 116.65999999999622
+          },
+          "measuredMeanMs": 1.5859062500298022,
+          "mapUpdate": {
+            "meanMs": 0.6416562503824631,
+            "p50Ms": 0.34999996423721313,
+            "p95Ms": 0.42000001668930054,
+            "p99Ms": 4.539999961853027,
+            "maxMs": 32.27500003576279,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.03794749979006341,
+            "activeFrames": 480
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 157,
+            "activeTiles": 327
+          },
+          "frames": 460,
+          "frameInterval": {
+            "meanMs": 17.535532608695654,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 33.33499999999913,
+            "maxMs": 50
+          },
+          "measuredMeanMs": 11.531076084919597,
+          "mapUpdate": {
+            "meanMs": 10.286293477338294,
+            "p50Ms": 8.004999995231628,
+            "p95Ms": 24.899999976158142,
+            "p99Ms": 29.94999998807907,
+            "maxMs": 38.564999997615814,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.5865971514453715,
+            "activeFrames": 460
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        }
+      ]
+    },
+    "rasterAfter": {
+      "variant": "after",
+      "map": "raster",
+      "browser": "Chrome/155.0.8059.85",
+      "errors": [],
+      "close": {
+        "code": 0,
+        "signal": null
+      },
+      "blocks": [
+        {
+          "robust": false,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 181,
+            "activeTiles": 236
+          },
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.97783783783784,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000189,
+            "p99Ms": 16.67000000000189,
+            "maxMs": 166.65999999999985
+          },
+          "measuredMeanMs": 1.9816216216761455,
+          "mapUpdate": {
+            "meanMs": 0.7476819143969403,
+            "p50Ms": 0.49000000953674316,
+            "p95Ms": 1.7850000262260437,
+            "p99Ms": 5.319999992847443,
+            "maxMs": 23.680000007152557,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.04403870042453881,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": false,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 136,
+            "activeTiles": 204
+          },
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.735301455301457,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000189,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 33.33499999999913
+          },
+          "measuredMeanMs": 5.504719333440499,
+          "mapUpdate": {
+            "meanMs": 4.422058212905813,
+            "p50Ms": 2.5299999713897705,
+            "p95Ms": 12.614999949932098,
+            "p99Ms": 19.649999976158142,
+            "maxMs": 26.97000002861023,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.26423534853655,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": false,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 105,
+            "activeTiles": 232
+          },
+          "frames": 481,
+          "frameInterval": {
+            "meanMs": 16.873898128898116,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 116.65999999999622
+          },
+          "measuredMeanMs": 1.8040644465761722,
+          "mapUpdate": {
+            "meanMs": 1.0104469845299908,
+            "p50Ms": 0.3399999737739563,
+            "p95Ms": 4.1700000166893005,
+            "p99Ms": 10.974999964237213,
+            "maxMs": 19.689999997615814,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.059882249899299,
+            "activeFrames": 481
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        },
+        {
+          "robust": true,
+          "moving": true,
+          "isolated": true,
+          "renderer": "webgpu",
+          "fallback": null,
+          "mode": "raster-basemap",
+          "tiles": {
+            "visibleTiles": 98,
+            "activeTiles": 232
+          },
+          "frames": 482,
+          "frameInterval": {
+            "meanMs": 16.769730290456437,
+            "p50Ms": 16.665000000000873,
+            "p95Ms": 16.67000000000553,
+            "p99Ms": 16.67000000000553,
+            "maxMs": 66.66500000000087
+          },
+          "measuredMeanMs": 5.642323654840595,
+          "mapUpdate": {
+            "meanMs": 4.7267738626458335,
+            "p50Ms": 3.649999976158142,
+            "p95Ms": 12.350000023841858,
+            "p99Ms": 16.27999997138977,
+            "maxMs": 20.9099999666214,
+            "section": "map/raster tiles",
+            "name": "raster tiles",
+            "depth": 1,
+            "shareOfFrame": 0.2818634397081398,
+            "activeFrames": 482
+          },
+          "native": [
+            {
+              "core": "raster",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "sky",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "threaded (worker)",
+              "parity": {
+                "tables": "same",
+                "radiance": "same",
+                "fan": "unchecked",
+                "irradiance": "same",
+                "fanRows": {
+                  "solo": "unchecked",
+                  "parallel": "same"
+                }
+              },
+              "fallbackReason": null
+            },
+            {
+              "core": "terrain",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "wasm-single (worker)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "imagery",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "single (worker cache + page misses)",
+              "parity": "same",
+              "fallbackReason": null
+            },
+            {
+              "core": "google",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": "not-run",
+              "fallbackReason": null
+            },
+            {
+              "core": "ground",
+              "requested": "single",
+              "resolved": "single",
+              "actual": "not started",
+              "parity": {
+                "build": "not-run",
+                "scene": "pending"
+              },
+              "fallbackReason": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": {
+    "summary": {
+      "batches": {
+        "unit": "microseconds per call",
+        "before": 1.9274427499999973,
+        "after": 1.361755187500009,
+        "reductionPercent": 29.349123988247594,
+        "rounds": {
+          "before": [
+            2.4765000000000015,
+            1.9795390624999953,
+            2.149458312500002,
+            2.133276062500002,
+            1.9274427499999973,
+            1.8984531250000032,
+            1.8511171874999945,
+            1.783796874999993,
+            1.8044062499999995
+          ],
+          "after": [
+            1.4484166875,
+            1.2330806874999993,
+            1.359499999999997,
+            1.3735781249999945,
+            1.361755187500009,
+            1.37428125000001,
+            1.3992187499999886,
+            1.354481750000005,
+            1.3614192499999973
+          ]
+        }
+      },
+      "decodedRegistration": {
+        "unit": "ms per256 grids",
+        "before": 3.80885425000001,
+        "after": 0.08323437499998931,
+        "reductionPercent": 97.81471357167345,
+        "rounds": {
+          "before": [
+            4.026989625000013,
+            3.80885425000001,
+            4.274614624999998,
+            4.065880124999978,
+            3.6595468749999895,
+            3.7328072500000076,
+            3.8461978750000014,
+            3.736541750000015,
+            3.5998021249999965
+          ],
+          "after": [
+            0.13000525000001062,
+            0.09801562500000216,
+            0.07394262500000082,
+            0.08201562499999682,
+            0.07446874999999409,
+            0.08323437499998931,
+            0.1207812500000216,
+            0.07644274999998402,
+            0.11916149999998993
+          ]
+        }
+      },
+      "fullSample": {
+        "unit": "microseconds per call",
+        "before": 0.4172213750000111,
+        "after": 0.343450500000003,
+        "reductionPercent": 17.68147065811433,
+        "rounds": {
+          "before": [
+            0.6188984375000004,
+            0.6403749999999917,
+            0.4172213750000111,
+            0.3967369374999947,
+            0.4005312500000002,
+            0.41484374999998863,
+            0.4197708125000048,
+            0.3853307499999943,
+            0.4305937499999999
+          ],
+          "after": [
+            0.6129453124999955,
+            0.4433801874999972,
+            0.43273700000000304,
+            0.343450500000003,
+            0.33168225000000007,
+            0.3329843749999952,
+            0.34049218749999,
+            0.34899218749998795,
+            0.33586981249999326
+          ]
+        }
+      },
+      "heightQuery": {
+        "unit": "microseconds per call",
+        "before": 0.4006744375000011,
+        "after": 0.11601818750000348,
+        "reductionPercent": 71.04427519162533,
+        "rounds": {
+          "before": [
+            0.47598174999999543,
+            0.5098099375000089,
+            0.42352343749999477,
+            0.4006744375000011,
+            0.3929921874999991,
+            0.3684635000000043,
+            0.39072137499999826,
+            0.3888984374999893,
+            0.4443593750000048
+          ],
+          "after": [
+            0.16645312499999676,
+            0.14965362499999912,
+            0.17611718749999739,
+            0.11601818750000348,
+            0.11551300000000708,
+            0.11186718749999613,
+            0.1163020624999973,
+            0.11106775000000368,
+            0.11140881250000234
+          ]
+        }
+      }
+    },
+    "checksum": 208697087.76780134,
+    "scope": "Paired desktop Node CPU operations; no whole-frame or GPU claim. Repeated registration follows original bulk and optimized incremental runtime paths. Height query compares the required height/quality result without unneeded point/normal generation."
+  },
+  "checks": {
+    "engineTests": 1285,
+    "engineFiles": 120,
+    "appTests": 434,
+    "appBrowserAssertions": 12,
+    "engineImplementation": "passed",
+    "appBuild": "passed",
+    "appLint": "passed",
+    "flyTypecheck": "passed",
+    "nativeParity": "passed"
+  }
+}

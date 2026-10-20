@@ -1,5 +1,9 @@
 # Checks on a real GPU
 
+The [terrain proximity LOD record](terrain-proximity-lod.md) retains the
+20 October 2026 implementation, production WebGPU measurements, cache
+invariants and benchmark qualifications for raster and Google maps.
+
 FOSS Earth already has headless harnesses that run the renderer on this machine's own GPU,
 with no HTTP server and no visible browser. Use one of these, or extend it, before writing
 another. Each takes its own options, listed at the top of its script, and writes to a new

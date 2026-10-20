@@ -1,6 +1,8 @@
 # Terrain LOD Priority & Proximity Decoupling Proposal
 
-**Status**: Proposal / Architectural Plan (TODO)  
+**Status**: Proximity/LOS implementation completed and optimized on 20 October 2026;
+broader architecture ideas remain proposals. See the
+[implementation and measurements](../validation/terrain-proximity-lod.md).
 **Date**: October 2026  
 **Context**: FOSS Earth Engine (`@foss-earth/engine`), 0SFS Flight Simulator, Android WebGPU / Mobile browsers  
 **Related Documents**:
@@ -56,7 +58,7 @@ To avoid regressions to existing desktop and flight baselines, an opt-in setting
 - **Default**: `false`
 - **A/B Testing Query Param**:
   ```text
-  https://<host>:5173/?settings={"map.terrain.robustOrbitLOD":true}
+  https://localhost:5173/app/?set.map.terrain.robustOrbitLOD=true
   ```
 
 ### Key Changes When Enabled

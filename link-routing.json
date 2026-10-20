@@ -141,8 +141,9 @@
       "sourceRevision": "90e23b3ee96f53ec5900afc5991a21fffa58649d",
       "owner": "foss-earth/ui",
       "destinationPath": "docs/app-files.md",
-      "status": "immutable compatibility reference; component transfer/publication pending",
-      "newTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it"
+      "status": "routed-public-component-navigation; publication availability pending",
+      "newTarget": "https://github.com/foss-earth/ui/blob/main/docs/app-files.md#cross-origin-isolation",
+      "priorPreparedTarget": "https://github.com/foss-earth/foss-earth.github.io/blob/90e23b3ee96f53ec5900afc5991a21fffa58649d/docs/app-files.md#the-page-and-a-browsers-copy-of-it"
     },
     {
       "document": "docs/deploying.md",

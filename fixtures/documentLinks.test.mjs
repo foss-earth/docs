@@ -17,6 +17,7 @@ test("compatibility and external source citations never become filesystem reads"
 
 test("portable public owner navigation names the independent repository", () => {
   assert.deepEqual(publicOwnerDocumentTarget("https://github.com/foss-earth/research/blob/main/docs/validation/timing.md#memory"), { owner: "foss-earth/research", path: "docs/validation/timing.md" });
+  assert.deepEqual(publicOwnerDocumentTarget("https://github.com/foss-earth/ui/blob/main/docs/app-files.md#cross-origin-isolation"), { owner: "foss-earth/ui", path: "docs/app-files.md" });
   assert.throws(() => publicOwnerDocumentTarget("https://example.com/foss-earth/research/blob/main/report.md"), /Undeclared/);
   assert.throws(() => publicOwnerDocumentTarget("https://github.com/foss-earth/engine/blob/main/private.md"), /Undeclared/);
   assert.throws(() => publicOwnerDocumentTarget("https://github.com/foss-earth/docs/blob/main/%2e%2e%2foutside.md"), /escaped/);

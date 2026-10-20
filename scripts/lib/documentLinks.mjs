@@ -17,7 +17,7 @@ export function documentTarget(document, target, owner) {
 export function publicOwnerDocumentTarget(target) {
   const url = new URL(target);
   if (url.protocol !== "https:" || url.hostname !== "github.com" || url.username || url.password || url.port || url.search) throw new Error("Undeclared public owner document address.");
-  const match = /^\/foss-earth\/(docs|research)\/blob\/main\/(.+)$/.exec(url.pathname);
+  const match = /^\/foss-earth\/(docs|research|ui)\/blob\/main\/(.+)$/.exec(url.pathname);
   if (!match) throw new Error("Undeclared public owner document address.");
   const pathname = decodeURIComponent(match[2]);
   if (pathname.startsWith("/") || pathname.includes("\\") || pathname.split("/").some(part => !part || part === "." || part === "..")) throw new Error("Public document path escaped its owner.");

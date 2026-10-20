@@ -10,6 +10,9 @@ The landing repository is
 Its `scripts/deploy.mjs` is the publisher. This docs repository has no app
 bundle and no deploy command of its own.
 
+For a local preview before publishing, see
+[running locally](development.md#running-locally).
+
 ## Publish
 
 The app links each library with `file:../…`, so the build compiles the sibling
@@ -57,6 +60,9 @@ curl -s https://foss-earth.github.io/app/ | grep -o '<meta name="foss-earth[^>]*
 The script URL starts with `/app/assets/`. The meta tags name the build time and
 the app commit. GitHub can take a minute to serve the new `gh-pages` commit. A
 browser may still show a page it kept; a hard refresh loads the published one.
+
+When checking the retained `eac-prototype/` package, follow its
+[testing-by-hand instructions](https://github.com/foss-earth/research/blob/main/benchmarks/eac-progressive-prototype/README.md#testing-by-hand).
 
 ## The campus tour
 
