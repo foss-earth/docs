@@ -104,6 +104,23 @@ records the first in-app A/B and its method; the
 [18 October comparison guide](proposals/implementation/webassembly-ab-results-2026-10-18.md)
 has launch URLs for the app, the tour and 0SFS.
 
+Time what a person waits for as well as the warm kernel: the first use, which
+includes loading and admitting the core, sent as the app sends it.
+`ground-WASM/scripts/bench.mjs first` does this with the app's own preparer and
+worker. Time in plain Node, one fresh process per run, and report the median.
+On an M5 on battery in Low Power Mode, timings hosted by Vitest ran about twice
+as slow, while plain Node reproduced earlier kernel timings within 1%. Record
+the power state with every number.
+
+A twin beats its reference by doing less work for the same output, never by
+changing the output. Ground's core builds ground-TS's index bit for bit by
+selecting each node's median in linear time instead of sorting
+([how](https://github.com/foss-earth/engine/blob/main/ground-WASM/README.md#the-same-index-with-less-work)).
+Admit such a core by comparing a fixed fixture bit for bit. Then check each
+result for an invariant that implies the reference's answers, such as boxes
+that contain their faces. That costs less than replaying queries and covers
+every query, where a replay covers only the ones it samples.
+
 ## Toolchain
 
 - Rust and cargo 1.99.0 (the installed `stable`), the `wasm32-unknown-unknown`
