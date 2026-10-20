@@ -634,12 +634,84 @@ October), globes from 18 October.
 | `/fly/` | warm | 0.28 | 1.71 → **0.67** | 3.20 → **1.62** | 0 |
 
 The terminal shows at 0.22 to 0.24 s on a cold visit and 0.06 to 0.07 s on
-a warm one. On a cold visit, about 2 s of what is left comes before the
-isolation reload. Locally, the worker's script queues behind the page's
-module preloads, so the reload comes at about 1.9 s on `/app/`, and the
-reload's HTML is revalidated, which costs a round trip. Downloads still in
-flight are dropped and fetched again (`shell` on `/fly/`). That is the largest
-remaining cost of a first visit.
+a warm one. On a cold visit, the largest cost left was the isolation reload,
+covered next. What each page costs once it runs (frames, CPU and memory) is in
+the [Performance audit](../performance-audit.md).
+
+**The isolation reload, 19 October 2026.** A built page's first visit
+registers the service worker that makes it cross-origin isolated, which
+gives the WebAssembly threads their shared memory, then reloads once
+(`ui/src/browser/isolation.ts`). Locally, the reload came at about 1.9 s on
+`/app/`, because over HTTP/1.1 the worker's script queues behind the page's
+module preloads. GitHub Pages serves over HTTP/2, where that queue does not
+form.
+
+Cold visits of the published pages (Fast 4G, 4× CPU slowdown) show what the
+reload costs there:
+
+| Page | HTML | Worker script | Reload | Reloaded HTML | Then |
+| --- | --- | --- | --- | --- | --- |
+| `/app/` | 0–0.36 s | 0.36–0.53 s | 0.58 s | 0.58–0.76 s, a 304 | the entry (569 KB), half loaded, starts again at 0.77 s |
+| `/fly/` | 0–0.39 s | 0.38–0.56 s | 0.61 s | 0.61–0.78 s, a 304 | `shell` (224 KB), half loaded, starts again at 0.79 s |
+
+The reload costs three things:
+
+- the wait for the worker;
+- a round trip to revalidate the HTML;
+- the downloads it drops.
+
+Two changes, both in ui `d6098d8`:
+
+- **Reloading.**
+  - The page now reloads on the worker's `statechange` event, so
+    `/fly/` reloads about 4 ms after its worker activates. It still polls
+    every 50 ms, because an update found before the script ran sends no
+    event.
+  - It now reloads with `location.replace` of its own address, which is a new
+    load. The worker answers it with the HTML the browser has just cached:
+    0 bytes, in about 15 ms. `location.reload()` asked the site again,
+    which took 180 to 190 ms locally. An address with a fragment still uses
+    `reload()`, because replacing it would only scroll.
+  - The replaced load counts as a navigation rather than a reload. The
+    app's published-version check (`app/src/app/publishedVersion.ts`)
+    reads only reloads, which this one is not: the visitor did not ask
+    for it.
+- **Registering ahead.** The build also emits `foss-earth-isolate.js`,
+  which registers the app's worker from a page that links to it. The
+  landing pages of foss-earth.github.io (`543e2a9`) and 0sfs.github.io
+  (`d620502`) load it with `async`, so a visitor who goes on to the app
+  starts isolated, with no reload. The script asks for nothing where the
+  app's own script would not isolate:
+  - report-only mode;
+  - the setting turned off;
+  - a browser that refused it before;
+  - an insecure page;
+  - a frame;
+  - an already isolated page.
+
+An A/B on the local server (medians of two runs each, indicative), with
+app `a2d0b1c` and fly as deployed. "After" adds the change to the same builds.
+"Direct" opens the app on an empty profile. "From the landing page" opens
+`/` first and waits until the worker is active, as a visitor reading the
+page would.
+
+| Page | Visit | Reload at | First 3D frame | Globe | Reloads |
+| --- | --- | --- | --- | --- | --- |
+| `/app/` | direct | 1.95 → 1.82 s | 2.86 → **2.54** | 4.86 → **4.46** | 1 → 1 |
+| `/fly/` | direct | 0.45 → 0.38 s | 3.68 → **3.50** | 5.70 → **5.46** | 1 → 1 |
+| `/app/` | from the landing page | 1.93 s → none | 2.75 → **2.41** | 4.66 → **4.29** | 1 → **0** |
+| `/fly/` | from the landing page | 0.42 s → none | 3.60 → **3.41** | 5.48 → **5.31** | 1 → **0** |
+
+- **Worker timing.** From the landing page, the worker was active 0.42 to
+  0.47 s after `/` opened. Before the change, `/` registered no worker.
+- **Isolation.** Every visit, before and after, ended cross-origin isolated
+  with `SharedArrayBuffer` defined, so the WebAssembly threads keep their
+  shared memory.
+- **Expected on GitHub Pages, not yet measured there.**
+  - A direct first visit should gain about 0.2 s: the revalidation's round
+    trip, and the reload following the worker sooner.
+  - A visit from a landing page should gain about 0.4 s, because there is
+    no reload.
 
 ## 3. Renderer advisor
 
@@ -797,7 +869,8 @@ log.
    frame 1.2 s sooner, see Startup measurements). What is left before the
    first frame, largest first: on a first visit, the reload that makes the
    page cross-origin isolated (ui `4b125b0`), after which the modules run at
-   2.3 s instead of 2.0 s; Babylon's WebGPU buffers and the first terrain
+   2.3 s instead of 2.0 s (shortened on 19 October 2026, and spared from the
+   landing pages: see The isolation reload); Babylon's WebGPU buffers and the first terrain
    mesh (about 0.3 s at 4× slowdown); and running the entry chunk itself
    (475 KiB brotli, 1.9 MB), whose panels the profile no longer singles
    out.

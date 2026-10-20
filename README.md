@@ -14,6 +14,7 @@ Start here:
 
 - [Follow-ups](docs/todo.md): work across the Earth repositories that isn't done yet, including WebAssembly builds.
 - [Performance](docs/performance.md): the bit-identical JavaScript speedups, the frame-budget streamgraphs, and what is left.
+- [Performance audit](docs/performance-audit.md): what the tour, the app and 0SFS cost to start and to run, in frames, CPU and memory, and how to measure it again.
 - [Optimization backlog](docs/optimization-backlog.md): every optimization not done yet, for FOSS Earth, 0SFS and the UMN tour, ranked by estimated gain against effort, by backend.
 - [Incident reports](docs/incidents/README.md): failures, observed evidence, recovery actions and unresolved causes.
 - [Repository navigation](navigation.md)

@@ -8,6 +8,9 @@ with the load average written beside them when it was recorded.
 Library work lives in each library. The app wires owners into the profiler; it
 does not hold the resampling or the projection loops.
 
+What each of the three apps costs as a whole, from its start to its frames,
+CPU and memory, is in the [Performance audit](performance-audit.md).
+
 ## Bit-identical JavaScript
 
 Restructuring the JavaScript, with the output the same bit for bit, is most of
