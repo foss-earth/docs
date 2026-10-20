@@ -580,6 +580,67 @@ The runs of each agreed within 0.05 s. A cold first frame now comes 0.3 s
 after the renderer instead of 1.4 s. A warm visit had the code in its cache
 already, so it gains little.
 
+**Waterfalls removed, 19 October 2026.**
+
+- Where the globe does start on Google, the engine imports the 3D Tiles
+  renderer and its plugins at once, not one after the other, which saves a
+  round trip (engine `468a42f`, `loadBrowserGlobeGoogleProviders`).
+- `/fly/` imports the flight lazily (`src/main.tsx`), so its 1.2 MB of
+  compressed code used to be requested only once the entry had run. The boot
+  terminal now lists a page's `waitFor` modules that Vite does not already
+  preload, largest first. Its runtime adds a `modulepreload` for each, and a
+  style `preload` for their styles, as soon as the page starts. It skips this on
+  a page about to reload for isolation, because the reload would drop the
+  downloads halfway. `/rc/`, a copy of the same page, leaves them out
+  (fly's `scripts/pages-html.mjs`). The cold runs to compare are those in
+  which the reload made the page fetch `shell` again:
+
+  | Flight preload | Flight chunk requested | Modules run | First 3D frame |
+  | --- | --- | --- | --- |
+  | without | 1.06 s | 3.37 s | 3.70 s |
+  | with | 0.62 s | 3.24 s | 3.59 s |
+
+  A warm visit is unchanged (first frame 0.70 → 0.68 s). Over HTTP/1.1 the
+  70-odd files queue for six connections, so the local server shows less of
+  the gain than GitHub Pages' HTTP/2 should.
+
+Tried and dropped:
+
+- A head script that preloads Babylon's shader chunk as soon as the WebGPU
+  adapter answers, instead of once the renderer's modules have run. On a
+  cold `/app/` visit the WGSL chunk came at 0.2 s instead of 2.45 s, but the
+  first frame did not move: 2.77 → 2.83 s on `/app/` and 3.58 → 3.59 s on
+  `/fly/` (3 runs each). The renderer's own 0.3 s of work before its first
+  frame already hid the fetch. The extra request in the page's first load
+  also put the isolation reload 0.08 s later.
+- V8's explicit compile hints (`//# allFunctionsCalledOnLoad`) on the entry
+  and on its startup chunks. They made no difference to when the modules ran
+  or to the first frame.
+
+**Where the three pages are now (19 October 2026).** These runs are
+indicative: two runs each (three for `/fly/`), with other work on the
+machine. The builds are what is deployed: the app at app `bae8b3b` with
+engine `468a42f`, and fly with the flight preload. Each arrow goes from the
+baseline to now, in seconds: first frames from 17 October (`/fly/`: 18
+October), globes from 18 October.
+
+| Page | Visit | Modules run | First 3D frame | Globe | Bytes before first frame |
+| --- | --- | --- | --- | --- | --- |
+| `/tour/minneapolis/` | cold | 2.88 | 5.54 → **3.25** | 7.24 → **5.03** | 1.02 MiB |
+| `/tour/minneapolis/` | warm | 0.13 | 1.43 → **0.54** | 3.21 → **1.57** | 0 |
+| `/app/` | cold | 2.32 | 4.50 → **2.77** | 6.25 → **4.70** | 1.09 MiB |
+| `/app/` | warm | 0.18 | 1.43 → **0.60** | 2.97 → **1.59** | 0 |
+| `/fly/` | cold | 3.24 | 5.19 → **3.58** | 7.36 → **5.44** | 1.52 MiB |
+| `/fly/` | warm | 0.28 | 1.71 → **0.67** | 3.20 → **1.62** | 0 |
+
+The terminal shows at 0.22 to 0.24 s on a cold visit and 0.06 to 0.07 s on
+a warm one. On a cold visit, about 2 s of what is left comes before the
+isolation reload. Locally, the worker's script queues behind the page's
+module preloads, so the reload comes at about 1.9 s on `/app/`, and the
+reload's HTML is revalidated, which costs a round trip. Downloads still in
+flight are dropped and fetched again (`shell` on `/fly/`). That is the largest
+remaining cost of a first visit.
+
 ## 3. Renderer advisor
 
 The phone case that prompted this: Chrome on Android opened the tour from the
