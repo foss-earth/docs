@@ -1,8 +1,9 @@
 # Performance agent state
 
-Updated 20 October 2026, during the second performance session. A resumed
-session should be able to continue from this file alone. The results
-so far are in the [20 October audit](../../performance-audit.md#20-october-2026).
+Updated 21 October 2026, at the end of the second performance session. A
+resumed session should be able to continue from this file alone. The results
+are in the audit: the [first session](../../performance-audit.md#20-october-2026)
+and the [second](../../performance-audit.md#21-october-2026).
 
 ## The brief
 
@@ -57,26 +58,31 @@ Everything is committed and nothing is pushed. The user deployed the tour at
 | --- | --- |
 | engine | `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `5d1b132`, `97a6ae1`, `329dc6c`, `90c0ef6`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3`; second session `6058d4f`, `b2ddff9`, `497e013`, `f647f96`, `5a7880e` |
 | renderer | `24b6a6d` |
-| sphere-image | `b2f0ec9` |
-| app | `529fc65`, `550b10d`, `b9a12a2` |
+| sphere-image | `b2f0ec9`; second session `61d04a2` |
+| app | `529fc65`, `550b10d`, `b9a12a2`; second session `9904178` |
 | toolbar | `4c1d7ee`, `1872be5` |
 | sky | `e4a3dc3` |
 | fly | `dddb895` |
 | research | `a26ca32`, `207cd61`, `8dcfb02`, `4f5bd62` |
-| docs | this file and the 20 October audit |
+| docs | this file, and the 20 and 21 October audits |
 
-The final interleaved runs, base against HEAD (details in the audit):
+The first session's final runs, base against HEAD, are in the
+[20 October audit](../../performance-audit.md#before-and-after). The second
+session's, three interleaved pairs per target of `s2-start` (this session's
+files as at its start) against `s2-end` (HEAD), medians:
 
-| Stretch | Base | HEAD |
+| Stretch | `s2-start` | `s2-end` |
 | --- | --- | --- |
-| Flight 1×, main thread | 79 %, 69 % | 30 %, 36 % |
-| App drag 4×, frames/s | 47.9, 51.1 | 56.8, 57.6 |
-| Tour drag 4×, main thread | 71 %, 76 % | 53 %, 55 % |
-| Phone drag 4×, afternoon changes only | 84 %, 82 %; 52.6 and 53.0 fps | 73 %, 72 %; 55.3 and 55.8 fps |
+| Phone drag 4× | 74.1 %; 55.0 fps; 13.4 ms a frame | 71.6 %; 56.2 fps; 12.8 ms a frame (fps and ms a frame separate) |
+| Flight 1×, main thread | 37.9 % | 36.6 % (separate) |
+| Tour drag 1×, main thread | 22.8 % | 22.3 % (separate) |
+| Phone drag 4×, raster update | 230.9 ms/s | 198.3 ms/s (separate) |
+| App 1× and 4×, tour 4×, flight 4× | | totals within noise, except the tour's 57.8 → 58.1 fps at 4×; most changed parts separate |
 
 Engine `33e897e` (terrain proximity LOD), app `ceb308a` and docs `6772725`
 belong to other agents and are unpushed too. So do engine `d27076d`,
-`849638a` and `f9326e1`, from the scheduling agent (below). The terrain proximity task has
+`849638a` and `f9326e1`, renderer `89ec913`, sky `18d68ea` and app
+`49f8866`, from the scheduling agent (below). The terrain proximity task has
 finished, so the file ownership locks of the earlier parallel period no longer
 apply.
 
@@ -197,6 +203,35 @@ The final runs of 20 October are in research's gitignored `build/final/`:
 - `parts.sh <tour|app|fly> <dist> <profile file> <run>…` prints the inclusive
   ms/s of the parts the floors are built from (`BASE=/` for 0SFS).
 
+The second session's before/after is in research's `build/session/`:
+
+- `build.sh` builds `s2-start` (this session's files as they were at its
+  start, across engine, sphere-image and app) and `s2-end` (HEAD) back to
+  back for each app. It records every library checkout's state per arm in
+  `state-<app>-<arm>.txt` and restores the files on exit. To reuse it for
+  another set of commits, change its `refs` and `files`.
+- `run.sh` runs three interleaved pairs per target. It waits while any other
+  `profile.mjs` or `abn.sh` runs, and records in `status` whether one
+  overlapped.
+- `table.sh` and `parts.sh` read its logs, as the final runs' do.
+
+Engine scratch from the second session:
+
+- `build/perf/ab-build-ref.sh <name> <targets> <ref> <files…>` builds arm
+  `a` with the named engine files as at `<ref>`, then arm `b` with the working
+  ones, and records every checkout's state per arm;
+- `build/seam/mutants/run.py`, the terrain commit's mutants;
+- `build/evalview/mutants2/run.py`, `evaluateView`'s mutants, and
+  `build/evalview/fuzz/`, random views through the shipped selector (a copy
+  in `bench/head`) and the working one;
+- `build/evalview/bench/`, whole selections and view measurements timed,
+  HEAD against the working copy, interleaved in one process;
+- `build/atlas/`, the atlas test's timing investigation.
+
+research's `build/heights/summarize.sh` rows now include
+`measureImageryView`, `projectedPixelFootprint`, `intersectsSegmentBounds`
+and `publishManaged`. The marker raycast shows as `surfaceQuery.ts:NN raycast`.
+
 Rules for an A/B:
 
 - Run under `caffeinate -i`. The machine runs on battery, and one whole A/B was
@@ -283,6 +318,29 @@ otherwise.
 | engine `f11a819` | Keep lattice heights across revisions for tiles that touch no changed terrain | Raster update 251.5 → 233.2; `surfaceSamples` 46.8 → 34.7; `heightsAt` 24.9 → 17.3 |
 | engine `1e3a0a3` | `evaluateView` without per-call objects; the off-screen hull test reuses the sampled heights | `evaluateView` 91.7 → 80.6; select 55.9 → 49.5; raster update 238.8 → 225.3 |
 | engine `6058d4f`, `b2ddff9` | The terrain commit uploads each tile once with its seams, skips uploads of arrays a mesh already holds (still moving its world bounds), and searches only the levels present | `commitTerrain` 24.2 → 10.5; `stitchTerrainEdges` 15.8 → 5.8; raster update 237.2 → 214.6 |
+| engine `497e013` | `evaluateView` keeps one record per lattice point, reuses the last tile's entry, and computes clip points, footprints and bisection probes without per-call objects | `evaluateView` 84.3 → 61.3; `surfaceSamples` 36.4 → 25.7; select 51.0 → 41.5; `measureImageryView` 51.9 → 39.4 (with `f647f96`: raster update 216.0 → 193.6, main thread 75 → 67 %) |
+| engine `f647f96` | The surface query rejects meshes by their bounds with each axis read by name, not through Vector3's computed-key path | Marker raycast 16.4 → 10.5 |
+| sphere-image `61d04a2`, app `9904178` | The orbs are tested on screen by projection alone, without reading the canvas box once per orb; the scene host keeps one reduced-motion media query | About 1.9 and 1.2, by construction |
+| engine `5a7880e` | The atlas test's clock spans the terrain reselection interval | A test fix (below) |
+
+The proofs for this session's changes:
+
+- **`497e013`.** The selector's pinned digest over the fixed views, plus 400
+  random views, sources, grounds and focus points, and `footprintFrom`
+  against the shipped function for random matrices, samples and viewports.
+  22 mutants (engine `build/evalview/mutants2/run.py`): 20 are killed. Two
+  are equivalent: not recording a point's fallback only recomputes the same
+  sample, and counting a lattice point once when one call names it twice
+  changes only the cache's size accounting.
+- **`f647f96`.** The shipped loop's answers over 200,000 random rays and
+  boxes, with zeros of both signs, infinities and NaNs; 6 mutants killed.
+- **`61d04a2`.** `onScreen` agrees with `project(…) !== null` over 40 seeded
+  views of 250 directions, with several viewports and no canvas, and reads no
+  element box; 3 mutants killed in the renderer test and 1 in the viewer's.
+  `viewportRect` is null exactly when there is no canvas, so the box was never
+  needed for the answer.
+- **`9904178`.** `MediaQueryList.matches` is live, so a kept query reads the
+  same as a new one.
 
 Rejected after measuring: prefetching a group's heights in one batch (more
 heights for fewer calls, a loss in the flight; kept in engine
@@ -323,29 +381,37 @@ redundant now, and was left in place.
 
 ## Floors and gaps
 
-The table is in the [20 October audit](../../performance-audit.md#floors-and-gaps).
-A floor there is what is left when every cost we know how to remove is taken
-out, with every other part counted at its measured cost. So it is an upper
-bound. Each target has two floors: same behaviour, and with the decisions.
+The table is in the [21 October audit](../../performance-audit.md#floors-and-gaps-now)
+(the first session's is in the [20 October one](../../performance-audit.md#floors-and-gaps)).
+A floor is what is left when every cost we know how to remove is taken out,
+with every other part counted at its measured cost. So it is an upper bound.
+Each target has two floors: same behaviour, and with the decisions.
 
 | Target | HEAD | Same behaviour | With the decisions |
 | --- | --- | --- | --- |
-| Flight 1× | 30 %, 36 % | the same | about 23–27 % |
-| App drag 1× | 26 % | about 25 % | about 21 % |
-| Tour drag 1× | 21 % | about 21 % | about 18 % |
-| Phone drag 4× | 72–73 % | about 68 % | about 58 % |
+| Flight 1× | 36.6 % | about 36.4 % | about 30 % |
+| App drag 1× | 25.6 % | about 25.1 % | about 21 % |
+| Tour drag 1× | 22.3 % | about 21.8 % | about 19 % |
+| Phone drag 4× | 71.6 % | about 69 % | about 60 % |
 
-Every target is within 10 % of its same-behaviour floor only because the
-unexamined parts are counted whole. To lower a floor, show that one of these
-parts can be cheaper:
+Every target is within about 4 % of its same-behaviour floor. The evenings'
+levels differ (the tour's drag at 4× read 56 % before this session, against
+53–55 % on 20 October), so compare gaps across sessions, not floors.
 
-- imagery selection (50 ms/s on the phone, 51–59 in the flight);
-- Babylon's render, with its UI occlusion pass and HUD observers;
-- the 360 orbs' frame (34 on the phone);
-- residency and publish;
+The same-behaviour costs left on the phone are the forced style and layout
+after mid-frame HUD writes (about 17, parked), height batches and uniforms
+(about 6), and patch tables built when unchanged (up to about 3). To lower a
+floor further, show that one of the parts counted whole can be cheaper:
+
+- Babylon's render (209–219 on the phone), with its active-mesh evaluation
+  (29–32) and UI occlusion pass (17–18);
+- imagery selection (42–44) and publish (24–29);
+- the 360 orbs' frame (30–31);
+- `prepare` (31), terrain selection (23–25);
 - the workers' replies.
 
-Of the known pixel-identical costs, the terrain commit is the largest (below).
+At 4×, a saving buys frames as well as idle time, so compare main-thread ms
+per frame between arms, not only the main-thread share.
 
 ## The terrain commit (engine `b2ddff9`, done)
 
@@ -410,41 +476,62 @@ path).
 
 ## Then, by measured cost
 
-These are inclusive ms/s at the phone drag at 4× unless stated, and all are
-pixel-identical candidates:
+These are inclusive ms/s at the phone drag at 4× unless stated, from the
+`iv-b` runs (engine `f647f96`), and all are pixel-identical candidates. Items
+1 to 4 and 8 were measured in the second session; the others are older.
 
-1. **What is left of `evaluateView`** (80.6 inclusive, 16.1 self).
-   `surfaceSamples` (33.9) builds arrays per call. The hull loop and `outcode`
-   cost about 12, `footprintFrom` about 5.6 and `boundsFor` about 3.2.
-2. **`terrainHeightBatches`.** `generation()` costs about 2.4, and the per-call
-   LRU and result arrays 1–2 each. The flush's `add` costs about 6.5: its sort
-   2.3, for which an insertion sort of small key arrays gives the same order,
-   and its emission loop 2.4.
-3. **The rest of the marker raycast** (14.6): the predicate over every scene
-   mesh (`surfaceQuery.ts:49`) 2.2, `intersectsSegmentBounds` 1.5, a brute
-   force of about 4 on each mesh's first query, `isEnabled` 0.6.
-4. **`publishManaged`**: 27–29 at HEAD (about 45 before `90c0ef6`).
-   `prepareManagedPatchTable` costs 5.4 of it, `buildImageryDisplay` 3.8 and
-   `syncManagedPins` 2.1.
+1. **What is left of `evaluateView`** (61.3 inclusive, 12.4 self, after
+   `497e013`): `surfaceSamples` 22.3 (`heightsAt` 14.1, its `sample` 9.9),
+   `clipOutcode` 5.1, `footprintFrom` 4.9, `boundsFor` 2.9, `tileSurface` 2.8.
+   No per-call objects are left. What remains is arithmetic the answer needs
+   and height lookups.
+2. **`terrainHeightBatches`.** The flush costs 11.8, of which `add` 8.0, about
+   6 of it self: the native sort and the emission loop. `sample` costs
+   9.8–11.6. An insertion sort of the small key arrays gives the same order,
+   but would save about 2 at most. Not pursued.
+3. **The marker raycast**: 10.5 after `f647f96` (16.4 before). Not broken down
+   further.
+4. **`publishManaged`** (26): `prepareManagedPatchTable` 5, 2–3 of it self (a
+   16 KB table allocated per patch per publish); `buildImageryDisplay` 3;
+   `patchTableDepth` 3, computed twice for table patches; submit 2–2.7;
+   `syncManagedPins` 2; `bindManagedDirect` 1.6; `coverageComplete` 0.7–1.4;
+   `capacityKey`, a `JSON.stringify` of the stats, 1–1.4; self 3.6–4.4.
+   - A candidate: build each table in one scratch block, reserve its slot
+     first, release it if the signature is unchanged, and allocate and copy
+     only when it changed. Its value depends on the share of tables that are
+     unchanged on a publish, which is not measured. Count that with
+     `--probe` first.
+   - Aside, not a cost: the table signature is a 32-bit FNV hash, so a
+     collision would skip an upload that was needed. Worth a look on its own.
 5. **Uniform writes.** Babylon's `uniformBuffer._buffersEqual` costs about 4.0.
 6. **Entering a 360 image at 4×:** the sphere-image record about 12.4, and the
    sky's atmosphere transmittance about 13.
 7. **The UI occlusion pass** (backlog C14), inside the render at
-   `uiOcclusion.ts:134`: 17–19 on the phone. Each frame, `coveredWorldClips` reads element boxes
-   (`getBoundingClientRect` 6.7) and runs `querySelectorAll` (2.6). The boxes
-   could be cached until the layout changes, if that is proved never to miss
-   a change.
-8. **The 360 orbs' frame** (sphere-image `viewer.ts` `onFrame`), 34 on the
-   phone. Not looked at yet.
+   `uiOcclusion.ts:134`: 16.7–19 on the phone. Each frame, `coveredWorldClips`
+   reads element boxes (`worldBoxOf` 7.1) and runs `querySelectorAll` (2.6).
+   The boxes could be cached until the layout changes, if that is proved never
+   to miss a change.
+8. **The 360 orbs' frame** (sphere-image `viewer.ts` `onFrame`), 31.9:
+   - `preview` 11.8: `chooseRepresentation` 5.7 and `current()` about 3.0,
+     usually once per preview, so hoisting it gains little;
+   - `drawFrame`'s `cameraKey` → `viewportHeightCssPx` → `getBoundingClientRect`
+     3.6, a forced layout (parked, below);
+   - the candidates loop 4.3, of which the canvas box read (1.9) is gone in
+     `61d04a2`;
+   - `viewerSettings` 2.7, of which `matchMedia` (1.2) is gone in app
+     `9904178`;
+   - `keyed`/`keyFor` 1.7, skipped: removing it would change the public
+     `ViewerResources` API.
 9. **Not looked at yet:**
    - orb culling (backlog X2);
    - verifying the four 360 experiments (X1); a pixel run with them was
      started and stopped;
    - memory (`profile.mjs --memory`, plus a heap snapshot);
    - GPU memory, tile textures against render targets;
-   - the worker pools' sizes;
    - startup blocking (check `crossOriginIsolated` after any change);
    - tile bytes.
+
+   The worker pools' sizes now belong to the scheduling agent (C13).
 
 Parked:
 
@@ -473,10 +560,14 @@ defaults to today and the user's decision:
   move to the remaining call, so dropping it probably saves about 32–35 ms/s.
   Tiles would arrive at different moments during a move. Measure it as an A/B
   before quoting a saving.
-- **The loaded-detail readout** (`refreshLoadedDetail`, 64–68 ms/s at the
-  phone drag at 4×, 38–54 in the flight at 1×). Re-measuring the pages at the
-  selector's 100 ms cadence, or at the throttled view, changes when the
-  readout moves.
+- **The loaded-detail readout** (`refreshLoadedDetail`, 53.4 ms/s at the
+  phone drag at 4× after `497e013`, 64–68 before it; 38–54 in the flight at
+  1× before it). Re-measuring the pages at the selector's 100 ms cadence, or
+  at the throttled view, changes when the readout moves. Of the 53.4,
+  `measureImageryView` costs 26.2 and `syncDistribution` 21.3. The latter
+  measures the loaded pages with its own `measureImageryView` (13.2). Those
+  are other tiles than the plan's, sharing one cache, so the two calls cannot
+  be merged without changing what is measured.
 - **Verify imagery heights only at admission.** The worker's double check
   never feeds the output. It is the WebAssembly design's safety net.
 - **Horizon culling of far-side Google tiles**, behind a setting: about

@@ -10,6 +10,228 @@ It covers how fast each one starts, how evenly it draws, how busy it keeps the
 CPU, and how much memory it holds. Run the audit again after a change that could
 move these numbers, and add a dated section rather than editing the old one.
 
+## 21 October 2026
+
+**What changed.** A second runtime session on the three apps, the evening
+after the 20 October section's runs. Every change is pixel-identical by
+construction and test. They are committed and not yet pushed:
+
+- engine `b2ddff9`, with its identity test `6058d4f`: the terrain commit
+  uploads each tile once with its seams, and doesn't upload an array a mesh
+  already holds. It searches for seam neighbours only at the levels present
+  (backlog R14);
+- engine `497e013`: imagery measurement (`evaluateView`) keeps one record per
+  lattice point and reuses the last tile's entry. It computes clip points,
+  footprints and bisection probes without per-call objects;
+- engine `f647f96`: the marker ray's bounds test reads each axis by name
+  rather than through Vector3's slow computed-key path;
+- sphere-image `61d04a2`: the 360 orbs are tested on screen by projection
+  alone, without reading the canvas box once per orb in every frame;
+- app `9904178`: the scene host keeps one reduced-motion media query instead
+  of making two new ones in every frame.
+
+Engine `5a7880e` fixes a test that depended on timing, with no change at run
+time.
+
+**Runs.** The same profiler, visits and machine as on 20 October, with these
+differences:
+
+- **Before** (`s2-start`) is HEAD with only this session's files as they were
+  at its start:
+  - engine `createRasterTilesRuntime.ts`, `meshRefinement.ts`,
+    `imagerySelector.ts`, `imageryGeometry.ts` and `surfaceQuery.ts`;
+  - sphere-image `renderer.ts` and `viewer.ts`;
+  - app `sceneHost.ts`.
+- **After** (`s2-end`) is HEAD.
+- **Shared code.** Both arms were built back to back from one state of every
+  checkout: engine `5a7880e`, renderer `89ec913`, sky `18d68ea`, ui
+  `d6098d8`, toolbar `1872be5`, sphere-image `61d04a2`, app `9904178` and
+  images `6310a26`. So both include the scheduling agent's commits from the
+  same day.
+- **Pairs.** Each target ran three interleaved pairs, in the order before,
+  after, after, before, before, after. They ran on battery under
+  `caffeinate -i`, with load averages of 2.2 to 4.4.
+- **Checks.** No other profiler run overlapped any of them. Every visit
+  ended cross-origin isolated, with shared memory.
+- **Medians.** Figures are medians of three. "Separate" means every run of
+  one arm is beyond every run of the other.
+- **Raw results** are in research's `build/session/`.
+
+### Highlights
+
+1. **On the phone drag at 4×, a frame costs 13.4 ms of main thread before and
+   12.8 ms after.** The frame rate rose from 55.0 to 56.2 frames/s; both are
+   separate.
+   - The raster update fell from 230.9 to 198.3 ms/s (−14 %).
+   - At 4× the phone spends some of what is saved on drawing more frames. So
+     the main thread fell less, from 74 to 72 %, and script from 55.3 to
+     52.3 %.
+2. **The terrain commit costs half what it did.**
+   - On the phone it fell from 23.7 to 11.9 ms/s, with `stitchTerrainEdges`
+     falling from 16.7 to 6.4.
+   - In the app at 1× it fell from 8.8 to 3.7 ms/s.
+3. **Imagery measurement fell by a sixth to a quarter on every target.**
+   - `evaluateView` fell from 83.4 to 62.3 ms/s on the phone, and from 63.2
+     to 47.8 in the flight at 1×.
+   - The loaded-detail readout measures through the same function, so it
+     fell too, from 64.5 to 53.6 on the phone.
+   - On 20 October this was the part counted whole that was most likely to
+     lower a floor.
+4. **At 1×, where frames are capped at 60, the gains show as an idle main
+   thread.**
+   - The flight fell from 37.9 to 36.6 % and the tour from 22.8 to 22.3 %;
+     both are separate.
+   - In the app at 1×, and in every desktop drag at 4×, the totals moved
+     within noise, though each changed part moved beyond it.
+5. **The app's warm visit showed content sooner:** about 5.0 s before (4946
+   to 5082 ms) and 4.6 s after (4503 to 4845 ms).
+   - The tour's moved from about 2.06 to 1.99 s; both are separate.
+   - The terrain commit and imagery measurement both run while the first
+     view loads. That is not traced.
+6. **Every target is within about 4 % of its same-behaviour floor.** See
+   [Floors and gaps now](#floors-and-gaps-now).
+
+### Before and after the second session
+
+**Totals.** "ms a frame" is main-thread time per frame drawn.
+
+| Page | Stretch | Main thread | Frames/s | ms a frame |
+| --- | --- | --- | --- | --- |
+| `/fly/` | flying, 1× | 37.9 → 36.6 %, separate | 58.9 → 58.8 | 6.42 → 6.22, separate |
+| `/fly/` | flying, 4× | 99.0 → 99.1 % | 24.9 → 25.1 | 39.8 → 39.5 |
+| `/app/` | dragging, 1× | 26.2 → 25.6 % | 59.3 → 59.4 | 4.41 → 4.32 |
+| `/app/` | dragging, 4× | 72.9 → 73.8 % | 56.9 → 56.8 | 12.8 → 13.0 |
+| `/tour/minneapolis/` | dragging, 1× | 22.8 → 22.3 %, separate | 59.3 → 59.2 | 3.84 → 3.76, separate |
+| `/tour/minneapolis/` | dragging, 4× | 56.2 → 55.1 % | 57.8 → 58.1, separate | 9.72 → 9.51 |
+| `/tour/minneapolis/`, phone | dragging, 4× | 74.1 → 71.6 % | 55.0 → 56.2, separate | 13.4 → 12.8, separate |
+
+One of the app's "after" runs carried more work in every part: 29 % at 1× and
+80 % at 4×. That is why the app's totals overlap.
+
+**The parts this session changed,** in ms of main thread per second. All are
+separate unless marked.
+
+| Part | Phone drag, 4× | Tour drag, 1× | App drag, 1× | Flight, 1× |
+| --- | --- | --- | --- | --- |
+| Raster update | 230.9 → 198.3 | 63.2 → 57.6 | 125.5 → 114.0, overlap | 192.6 → 172.3 |
+| `evaluateView` | 83.4 → 62.3 | 27.6 → 22.6 | 54.6 → 45.2 | 63.2 → 47.8 |
+| Imagery selection | 51.4 → 43.0 | 16.1 → 14.2 | 38.1 → 34.0, overlap | 52.5 → 45.9 |
+| Loaded-detail readout | 64.5 → 53.6 | 24.0 → 20.8 | 40.0 → 35.7, overlap | 66.0 → 54.0 |
+| `commitTerrain` | 23.7 → 11.9 | 1.7 → 1.0 | 8.8 → 3.7 | 2.7 → 1.6, overlap |
+| Marker raycast | 17.3 → 12.7 | 3.8 → 3.3 | 5.0 → 3.2 | none |
+| The 360 orbs' frame | 33.3 → 30.9 | 11.3 → 10.4, overlap | 2.7 → 2.2, overlap | none |
+
+In the app's drag at 4×, `evaluateView` fell from 178.4 to 146.8 ms/s,
+`commitTerrain` from 9.2 to 4.4, and the raycast from 10.0 to 5.7. All three
+are separate. In the flight at 4×, `evaluateView` fell from 171.6 to 143.5.
+
+On the phone, style recalculations fell from 1.91 to 1.85 a frame and layouts from 0.77 to 0.71, both separate, probably because the orbs no longer read the canvas box. On the desktop they did not change.
+
+### The second session's changes
+
+Each change's own A/B, at the phone drag at 4×, three interleaved pairs, in
+ms of main thread per second:
+
+| Change | Commit | Before | After | Proof |
+| --- | --- | --- | --- | --- |
+| Each terrain tile uploaded once with its seams; no upload of an array a mesh holds; seams searched only at the levels present | engine `b2ddff9` | `commitTerrain` 24.2; `stitchTerrainEdges` 15.8; raster update 237.2 | 10.5; 5.8; 214.6 | A digest pinned before the change (`6058d4f`); 17 mutants killed, 3 equivalent |
+| Imagery measurement with one record per lattice point and no per-call objects | engine `497e013` | `evaluateView` 84.3; selection 51.0 | 61.3; 41.5 | The selector's pinned digest and 400 random views; 20 of 22 mutants killed, 2 equivalent |
+| The marker ray's bounds test with each axis read by name | engine `f647f96` | Raycast 16.4 | 10.5 | The shipped answers over 200,000 random rays and boxes; 6 mutants killed |
+| The orbs tested on screen by projection alone | sphere-image `61d04a2` | One canvas box read per orb, 1.3–2.5 | None | The same answer over 10,000 directions, with no box read; 4 mutants killed |
+| One reduced-motion media query, kept | app `9904178` | Two new queries a frame, 1.3–2.1 | 0.6 or less | A media query's `matches` is live |
+
+`497e013` and `f647f96` were measured together. With both, the raster update
+fell from 216.0 to 193.6 ms/s and the main thread from 75 to 67 %. The last
+two rows are the before/after runs' figures.
+
+`5a7880e` fixes the engine's atlas test "changes imagery level and source
+without touching terrain, elevation requests or the surface". It failed in
+whole-file runs before and after the terrain commit, because heights that
+arrived were selected for again once the terrain's 100 ms reselection interval
+had passed. The test now advances its clock 50 ms a frame.
+
+### Floors and gaps now
+
+The method is the one in [Floors and gaps](#floors-and-gaps) below:
+
+- a floor is what is left when every cost we know how to remove is taken out;
+- every other part counts at its measured cost, so a floor is an upper bound;
+- "with the decisions" also takes out the changes that wait on the user.
+
+The figures are the "after" medians. These runs read higher than those of
+20 October for nearly the same code: the tour's drag at 4× was 56 % before
+this session, against 53–55 % then. So compare each gap, not each floor,
+with that section's.
+
+| Target | Measured at HEAD | Floor, same behaviour | Floor, with the decisions | Gap to the first | Gap to the second |
+| --- | --- | --- | --- | --- | --- |
+| Flight, `/fly/`, 1× | 36.6 % | About 36.4 % | About 30 % | Under 1 % | About 1.2× |
+| Map drag, `/app/`, 1× | 25.6 % | About 25.1 % | About 21 % | About 2 % | About 1.2× |
+| Tour drag, `/tour/minneapolis/`, 1× | 22.3 % | About 21.8 % | About 19 % | About 2 % | About 1.2× |
+| Phone drag, tour, 4× | 71.6 % | About 69 % | About 60 % | About 4 % | About 1.2× |
+
+**The phone drag at 4×.** The known costs between it and its floors:
+
+| Cost | ms/s at 4× | Kind | Backlog |
+| --- | --- | --- | --- |
+| The loaded-detail readout, re-measured on every publish | 53.6; about 45 would go at a 100 ms cadence | Decision | C12 |
+| The spinning Activity outline's style and paint | About 47 | Decision: Still | P13 |
+| Forced style and layout after mid-frame HUD writes | About 17 | Same behaviour; parked until it is proved that those writes never move the canvas | C5 |
+| Height-batch sorting and uniform comparisons | About 6 | Same behaviour | C2 |
+| Patch tables built when unchanged | Up to about 3; the share of unchanged tables is not measured | Same behaviour | — |
+
+The three same-behaviour rows add up to about 26 ms/s, so the floor is about
+69 %. With the two decisions, about 118 ms/s in all, it is about 60 %.
+
+This session closed the terrain commit's row (about 13 ms/s on 20 October)
+and about half of the raycast's waste (about 8 then). The phone also lost
+21 ms/s from `evaluateView`, a part that was counted whole.
+
+At 4×, a saving buys frames as well as idle time, so these percentages
+overstate how far the main thread falls. On the phone the frame rate is 56.2;
+the floors are at 60.
+
+**At 1×.** The same-behaviour costs are small: forced layouts, uniforms and
+height batches, about 5 ms/s in the tour and app, and about 2 in the flight,
+whose forced style recalculation is not traced. The gap to the second floor
+is the decisions:
+
+- **The loaded-detail readout:** 20.8 ms/s in the tour, 35.7 in the app and
+  54.0 in the flight. Most of it would go at the selector's cadence.
+- **Still:** about 10 ms/s in the tour, through `applyWorldViewport`'s style
+  recalculation. The app's (10–12) probably has the same cause, which is not
+  traced.
+- **In 0SFS, the second raster update:** about 59 ms/s at 1×, of which about
+  32–35 would probably be saved (C11).
+
+**The parts counted whole,** on the phone, in ms/s at HEAD:
+
+- Babylon's render, 209–219: active-mesh evaluation 29–32, the UI occlusion
+  pass 17–18;
+- imagery selection, 42–44, and publish, 24–29;
+- the 360 orbs' frame, 30–31;
+- `prepare`, 31;
+- terrain selection and new tile meshes, 23–25;
+- the anchor markers, 16–17, of which the raycast is 12–13;
+- the work outside the frame, the workers' replies, height batches, tile
+  fetches and input;
+- the browser's own work outside script.
+
+None of these has been shown to be necessary. The next candidates in each are
+listed in the
+[performance agent state](proposals/implementation/performance-agent-state.md#then-by-measured-cost).
+
+### Still waiting on a decision
+
+The list in [Waiting on a decision](#waiting-on-a-decision) below stands. Two
+of its figures have moved:
+
+- **The loaded-detail readout** costs less now that it measures through a
+  cheaper `evaluateView`: 53.6 ms/s at the phone drag at 4×, against 64–68,
+  and 54 in the flight at 1×. Most of that would still go at the selector's
+  cadence.
+- **0SFS's second raster update** still costs about 59 ms/s at 1×.
+
 ## 20 October 2026
 
 **What changed.** A day of runtime work on the three apps, mostly in the
