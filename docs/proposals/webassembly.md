@@ -36,9 +36,11 @@ conversion, functionality parity tests, or switchable JavaScript/WASM A/B
 work. Those proceed independently; power and whole-app performance claims
 still require their own qualified measurements. The current continuation
 authorizes focused functional/browser checks and shared-machine relative A/B
-for the connected paths. The earlier testing pause is historical. The tier and
-shared-memory architecture below describes the target; current app default is
-TypeScript and shared/threaded Rust builds remain absent.
+for the connected paths. The earlier testing pause is historical. Much of the
+architecture below describes the original target. Since 19 October the app
+defaults to single-threaded WebAssembly cores in workers, with shared sky on
+where supported; the [current core guide](../webassembly-cores.md) records the
+implemented behavior and fallbacks. This is not a measured speed or power claim.
 
 ## Goal
 
@@ -732,9 +734,12 @@ organization when the rustwasm organization was retired.
   is the simplest code: sky tables, projections, large BVHs.
   Initialise its pool from the coordinator worker and run blocking parallel
   calls there; never block the page while rayon finishes.
-- **One size for the whole page.** It sizes every pool together from
-  `navigator.hardwareConcurrency`: 10 on the M5 Air (4 performance and 6
-  efficiency cores), fewer on phones.
+- **One compute budget for the whole page.** Use reported logical concurrency
+  as a hint, not a chip-specific constant. Worker lifetime limits and active
+  computation are separate budgets. The [adaptive CPU scheduling proposal](adaptive-cpu-scheduling.md)
+  describes dynamic admission across components, optional E-core information,
+  and growth through the full useful allowed range when a device needs it.
+  That governor is not implemented by the current worker-object cap.
 
 **Shared memory on the main thread.**
 

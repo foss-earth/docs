@@ -46,6 +46,7 @@ Proposals:
 - [Settings](docs/proposals/settings.md)
 - [Startup loading](docs/proposals/startup-loading.md): instant feedback, a boot terminal, code on demand, renderer advice
 - [WebAssembly builds](docs/proposals/webassembly.md): shared memory, Rust cores per map family, ranked steps
+- [Adaptive CPU scheduling](docs/proposals/adaptive-cpu-scheduling.md): shared compute admission, optional topology hints, full-capacity recovery and energy qualification
 - [Tab inventory](docs/proposals/tab-inventory.md)
 - [VR](docs/proposals/vr.md)
 - [Implementation brief: Earth agent](docs/proposals/implementation/earth-agent.md)
