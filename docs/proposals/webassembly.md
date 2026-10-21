@@ -691,7 +691,7 @@ Each package holds:
 - `build-metadata.json`;
 - the loader glue and its types.
 
-Versions follow `YY.MM.DD.#N`. The apps link the packages the way they link the
+Versions follow `YY.MM.DD#N`. The apps link the packages the way they link the
 other libraries.
 
 **Builds.**

@@ -197,7 +197,7 @@ From `~/gh/foss-earth/.github/AGENTS.md`, which every repository here follows:
 > You cannot have AI as a co-author, or your contributions will be rejected.
 > Never add AI author, committer or co-author attribution to commits
 
-- Versions follow CONTRIBUTING.md: `YY.MM.DD.#N` for commits and
+- Versions follow CONTRIBUTING.md: `YY.MM.DD#N` for commits and
   `YY.MM.DD LTS` for long-term support releases.
 - Keep scratch files, logs and screenshots in the repository's gitignored
   `build/` directory, not in system temp folders.
