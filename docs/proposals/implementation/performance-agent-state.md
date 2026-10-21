@@ -1,7 +1,7 @@
 # Performance agent state
 
-Updated 21 October 2026, at the end of the second performance session, after
-the push. A resumed session should be able to continue from this file alone.
+Updated 21 October 2026, during the third performance session (below, "Third
+session"). Long runs now go to [the cloud runs](performance-cloud-runs.md). A resumed session should be able to continue from this file alone.
 The results are in the audit: the
 [first session](../../performance-audit.md#20-october-2026) and the
 [second](../../performance-audit.md#21-october-2026).
@@ -106,6 +106,70 @@ Left alone at the push, and still uncommitted at 12:02 on 21 October:
 
 None of these belong to this work or to the scheduling agent. Don't commit
 them without asking the user.
+
+### Third session
+
+Started 21 October after the push, with this brief: lower the floors, measure
+what nobody has measured (memory, GPU memory, startup blocking, tile bytes,
+orb culling X2, the 360 experiments X1), and settle the FNV table signature.
+0SFS (`/fly/`, `~/gh/0sfs`) belongs to another agent: nothing under
+`~/gh/0sfs` is edited, and a flight check of an engine change is built into
+`~/gh/0sfs/fly/build/perf/fe-*`. Worker scheduling, thread counts and compute
+admission stay out of scope.
+
+Committed, not pushed. All are pixel-identical by construction and test.
+
+| Repo | Commit | Change |
+| --- | --- | --- |
+| engine | `b7e4e05` | Exact table comparison, one reused build block (item 4 below) |
+| sphere-image | `c0422ef` | The orb draws read the canvas height once per camera pass, not once per draw, and trim the draw records in batches |
+| sphere-image | `d1ed7ef` | A frozen asset's preview candidates are ranked once per preview range and texture limit, not filtered and sorted for every orb in every frame |
+| renderer | `af7505e` | The frame-time window is kept sorted as samples come and go, instead of being copied and sorted every frame for the p95 |
+| engine | `fd52dd7` | The published imagery feedback's JSON is kept for the next comparison |
+| engine | `be3f60a` | All the UI covers are drawn in one draw, not one draw per cover (C14) |
+| research | `d1e8eb6`, `c91c10f` | `profile.mjs --heap` and `--gpu`; `pixels.mjs` committed; `CHROME_EXTRA_ARGS` |
+
+**How to test from now on (the user's instruction, 21 October).** The user
+works on a fanless laptop that heats up under long runs, and wants the most
+performance shipped per hour of work:
+
+- Prove changes locally with unit tests and identity proofs, and pick targets
+  from the profiles already saved.
+- Don't run long timed sessions locally. A single short indicative run is the
+  most to do here.
+- Put every long A/B, pixel run or measurement into
+  [performance-cloud-runs.md](performance-cloud-runs.md), for a cloud agent to
+  run.
+- Leave room for the user to test on their own devices, and say what to try.
+
+The run list (R1 to R5) covers:
+
+- the flight check of this session's engine and renderer commits;
+- X1's pixels and timing;
+- X2's off-screen orb count;
+- memory, heap and GPU memory;
+- startup blocking and bytes.
+
+The cloud agent clones from GitHub, so it needs the commits above pushed.
+
+Measured locally (research `build/s3`, `bt-a` = the files before `d1ed7ef`,
+`af7505e`, `fd52dd7` and `be3f60a`, against `bt-b` = after; three interleaved
+pairs):
+
+- At the phone drag at 4×:
+  - sphere-image `selection.ts` self time went from 10.6 to below the
+    readers' cut (separate);
+  - whole frames were 14.16 → 14.09 ms a frame, within noise.
+- The app at 1× and 4× is within noise.
+- Probes of the single occlusion draw (`bt-p`) drew once per frame with
+  covers, with no failure:
+  - the tour, on WebGPU: 451 draws in 451 frames;
+  - the app, on WebGPU: 760 in 760;
+  - the app, on WebGL2: 767 in 768, the other frame's material not yet ready.
+- Every visit was isolated, with shared memory.
+- `c0422ef`'s pairs (`or`) were within noise on the phone. The app at 4× read
+  worse in one set of pairs and within noise in the repeat. That is the app's
+  known 4× noise.
 
 The tour's `npm run deploy` builds from the local checkouts, so the next deploy
 picks up every engine commit above. The deploy fix (tour `811a076a5`) removed
@@ -243,6 +307,44 @@ The second session's before/after is in research's `build/session/`:
 - `rows.sh` writes every run's per-function rows (`bysource-wide.mjs` over the
   session's sources) into `rows/`, and `compare.mjs <target> <profile>` prints
   per-arm medians and runs of the named functions from them.
+
+The third session's A/B tools are in research's gitignored `build/s3/`. They
+build arms without writing any checkout, which other agents edit and build
+from at the same time:
+
+- `fe-arm.config.ts` wraps an app's own `vite.config.ts` with a pre-plugin
+  `load` hook (also in the worker plugins) that serves chosen source files
+  from elsewhere: a file at a git ref, or a patched copy.
+- `spec.mjs <name> <repo>:<ref>:<path>|<repo>:@<file>:<path> …` writes
+  `arms/<name>/spec.json`; a spec maps each source path to the file to serve.
+- `arm.sh <tour|app|fly> <name> [spec.json]` builds one arm with source maps
+  into the app's `build/perf/<name>` and records every checkout's HEAD, diff
+  hash and dirty count, and each served file's hash, in
+  `state/<app>-<name>.txt`, warning if a checkout changed during the build.
+  Diff two arms' state files before comparing them. Flight arms must be named
+  `fe-*`.
+- `run.sh <label> <profile.mjs arguments…>` is one run under `caffeinate -i`.
+  It waits while another `profile.mjs` or `abn.sh` runs and writes
+  `<label> exit <code> overlap <0|1>` to `status`, with the overlapping
+  command. A shell's one-line command that only names `profile.mjs`, such as
+  an agent's `pgrep` check, does not count: before that fix, those flagged
+  most runs with no culprit.
+- `pairs.sh <name> <arm a> <arm b> [phone app tour]` runs a b b a a b per
+  target: the tour's phone drag at 4×, the app's drag at 1× and 4×.
+- `frames.mjs <name> <a> <b>` prints the main-thread share, fps, main-thread
+  ms a frame and script share per arm, medians and runs, marking "sep" where
+  the arms do not overlap.
+- `samecode.sh <dist A> <dist B>` compares two builds' JavaScript with
+  content hashes and build stamps masked.
+- `probe/patch-counts.mjs` writes counting copies of the imagery runtime and
+  the orb renderer, for `--probe 'JSON.stringify(globalThis.__fe ?? null)'`.
+  `probe/patch-meshes.mjs` writes a counting copy of Babylon's `scene.js`
+  (where each active-mesh candidate leaves the loop, and one evaluation's
+  candidates by name), and `probe/uiOcclusion-count.ts` counts the UI
+  occlusion's covers; `arms/am-p` serves both.
+- `selfdiff.mjs <name> <a> <b> <target> <rate> [function|file] [top]` gives
+  per-arm medians of each function's (or file's) self time from the runs'
+  `summary.md`, sorted by B − A, marking "sep" where the arms do not overlap.
 
 Engine scratch from the second session:
 
@@ -470,8 +572,15 @@ floor further, show that one of the parts counted whole can be cheaper:
   (29–32) and UI occlusion pass (17–18);
 - imagery selection (42–44) and publish (24–29);
 - the 360 orbs' frame (30–31);
-- `prepare` (31), terrain selection (23–25);
+- terrain selection (23–25);
 - the workers' replies.
+
+Correction (third session): the `prepare` (31) that this list used to name
+beside the orbs' frame is the same cost. It is the frame's prepare section,
+filled by the viewer's `onFrame`. The orbs have a second cost inside the
+render: their draw observers, 28–34 at the phone drag (about 49 draws a
+frame), of which reading the canvas height costs about 9 and trimming the
+draw records about 5.
 
 At 4×, a saving buys frames as well as idle time, so compare main-thread ms
 per frame between arms, not only the main-thread share.
@@ -554,29 +663,58 @@ These are inclusive ms/s at the phone drag at 4× unless stated, from the
    but would save about 2 at most. Not pursued.
 3. **The marker raycast**: 10.5 after `f647f96` (16.4 before). Not broken down
    further.
-4. **`publishManaged`** (26): `prepareManagedPatchTable` 5, 2–3 of it self (a
-   16 KB table allocated per patch per publish); `buildImageryDisplay` 3;
-   `patchTableDepth` 3, computed twice for table patches; submit 2–2.7;
-   `syncManagedPins` 2; `bindManagedDirect` 1.6; `coverageComplete` 0.7–1.4;
-   `capacityKey`, a `JSON.stringify` of the stats, 1–1.4; self 3.6–4.4.
-   - A candidate: build each table in one scratch block, reserve its slot
-     first, release it if the signature is unchanged, and allocate and copy
-     only when it changed. Its value depends on the share of tables that are
-     unchanged on a publish, which is not measured. Count that with
-     `--probe` first.
-   - Aside, not a cost: the table signature is a 32-bit FNV hash, so a
-     collision would skip an upload that was needed. Worth a look on its own.
+4. **`publishManaged`** (26): done in engine `b7e4e05` (third session).
+   - Counted first, with `--probe` over the phone drag: of 2,881 tables built,
+     2,642 (92 %) were unchanged, and none of those was an FNV collision (the
+     bytes were compared too).
+   - Each table is now built into one reused block, under the same admission
+     as before (reserved first, released when unchanged), compared with the
+     bound table, and copied out only when it changed. The depth is computed
+     once.
+   - **The FNV signature.** A collision is possible: a birthday search finds
+     pairs of tables with the same 32-bit FNV-1a hash in seconds (one is in
+     `imageryBinding.test.ts`). In use the odds are about 2^-32 per changed
+     table, at about 24 changed tables a second while dragging. A collision
+     would leave a stale or coarser table bound until the next change, which
+     on a still view could be indefinitely. The comparison is now exact: the
+     signature names only the depth, and the used cells are compared byte for
+     byte. `buildPatchTable` leaves every cell outside them empty, so comparing
+     them at equal depth is full equality. Byte equality implies FNV equality,
+     so uploads differ from before only where FNV collided, and none did in
+     the counted drag.
+   - Tests: the colliding pair; 300 random tables, built into a dirty reused
+     block and into a new one; every byte at every depth; the managed path's
+     admission, release, refusal and errors; a depth change and a new atlas
+     upload even where the cells compare equal. 14 of 15 mutants are killed
+     (engine `build/fnv/mutants/run.py`). The survivor ignores the bound
+     source. The check is kept: a source change reallocates the atlas whenever
+     a patch is bound, so the atlas check catches it, except where that
+     reallocation is refused, a path no test reaches.
+   - Three interleaved pairs (`pt-a`, the three files at `5a7880e`, against
+     `pt-b`): `prepareManagedPatchTable` 4.8–5.4 → 2.9–3.7 at the phone drag;
+     in the app at 4×, `publishManaged` 34.2–40.2 → 24.6–29.8 and
+     `prepareManagedPatchTable` 10.4–12.9 → 5.7–8.7; at 1×, `publishManaged`
+     11.2–11.9 → 9.1–10.1. Every arm separates. Whole-frame figures are
+     within noise.
 5. **Uniform writes.** Babylon's `uniformBuffer._buffersEqual` costs about 4.0.
 6. **Entering a 360 image at 4×:** the sphere-image record about 12.4, and the
    sky's atmosphere transmittance about 13.
 7. **The UI occlusion pass** (backlog C14), inside the render at
    `uiOcclusion.ts:134`: 16.7–19 on the phone. Each frame, `coveredWorldClips`
    reads element boxes (`worldBoxOf` 7.1) and runs `querySelectorAll` (2.6).
-   The boxes could be cached until the layout changes, if that is proved never
-   to miss a change.
+   The draws are now one per frame (engine `be3f60a`; `directRender` was about
+   4.2). The boxes could still be cached until the layout changes, if that is
+   proved never to miss a change. `worldBoxOf`'s first read is the frame's
+   first forced layout, so removing it would move that cost, not save it.
 8. **The 360 orbs' frame** (sphere-image `viewer.ts` `onFrame`), 31.9:
-   - `preview` 11.8: `chooseRepresentation` 5.7 and `current()` about 3.0,
-     usually once per preview, so hoisting it gains little;
+   - `preview` 11.8: `chooseRepresentation` 5.7 and `current()` about 3.0.
+     Done in `d1ed7ef`: a frozen asset's candidates are ranked once per range
+     and texture limit (a `WeakMap` on the frozen array; unfrozen ones are
+     ranked every time), `current()` is read only when a candidate is chosen,
+     and `selection.ts`'s self time fell from 10.6 to below the cut. The proof
+     is in `tests/previewRanking.test.ts`: 10,000 calls against the shipped
+     code, with the admission calls in order, mixed projections and an edited
+     unfrozen asset;
    - `drawFrame`'s `cameraKey` → `viewportHeightCssPx` → `getBoundingClientRect`
      3.6, a forced layout (parked, below);
    - the candidates loop 4.3, of which the canvas box read (1.9) is gone in
@@ -585,14 +723,22 @@ These are inclusive ms/s at the phone drag at 4× unless stated, from the
      `9904178`;
    - `keyed`/`keyFor` 1.7, skipped: removing it would change the public
      `ViewerResources` API.
-9. **Not looked at yet:**
-   - orb culling (backlog X2);
-   - verifying the four 360 experiments (X1); a pixel run with them was
-     started and stopped;
-   - memory (`profile.mjs --memory`, plus a heap snapshot);
-   - GPU memory, tile textures against render targets;
-   - startup blocking (check `crossOriginIsolated` after any change);
-   - tile bytes.
+9. **Handed to the cloud runs** ([performance-cloud-runs.md](performance-cloud-runs.md)):
+   - orb culling (backlog X2), R3. Culling is exact only for an orb whose
+     quad lies wholly outside one clip half-space; R3 counts those. Below the
+     horizon is not exact: the terrain may not cover the orb while tiles load.
+   - verifying the four 360 experiments (X1), R2. The earlier pixel run never
+     became ready (it hit the 240 s limit), so most moments were unsteady, and
+     it proved nothing.
+   - memory, heap and GPU memory, R4 (`profile.mjs --memory --heap --gpu`);
+   - startup blocking and bytes, R5 (`run.mjs`, which reports blocking time,
+     long tasks, isolation and each request's bytes).
+10. **`getLoadingDiagnostics`** (2.8 self). Two callers only ask whether any
+    tile is pending (the eye contact's `pending`, and resuming after a lease),
+    yet each call also scans every needed key for failures and the whole
+    cache for pending replacements. A `hasPendingTiles` that stops at the
+    first one would do less work by construction. The callers' frequency has
+    not been read from a profile yet.
 
    The worker pools' sizes now belong to the scheduling agent (C13).
 
@@ -607,8 +753,10 @@ Parked:
     until after the render's reads. Either needs a proof that those writes
     never move the canvas.
   - sphere-image's `viewportHeightCssPx` is about 0.5 %.
-- **`refreshFeedback`'s JSON comparison** (3.3). The feedback object is exposed
-  outside the runtime, so caching the string is not provably safe.
+- ~~`refreshFeedback`'s JSON comparison~~: done in engine `fd52dd7`. `feedback`
+  is assigned only in `refreshFeedback` and at its start, each refresh builds a
+  new object, and every consumer copies or only reads it, so the kept string
+  always matches the published object.
 
 ## Waiting on the user
 
