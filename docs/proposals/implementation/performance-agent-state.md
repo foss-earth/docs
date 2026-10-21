@@ -50,11 +50,12 @@ Process rules:
 
 ## Where things stand
 
-Everything is committed and nothing is pushed. The user deployed the tour at
-16:25 on 20 October from tour `7488e2da5`, which was built on engine
-`90c0ef6`. The engine commits after that one are not deployed yet.
+Everything is committed and pushed to `main`, on 21 October at the user's
+request: this work's commits, the scheduling agent's and the terrain
+proximity agent's. Nothing has been deployed since the user deployed the tour
+at 16:25 on 20 October, from tour `7488e2da5`, built on engine `90c0ef6`.
 
-| Repo | Unpushed commits from this work |
+| Repo | Commits from this work, pushed |
 | --- | --- |
 | engine | `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `5d1b132`, `97a6ae1`, `329dc6c`, `90c0ef6`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3`; second session `6058d4f`, `b2ddff9`, `497e013`, `f647f96`, `5a7880e` |
 | renderer | `24b6a6d` |
@@ -64,7 +65,7 @@ Everything is committed and nothing is pushed. The user deployed the tour at
 | sky | `e4a3dc3` |
 | fly | `dddb895` |
 | research | `a26ca32`, `207cd61`, `8dcfb02`, `4f5bd62` |
-| docs | this file, and the 20 and 21 October audits |
+| docs | this file, and the 20 and 21 October audits (`046ac8a`, `333cff7`, `990d4b3`) |
 
 The first session's final runs, base against HEAD, are in the
 [20 October audit](../../performance-audit.md#before-and-after). The second
@@ -79,12 +80,22 @@ files as at its start) against `s2-end` (HEAD), medians:
 | Phone drag 4×, raster update | 230.9 ms/s | 198.3 ms/s (separate) |
 | App 1× and 4×, tour 4×, flight 4× | | totals within noise, except the tour's 57.8 → 58.1 fps at 4×; most changed parts separate |
 
-Engine `33e897e` (terrain proximity LOD), app `ceb308a` and docs `6772725`
-belong to other agents and are unpushed too. So do engine `d27076d`,
-`849638a` and `f9326e1`, renderer `89ec913`, sky `18d68ea` and app
-`49f8866`, from the scheduling agent (below). The terrain proximity task has
-finished, so the file ownership locks of the earlier parallel period no longer
-apply.
+Pushed with them, from other agents:
+
+- the terrain proximity LOD: engine `33e897e`, app `ceb308a` and docs `6772725`;
+- the scheduling agent (below): engine `d27076d`, `849638a` and `f9326e1`,
+  renderer `89ec913`, sky `18d68ea`, app `49f8866`, fly `2d66a88`, docs
+  `8d0509f` and `e2ebd7f`, and its proposal, docs `e23599d`.
+
+The terrain proximity task and the scheduling agent have both finished, so
+the file ownership locks of the parallel periods no longer apply.
+
+Left alone at the push:
+
+- fly `src/flight/hud/FlightControlPanel.tsx`, another task's uncommitted
+  aircraft-switching edit;
+- an untracked screenshot in research's root;
+- `native`, which has no remote.
 
 The tour's `npm run deploy` builds from the local checkouts, so the next deploy
 picks up every engine commit above. The deploy fix (tour `811a076a5`) removed
