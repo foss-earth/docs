@@ -1,7 +1,7 @@
 # Performance agent state
 
-Updated 20 October 2026, at the end of the first performance session. A
-resumed session should be able to continue from this file alone. The results
+Updated 20 October 2026, during the second performance session. A resumed
+session should be able to continue from this file alone. The results
 so far are in the [20 October audit](../../performance-audit.md#20-october-2026).
 
 ## The brief
@@ -55,7 +55,7 @@ Everything is committed and nothing is pushed. The user deployed the tour at
 
 | Repo | Unpushed commits from this work |
 | --- | --- |
-| engine | `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `5d1b132`, `97a6ae1`, `329dc6c`, `90c0ef6`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3` |
+| engine | `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `5d1b132`, `97a6ae1`, `329dc6c`, `90c0ef6`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3`; second session `6058d4f`, `b2ddff9`, `497e013`, `f647f96`, `5a7880e` |
 | renderer | `24b6a6d` |
 | sphere-image | `b2f0ec9` |
 | app | `529fc65`, `550b10d`, `b9a12a2` |
@@ -75,7 +75,8 @@ The final interleaved runs, base against HEAD (details in the audit):
 | Phone drag 4×, afternoon changes only | 84 %, 82 %; 52.6 and 53.0 fps | 73 %, 72 %; 55.3 and 55.8 fps |
 
 Engine `33e897e` (terrain proximity LOD), app `ceb308a` and docs `6772725`
-belong to other agents and are unpushed too. The terrain proximity task has
+belong to other agents and are unpushed too. So do engine `d27076d`,
+`849638a` and `f9326e1`, from the scheduling agent (below). The terrain proximity task has
 finished, so the file ownership locks of the earlier parallel period no longer
 apply.
 
@@ -96,10 +97,28 @@ Known failures that predate this work:
   `preview-server.mjs` and `earth-compare/shared.mjs`;
 - app: `appFiles.test.ts`;
 - fly: 10 tests in `src/flight/createFlightSimApp.test.ts`;
-- engine: `tests/createRasterTilesRuntime.atlas.test.ts`, "changes imagery
-  level and source without touching terrain, elevation requests or the
-  surface". It depends on timing, and it fails at `1afb938`, `f11a819` and
-  `1e3a0a3` alike.
+
+The engine's atlas test "changes imagery level and source without touching
+terrain, elevation requests or the surface" is fixed in `5a7880e` (below).
+
+**The scheduling agent (C13)** owns adaptive CPU concurrency, worker-pool
+sizing, shared compute admission and shared-sky scheduling, with its own
+[state document](adaptive-cpu-scheduling-state.md). This work keeps the
+numerical, data and DOM optimisations, and this file, the audit and the
+backlog. Neither runs hardware timing while the other does: check
+`pgrep -fl 'profile.mjs|abn.sh'` and that document before a timed run.
+
+The atlas test it handed over failed in whole-file runs, at `6058d4f` (before
+R14, through the `updateTerrainPositions` spy) and after it (through the
+revision), and passed alone. The cause is time: heights that arrive are
+selected for again only once `map.terrain.reselectWhileMoving` (100 ms) has
+passed. A warm 40-frame settle takes about 4 ms, so that reselection, and its
+two terrain commits, landed during the imagery changes. A cold settle takes
+over 100 ms. R14 only hid the commits from the spy, because a commit now
+stages its writes. `5a7880e` steps the clock 50 ms per frame and spies on
+`stageTerrainPositions` too. The identity expectations are unchanged, and two
+mutants fail it (1 ms frames: 2 staged writes; a detail change that recommits
+terrain: 515).
 
 Checks before a step counts as done:
 
@@ -263,6 +282,7 @@ otherwise.
 | engine `1afb938` | `heightsAt` leaf shortcut, no boxed-coordinate Maps | `heightsAt` self 13.1 → 9.9, inclusive 27.3 → 23.9 |
 | engine `f11a819` | Keep lattice heights across revisions for tiles that touch no changed terrain | Raster update 251.5 → 233.2; `surfaceSamples` 46.8 → 34.7; `heightsAt` 24.9 → 17.3 |
 | engine `1e3a0a3` | `evaluateView` without per-call objects; the off-screen hull test reuses the sampled heights | `evaluateView` 91.7 → 80.6; select 55.9 → 49.5; raster update 238.8 → 225.3 |
+| engine `6058d4f`, `b2ddff9` | The terrain commit uploads each tile once with its seams, skips uploads of arrays a mesh already holds (still moving its world bounds), and searches only the levels present | `commitTerrain` 24.2 → 10.5; `stitchTerrainEdges` 15.8 → 5.8; raster update 237.2 → 214.6 |
 
 Rejected after measuring: prefetching a group's heights in one batch (more
 heights for fewer calls, a loss in the flight; kept in engine
@@ -327,86 +347,66 @@ parts can be cheaper:
 
 Of the known pixel-identical costs, the terrain commit is the largest (below).
 
-## Next: the terrain commit (designed, not started)
+## The terrain commit (engine `b2ddff9`, done)
 
-At the phone drag at 4×, `commitTerrain` in `createRasterTilesRuntime.ts`
-costs 21–23 ms/s, concentrated in the long frames. The long frames are mostly
-terrain commits and the loaded-detail measurement. The parts, from the
-profiles:
+`commitTerrain` uploads each committed tile once, with its seams, and skips an
+upload of the array a mesh already holds. `patchesForGeometryCommit` and the
+seam searches look only at the levels present, with numeric keys per level.
+Steps A to E of the design are in; F is rejected (below).
 
-- `stitchTerrainEdges` (`engine/src/babylon/meshRefinement.ts`), about
-  15 ms/s:
-  - its uploads through `updateTerrainPositions`, about 9.3 ms/s: the buffer
-    write 3.6–5.1 and the bounds rescan (`extractMinAndMax`) 3.8–4.9;
-  - its own time, 3.1–4.4;
-  - `patchPoint`, 0.9–1.7;
-  - `storedPositions`, 0.5–1.0.
-- `patchesForGeometryCommit`, about 4 ms/s. It builds string keys at every
-  level, from 0 up to the tile's.
-- The target uploads, about 1.4 ms/s.
+At the phone drag at 4×, three interleaved pairs, `r14-a` (the two files at
+`6058d4f`) against `r14-b` (`b2ddff9`), built back to back from one state of
+every other repository:
 
-The design gives identical output by construction:
+| ms/s | `r14-a`, median (runs) | `r14-b`, median (runs) |
+| --- | --- | --- |
+| `commitTerrain` | 24.2 (24.2, 27.5, 21.0) | 10.5 (10.5, 10.1, 12.3) |
+| `stitchTerrainEdges` | 15.8 (15.8, 18.7, 13.1) | 5.8 (4.5, 5.8, 6.9) |
+| `updateTerrainPositions` | 11.6 | 5.7 |
+| `patchesForGeometryCommit` | 4.5 | under the readers' 0.5 cut-off |
+| Raster update | 237.2 (232.2, 281.6, 237.2) | 214.6 (214.6, 212.8, 222.3) |
+| Main thread | 80 % (76, 90, 80) | 75 % (75, 73, 75) |
 
-- **A. Skip unchanged uploads.** In the edge pass, read the stored data until
-  the first write that changes a value, compared with `Object.is` so that
-  −0 → +0 counts. Only then copy. Skip the upload when nothing changed.
-  - Re-stitching against an unchanged neighbour usually gives a delta of
-    exactly 0: by Sterbenz, the band-0 write `a + (b − a)` is exactly `b`.
-  - A skipped upload also skips the ground BVH rebuild (`onGeometryUpdated`),
-    the VAO disposal, `_markSubMeshesAsAttributesDirty`, the bounds rescan and
-    the buffer conversion.
-  - The skip is safe because a frozen world matrix never changes, and a
-    parented mesh refreshes its bounds at render.
-- **B. Upload each committed tile once.** Stage the positions in a
-  `Map<Mesh, positions>` through both passes:
-  - `patchPoint` and the corner pass must read staged data first;
-  - the final upload must be the same data as now: a `number[]` if stitched,
-    else the `Float32Array` target;
-  - a `finally` in `commitTerrain` uploads whatever is staged, which keeps
-    the error path's test (`createRasterTilesRuntime.test.ts`, about line 962:
-    the throw, the revision bump, `changes("geometry")`);
-  - the `geometryWrites` counts change, so update the tests that assert them:
-    `seamPasses.max` 1 at about line 575, and "uploads only corners needing
-    repair", which expects 1, 0, 1.
-- **C. Fewer keys in `patchesForGeometryCommit`.** Build keys only at the
-  dirty levels in the first pass and at the visible levels in the second, in
-  the same order.
-- **D. A point evaluation that allocates nothing.** Keep the arithmetic order,
-  including the leading `0 +` of `reduce`: the result is
-  `((0 + d0·w0) + d1·w1) + d2·w2 + position[axis]`. Read `position.x/y/z`
-  directly, and keep the exported `patchPoint`.
-- **E. Fewer levels searched.** Look for edge neighbours and corner owners only
-  at the levels present in `patches`, perhaps with numeric keys per level.
-  Check the deepest terrain z first. The corner pass compares with `===`, not
-  `Object.is`; keep that.
-- **F. Maybe: compute the bounds ourselves.** Pass `updateExtends = false` and
-  compute the bounds bit-identically to Babylon's `extractMinAndMax`:
-  - start from ±`Number.MAX_VALUE`;
-  - apply `minimizeInPlaceFromFloats` and `maximizeInPlaceFromFloats` to each
-    vertex;
-  - apply the bias: `min.x -= min.x·bias.x + bias.y`, and the same for max;
-  - then `reConstruct` and `update(world)`.
+The arms do not overlap on the commit. Every visit was isolated, with content
+in 1.8–3.2 s. The raw logs are in research's `build/heights/r14/`.
 
-  It saves about 4–5 ms/s, but it touches Babylon's private state (`_extend`,
-  the points cache), so do it only with a proof and a test.
+The proof:
 
-Write the identity test first. Call it
-`engine/tests/terrainSeamIdentity.test.ts`, and follow
-`meshRefinement.test.ts` (`NullEngine`, a `patch(scene, z, x, y, height)`
-helper, frozen and parented placement). It needs:
+- `engine/tests/terrainSeamIdentity.test.ts` pins `SHIPPED_DIGEST`, taken at
+  `6058d4f` before the change. It covers seeded quadtrees across the
+  antimeridian, mixed segment counts, Earth-radius origins, `Float32Array`
+  targets, and frozen and parented placement. The digest holds for the commit
+  one write at a time, staged, and with string keys forced.
+- The digest workload's uploads fell from 14,391 to 9,542 (−34 %).
+- 17 mutants are killed (engine `build/seam/mutants/run.py`). Three are
+  equivalent: searching levels above the tile (a finer neighbour sorts later
+  and is skipped), the first pass at the visible levels (the extra keys cannot
+  be dirty), and string keys always (the exact fallback).
 
-- seeded random quadtree partitions, including tiles at x = 0 and
-  x = 2^z − 1 across the antimeridian;
-- mixed segment counts and random heights;
-- origins as large as the Earth's radius;
-- `Float32Array` targets;
-- several commit rounds, each mirroring `commitTerrain`: upload the targets,
-  then `stitchTerrainEdges(patchesForGeometryCommit(visible, dirtyKeys))`.
+What the design got wrong:
 
-Digest every mesh's final positions as float64 bytes, and its local and world
-bounding boxes and spheres. Pin `SHIPPED_DIGEST` from the current code before
-changing anything. Then implement, keep the digest, run mutants, run the
-engine checks, and A/B a tour build at the phone drag at 4×.
+- **The skip is not safe "because a parented mesh refreshes its bounds at
+  render".** `isInFrustum` reads the world bounds between commits, and
+  0SFS's `worldRoot` moves every frame. A skipped upload therefore still
+  refreshes the world bounds (`refreshWorldBounds`: the bounding info and each
+  non-global submesh, from the current world matrix). The final state depends
+  only on the last array uploaded and the world matrix, so this matches an
+  upload of the same array bit for bit.
+- **The existing tests' write counts did not change.** `seamPasses.max` stays
+  1, and "uploads only corners needing repair" still expects 1, 0, 1.
+- **Only arrays Babylon hands back as given are staged.** `GetFloatData`
+  returns the stored array only for an updatable float buffer, stride 12,
+  offset 0, a plain array or `Float32Array`, and exactly 3 numbers per vertex.
+  Anything else is uploaded at once, as before.
+- **The stored type is observable.** The ground BVH refits float64 boxes for
+  a `number[]`. So a stitched tile stays a `number[]` even when its seam
+  already fits, and an unstitched one keeps the `Float32Array` it was given.
+- **F, computing the bounds ourselves, is rejected.** It writes Babylon's
+  private state and still scans every vertex.
+
+A failure mid-commit still uploads what was staged before it, as the
+one-write-at-a-time code did (`createRasterTilesRuntime.test.ts`, the error
+path).
 
 ## Then, by measured cost
 
