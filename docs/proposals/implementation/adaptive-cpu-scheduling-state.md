@@ -29,7 +29,7 @@ dispatch, and retain grants past caller cancellation.
 
 ## Current commits and ownership
 
-- engine `d27076d`, `849638a`: fixed weighted admission, pool/dedicated dispatch ownership,
+- engine `d27076d`, `849638a`, `f9326e1`: fixed weighted admission, pool/dedicated dispatch ownership,
   observations and settings. This is based on the other owner's R14 commits
   `6058d4f` and `b2ddff9`; neither was changed or staged by this task.
 - sky `18d68ea`: whole-team admission, generation width enforcement and queued
@@ -60,7 +60,9 @@ Steps 1 and 2 are implemented as an opt-in fixed experiment:
 - A positive capacity shortage queues and wakes on releases/limit changes.
   Running work drains after shrink. Work is distributed on completion. Whole
   teams use atomic grants with coordinator included, FIFO within urgency and
-  event-driven aging; the optional height cache has lower host urgency.
+  event-driven aging; the optional height cache has lower host urgency. Host and
+  task priority each contribute only their sign, so even arbitrary large tile
+  scores cannot defeat aging; local pools retain their full priority ordering.
   `native.computeAging` exposes the experimental 1000 ms fairness interval.
 - Worker promises do not own execution grants: dispatched cancellation keeps
   its grant until reply or explicit owner retirement. Retired means a requested
@@ -114,7 +116,9 @@ shared-machine observations and must not select a concurrency winner.
 - Engine typecheck, lint, build and public consumer passed. Focused admission,
   cancellation/disposal, worker, atlas, ground and height checks passed: 100
   tests in 10 files, plus a 24-test rerun including two added pressure/loss
-  cases (the other cases overlap). Tests exercise shrink/drain, pressure without
+  cases and a final 42-test run covering bounded urgency (the other cases
+  overlap). Final engine typecheck/lint passed after that adjustment.
+  Tests exercise shrink/drain, pressure without
   unavailability, stale replies, whole-team fairness, aging without timers,
   unknown topology and restoration to full allowed width.
 - Full engine run: 1325 passed, 3 failed plus one worker-start timeout. Isolated
