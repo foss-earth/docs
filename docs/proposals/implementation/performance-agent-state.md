@@ -1,9 +1,10 @@
 # Performance agent state
 
-Updated 21 October 2026, at the end of the second performance session. A
-resumed session should be able to continue from this file alone. The results
-are in the audit: the [first session](../../performance-audit.md#20-october-2026)
-and the [second](../../performance-audit.md#21-october-2026).
+Updated 21 October 2026, at the end of the second performance session, after
+the push. A resumed session should be able to continue from this file alone.
+The results are in the audit: the
+[first session](../../performance-audit.md#20-october-2026) and the
+[second](../../performance-audit.md#21-october-2026).
 
 ## The brief
 
@@ -65,7 +66,7 @@ at 16:25 on 20 October, from tour `7488e2da5`, built on engine `90c0ef6`.
 | sky | `e4a3dc3` |
 | fly | `dddb895` |
 | research | `a26ca32`, `207cd61`, `8dcfb02`, `4f5bd62` |
-| docs | this file, and the 20 and 21 October audits (`046ac8a`, `333cff7`, `990d4b3`) |
+| docs | this file, and the 20 and 21 October audits (`046ac8a`, `333cff7`, `990d4b3`, and the push record `2e39b5c`) |
 
 The first session's final runs, base against HEAD, are in the
 [20 October audit](../../performance-audit.md#before-and-after). The second
@@ -90,12 +91,21 @@ Pushed with them, from other agents:
 The terrain proximity task and the scheduling agent have both finished, so
 the file ownership locks of the parallel periods no longer apply.
 
-Left alone at the push:
+Left alone at the push, and still uncommitted at 12:02 on 21 October:
 
-- fly `src/flight/hud/FlightControlPanel.tsx`, another task's uncommitted
-  aircraft-switching edit;
+- another task's aircraft-switching work, which was being edited then, so its
+  agent was still running:
+  - fly's `FlightControlPanel.tsx`, `createFlightSimApp.ts`,
+    `floatingOrigin.ts`, `flightParameters.ts` and its test, `flight.css`, and
+    the new, untracked `hud/createAircraftSwitchOverlay.ts` and its test;
+  - aircraft's `AircraftSelectionPanel.tsx`;
+  - app's `settings/appSettings.ts` and ui's `settings/registry.ts`, each with
+    its test, edited in the same minutes and probably part of it;
 - an untracked screenshot in research's root;
 - `native`, which has no remote.
+
+None of these belong to this work or to the scheduling agent. Don't commit
+them without asking the user.
 
 The tour's `npm run deploy` builds from the local checkouts, so the next deploy
 picks up every engine commit above. The deploy fix (tour `811a076a5`) removed
@@ -224,7 +234,15 @@ The second session's before/after is in research's `build/session/`:
 - `run.sh` runs three interleaved pairs per target. It waits while any other
   `profile.mjs` or `abn.sh` runs, and records in `status` whether one
   overlapped.
-- `table.sh` and `parts.sh` read its logs, as the final runs' do.
+- `table.sh` and `parts.sh` read its logs, as the final runs' do. `parts.sh`
+  takes the profile's file name with its extension
+  (`tour-drag-4x.cpuprofile`); without it, every part prints as a dash.
+- `frames.mjs` prints each run's main-thread share, frames per second and
+  main-thread ms per frame (`mainThread × 1000 / fps`, from each output
+  folder's `stretches.json`), with arm medians.
+- `rows.sh` writes every run's per-function rows (`bysource-wide.mjs` over the
+  session's sources) into `rows/`, and `compare.mjs <target> <profile>` prints
+  per-arm medians and runs of the named functions from them.
 
 Engine scratch from the second session:
 
@@ -257,7 +275,14 @@ Rules for an A/B:
 **Profile readers** in research's `build/heights/` each take
 `<profile> <dist root> <base>`. The base is `/tour/` or `/app/`, or `/` for
 0SFS: its page is `/fly/`, but its build serves the scripts from `/assets/`.
-With the wrong base the readers print zeros.
+With the wrong base the readers print zeros. They name a frame
+`<function> <file>:<line>`, such as `update createRasterTilesRuntime.ts:1821`,
+so a pattern like `'^update$'` matches nothing: use
+`'^update createRasterTilesRuntime'`. The committed
+`scripts/benchmarks/startup-audit/profile-tree.mjs` does what `tree.mjs` does,
+with `--focus` as a substring. The other readers exist only in gitignored
+`build/`. Commit them beside `profile.mjs` if they need to outlive these
+checkouts. Research's `tools-manifest.json` then needs a receipt for each one.
 
 | Script | What it prints |
 | --- | --- |
@@ -267,6 +292,8 @@ With the wrong base the readers print zeros.
 | `lines.mjs … '<source regex>' '<name regex>'` | Self ms/s per original source line |
 | `longtasks.mjs … [over ms] [show] [top] ['<frame regex>']` | The longest main-thread stretches and what filled them |
 | `errorlines.mjs … ['<text regex>']` | Self ms/s on lines that build an Error, which finds stack captures |
+| `bysource-wide.mjs … '<source regex>'` | As `bysource.mjs`, one row per `source:line` function, which the session's `rows.sh` uses |
+| `rawticks.mjs <profile> <name>` | The raw position ticks (generated lines) of one function |
 
 **Other scratch tools**:
 
@@ -300,6 +327,31 @@ With the wrong base the readers print zeros.
   The engine has no `node_modules` of its own.
 - 3d-tiles-renderer is in `~/gh/foss-earth/node_modules/3d-tiles-renderer`.
 - In zsh, quote globs such as `--include='*.ts'`.
+
+**Pitfalls met so far.**
+
+- **zsh:** `echo ======` fails with "= not found", because `=word` expands
+  to a command's path. Quote it, or print dashes.
+- **macOS has no `timeout`.** Run the command directly.
+- **Vitest hides the console output of passing tests.**
+  - Use `--reporter=verbose`, or append to a file in `build/`.
+  - A grep for logged lines can miss them, because vitest prefixes stdout
+    blocks.
+  - A probe's vitest config with `root: "../.."` resolves against the working
+    directory. Use `new URL("../..", import.meta.url).pathname`.
+- **`toBe` is `Object.is`, so `-0` is not `0`.** Flat tiles' `-0` positions
+  give `-0` world-matrix entries.
+- **A test file can take 60–70 s while other agents' node processes load the
+  machine,** against about 3.4 s alone. Rerun before suspecting the change.
+- **Auto mode refuses to kill another process's vitest worker,** even a slow
+  mutant's. Wait for it to finish.
+- **A mutant runner given one mutant's name overwrites its `results.json`**
+  (`build/evalview/mutants2/run.py`). Keep the full run's results elsewhere
+  first.
+- **sphere-image's `npm run test:consumer` fails with ENOENT** on
+  `build/artifacts/consumer-dependencies.json` unless that has been built. It
+  is not part of `check:implementation`. Run typecheck, lint, build, test and
+  `typecheck:consumer` instead.
 
 ## What changed
 
