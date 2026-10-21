@@ -1,341 +1,490 @@
 # Performance agent state
 
-Closeout note, 20 October 2026: the separate terrain proximity task is now
-committed as engine `33e897e`; its [retained implementation and measurements](../../validation/terrain-proximity-lod.md)
-cover the completed work. The ownership exclusions below describe the earlier
-parallel work period, not a continuing lock on those files. The measurement
-cache and residency stats described below are now engine commits `4b75363`
-and `ac1dd19`; their descriptions of pending checks are historical. The broader
-floor, memory and startup work in this handoff remains a separate task.
+Updated 20 October 2026, at the end of the first performance session. A
+resumed session should be able to continue from this file alone. The results
+so far are in the [20 October audit](../../performance-audit.md#20-october-2026).
 
-Updated 20 October 2026. This file holds the performance agent's progress
-against the 19 October [performance audit](../../performance-audit.md). A
-resumed session should be able to continue from this file alone. The brief is
-the user's: make the UMN tour (`/tour/minneapolis/`), the FOSS Earth app
-(`/app/`) and 0SFS (`/fly/`) as fast as they can be made, runtime first. For
-each target, derive a floor and close the gap to within noise (~10 %) or
-explain why the rest is necessary. Any pixel-changing option goes behind a
-setting that defaults to current behaviour, and waits for the user's decision.
+## The brief
 
-The terrain proximity-LOD agent owns these files; leave them alone:
-`engine/src/terrain/terrainSelector.ts`, `terrainLoader.ts`,
-`engine/src/babylon/createRasterTilesRuntime.ts`, `createTilesRuntime.ts`,
-`createGlobeRuntime.ts`, `cameraState.ts`, `rasterSurfaceSampler.ts`,
-`engine/src/map/mapSourcePanel.ts`, `engine/src/settings/catalogue/loading.ts`
-and `engine/src/surface/contracts.ts`. Also leave alone
-`app/vite/appFiles.test.ts` (another agent's uncommitted update), and
-`engine/src/terrain/imagery/imageryGeometry.ts` with its new test (another
-agent's uncommitted horizon change), and
-`engine/src/browser/terrainHeightBatches.ts` with its test (another agent's
-uncommitted generation memo). Check `git status` before staging: other
-agents also have uncommitted edits in `globeBindings.ts`, `vitest.config.ts`
-and `tests/googleTileViewSnapshot.test.ts`.
+The user's brief:
+
+- Make the UMN tour (`/tour/minneapolis/`), the FOSS Earth app (`/app/`) and
+  0SFS (`/fly/`) as fast as they can be made, runtime first, with WebGPU
+  Android phones (WebAssembly, shared memory) as the demo device.
+- For each target, derive a floor and close the gap to within noise (~10 %),
+  or explain why the rest is necessary.
+- Measure before and after with the same tool. Keep only wins beyond noise, or
+  wins by construction. Add tests, and prove bit identity wherever it is
+  claimed.
+
+These must not regress:
+
+- `crossOriginIsolated` and `SharedArrayBuffer`;
+- pixel-identical output, unless the user approves a change;
+- render on demand;
+- the WebGPU to WebGL fallback;
+- existing settings.
+
+A pixel-changing option goes behind a setting that defaults to the current
+behaviour, and onto the list for the user's decision. New on-screen controls go
+in a settings tab.
+
+Process rules:
+
+- Other agents may be working in the same checkouts. Run `git status` first,
+  and stage only your own paths or hunks (`git apply --cached`).
+- Scratch, logs, profiles and screenshots go in each repository's gitignored
+  `build/`, never in `/tmp`.
+- Commits are one descriptive sentence, straight to `main`. Don't push, deploy
+  or leave servers running unless the user asks. Short servers inside a
+  benchmark run are fine.
+- Indicative benchmark runs are fine. An exclusive run needs the user to say
+  the machine is free.
+- Prefer build-time work to run-time work.
+- `FOSS_EARTH_GOOGLE_KEY` lives in the environment or `.env.local`. Read only
+  that variable, never print or commit it, and never log a Google tile URI,
+  which can carry the key or the session.
+- After a Chrome run that was killed, timed out or crashed, run
+  `~/gh/foss-earth/browser-testing/scripts/chrome-clones.sh --clean`.
+
+## Where things stand
+
+Everything is committed and nothing is pushed. The user deployed the tour at
+16:25 on 20 October from tour `7488e2da5`, which was built on engine
+`90c0ef6`. The engine commits after that one are not deployed yet.
+
+| Repo | Unpushed commits from this work |
+| --- | --- |
+| engine | `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `5d1b132`, `97a6ae1`, `329dc6c`, `90c0ef6`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3` |
+| renderer | `24b6a6d` |
+| sphere-image | `b2f0ec9` |
+| app | `529fc65`, `550b10d`, `b9a12a2` |
+| toolbar | `4c1d7ee`, `1872be5` |
+| sky | `e4a3dc3` |
+| fly | `dddb895` |
+| research | `a26ca32`, `207cd61`, `8dcfb02`, `4f5bd62` |
+| docs | this file and the 20 October audit |
+
+The final interleaved runs, base against HEAD (details in the audit):
+
+| Stretch | Base | HEAD |
+| --- | --- | --- |
+| Flight 1×, main thread | 79 %, 69 % | 30 %, 36 % |
+| App drag 4×, frames/s | 47.9, 51.1 | 56.8, 57.6 |
+| Tour drag 4×, main thread | 71 %, 76 % | 53 %, 55 % |
+| Phone drag 4×, afternoon changes only | 84 %, 82 %; 52.6 and 53.0 fps | 73 %, 72 %; 55.3 and 55.8 fps |
+
+Engine `33e897e` (terrain proximity LOD), app `ceb308a` and docs `6772725`
+belong to other agents and are unpushed too. The terrain proximity task has
+finished, so the file ownership locks of the earlier parallel period no longer
+apply.
+
+The tour's `npm run deploy` builds from the local checkouts, so the next deploy
+picks up every engine commit above. The deploy fix (tour `811a076a5`) removed
+the publisher's fixed list of allowed files. That list stopped stray files from
+reaching the append-only `gh-pages` branch for good. It was the wrong guard:
+the build already guarantees clean output (`copyPublicDir: false`, Vite empties
+`dist`, and deploy builds first). It also duplicated what the build knows, and
+it broke on the first new file.
+
+Known failures that predate this work:
+
+- ui: 7 localStorage tests;
+- research: `check:links`, which stops at a missing
+  `validation/evidence/weather/2026-10-08/source-manifest.json` (docs' passes);
+- research receipts for `gpu.mjs`, `parity.mjs`, `preview.html`, `preview.mjs`,
+  `preview-server.mjs` and `earth-compare/shared.mjs`;
+- app: `appFiles.test.ts`;
+- fly: 10 tests in `src/flight/createFlightSimApp.test.ts`;
+- engine: `tests/createRasterTilesRuntime.atlas.test.ts`, "changes imagery
+  level and source without touching terrain, elevation requests or the
+  surface". It depends on timing, and it fails at `1afb938`, `f11a819` and
+  `1e3a0a3` alike.
+
+Checks before a step counts as done:
+
+| Repo | Checks |
+| --- | --- |
+| engine | `npm run typecheck`, `npm run lint`, `npm test`, eslint on changed files; after `npm run build`, `node terrain-WASM/scripts/check-height-batches.mjs` for height-batch changes |
+| renderer, sky | `npm run typecheck`, `npm run lint`, `npm test` |
+| tour | `npm run typecheck`, `npm run test:changed -- <files>`, `npm run lint` |
+| app | `npm run test:changed -- <files>`, typecheck, eslint |
+| toolbar | `npm run typecheck`, eslint, vitest |
+| fly | `npm run typecheck`, `npx vitest run --configLoader native <file>`, eslint on changed files |
+| research, docs | `npm run test:source` |
 
 ## How to measure
 
-All runs so far are indicative: the machine is shared, with load averages of
-1.5–2.5. No exclusive run has been made.
+**The profiler** is research's
+`scripts/benchmarks/startup-audit/profile.mjs`, committed. It runs the audit's
+cold and warm visits under Fast 4G, then one stretch per rate with the V8 CPU
+profiler on. It names the time by source function through the build's source
+maps.
 
-- **Flight A/B:** `~/gh/0sfs/fly/build/perf/ab-build.sh <name> <engine files…>`
-  builds `<name>-a` with the HEAD versions of the named engine files and
-  `<name>-b` with the working ones, back to back. Other agents' uncommitted
-  engine edits are in both. It records `git diff | shasum` per side in
-  `engine-state-<name>-{a,b}.txt`.
-- **A/B across all three apps:** `~/gh/foss-earth/engine/build/perf/ab-build.sh <name> app,tour,fly <engine files…>`
-  does the same for each target, into `app/build/perf`,
-  `UMN-VR/tour/build/perf` and `0sfs/fly/build/perf`.
-  `research/build/benchmarks/ab-measure/run.sh` then profiles app and tour
-  (drag) and fly (flight), in the order a, b, then b, a; edit its build names
-  for a new pair.
-- **Profile:** from `research/`, run
-  `node scripts/benchmarks/startup-audit/profile.mjs --target fly --root ../../0sfs/fly/build/perf/<build> --label <label> --rates 1,4 --seconds 8`.
-  Interleave the sides a/b/a/b. It reports fps, frame-time percentiles,
-  main-thread busy share and self time per source-mapped function, and writes
-  the `.cpuprofile` under `research/build/benchmarks/startup-audit/`. Pass
-  `--probe '<expression>'` to evaluate an expression before and after each
-  stretch, for counters patched into a bundle.
-- **Call tree:** `node scripts/benchmarks/startup-audit/profile-tree.mjs --profile <cpuprofile> --root <dist> --focus "<name file:line>" --depth 4 --min 2`.
-- **Bit identity of imagery selection:**
-  `engine/tests/terrain/imagery/imagerySelectionIdentity.test.ts` pins the
-  digest of the shipped selector's plans and measurements (`b2a7e123…`, taken
-  from a clean HEAD copy). The mutant runner is
-  `engine/build/mutants/imageryHeights.mjs` (gitignored scratch); it must catch
-  every mutant except the equivalent ones listed below.
+```sh
+cd ~/gh/foss-earth/research
+node scripts/benchmarks/startup-audit/profile.mjs --target tour \
+  --root ../../UMN-VR/tour/build/perf/<build> --phone --motion drag \
+  --rates 4 --seconds 8 --label <label>
+```
 
-## Baseline (19 October, before any change)
+- `--motion still|drag|enter`: `enter` flies into a 360 image and out again.
+  The flight always flies.
+- `--phone` uses a 412 × 915 viewport at 2.625 device pixels per CSS pixel,
+  with touch.
+- `--layout` traces style and layout and names the script that forced each.
+  `--reduced-motion` prices the CSS animations.
+- `--probe '<expr>'` evaluates an expression before and after each stretch,
+  for counters patched into a bundle.
+- The last line of the log is the output folder. It holds `summary.md` and
+  `<target>-<motion>-<rate>x.cpuprofile`.
+- A run takes about 1.6 minutes for one rate. An app run takes about
+  3 minutes, because its cold visit waits about 95 s to settle.
 
-0SFS flight, indicative, same profiler:
+The **phone drag at 4× CPU** is the workload most of the 20 October wins were
+measured on, since a phone runs out of main thread first.
 
-| Rate | fps | p95 frame | Main thread busy | Script |
-|---|---|---|---|---|
-| 1× | 58.4 | — | 76 % | 68 % |
-| 4× | 11.5 | 116.7 ms | — | — |
+**Builds.** Build every arm with source maps into the app's own `build/perf/`:
 
-At 1×, the imagery runtime's update took 505 ms/s. heightsAt ran 60,000
-calls/s at 759,000 coordinates/s. The surface revision changed about 3.5 times
-a second.
+```sh
+cd ~/gh/UMN-VR/tour && npx vite build --configLoader native --sourcemap --outDir build/perf/<name> --emptyOutDir
+cd ~/gh/foss-earth/app && npx vite build --configLoader native --manifest --sourcemap --outDir build/perf/<name> --emptyOutDir
+cd ~/gh/0sfs/fly && npx vite build --configLoader native --sourcemap --outDir build/perf/<name> --emptyOutDir
+```
 
-The rest of the baseline is the 19 October audit: drag main thread 63 % (app)
-and 36 % (tour) at 1×; renderer memory 987 MiB (tour) and 1,529–1,588 MiB
-(app, flight); GPU process 656–722 MiB; 17 workers per page; 300–360 ms of
-blocking before the first 3D frame; 41–55 MiB of tiles to settle.
+The apps resolve the libraries from the local checkouts. To build the
+committed state against working edits, `~/gh/foss-earth/engine/build/perf/ab-build.sh <name> app,tour,fly <engine files…>`
+builds `<name>-a` with the HEAD versions of the named files and `<name>-b`
+with the working ones. Otherwise build the "before" arm, make the change, and
+build the "after" arm. The baselines kept for comparison are:
 
-## Changes
+- fly `build/perf/dist-base` (19 October, before any change);
+- app `build/perf/app-base` and tour `build/perf/tour-base` (20 October
+  morning);
+- tour `build/perf/layout-base` (before the layout guards).
 
-### dadbbcd: reuse imagery heights within a surface revision (engine)
+**A/B.** These scratch scripts are in research's gitignored `build/heights/`:
 
-`engine/src/terrain/imagery/imagerySelector.ts` gains an optional
-`ImagerySurface.getRevision()`. With it, a tile's 3×3 grid heights, samples and
-hull positions are kept until the revision changes. An edge bisection's four
-lines are walked in lockstep, so each step makes one height batch rather than
-four. The rays inside a tile are sent as one batch too.
+- `abn.sh <name> <armA> <armB> [pairs]` interleaves phone drags at 4× over
+  tour builds;
+- `summarize.sh <name> <armA> <armB> [pairs]` prints per-run values and
+  medians of the imagery and terrain functions.
 
-This is bit-identical by construction and by test. A height depends only on
-the point and the surface, never on the rest of its batch. Heights and bounds
-are fixed within a revision: `commitTerrain()` bumps it before the imagery
-update in the same `update()`. Samples and hull positions are kept with the
-fallback and bounds they were taken at. The tests pin the shipped digest and
-check scalar, packed and reused paths against each other, plus a revision bump
-and a bounds change without one. Mutants caught: 14/14.
+The final runs of 20 October are in research's gitignored `build/final/`:
 
-Interleaved A/B, flight (`hull-a` against `hull-b`):
+- `run.sh` builds each app at HEAD and runs the interleaved pairs against the
+  kept baselines;
+- `table.sh` prints each run's visit check and stretch figures;
+- `parts.sh <tour|app|fly> <dist> <profile file> <run>…` prints the inclusive
+  ms/s of the parts the floors are built from (`BASE=/` for 0SFS).
 
-| Rate | Measure | Before | After |
-|---|---|---|---|
-| 1× | Main thread busy | 75–76 % | 51 % |
-| 1× | Script | 68 % | 43 % |
-| 4× | fps | 12.4–12.7 | 15.5–16.2 |
-| 1× | heightsAt calls/s | 60,000 | 20,600 |
-| 1× | heightsAt coordinates/s | 759,000 | 207,000 |
+Rules for an A/B:
 
-### a034920: reuse heights on a 65×65 lattice (engine)
+- Run under `caffeinate -i`. The machine runs on battery, and one whole A/B was
+  lost to idle sleep.
+- Use at least three pairs.
+- Check that every log reads "isolated true" and has a content time.
+- Claim a win only when the arms do not overlap, or when the win holds by
+  construction.
+- Build both arms back to back from one engine state. The same code read 49 %
+  and 39 % of the main thread on different evenings.
 
-This change generalises the 3×3 grid cache to every point on a 65×65 lattice
-over the tile. It covers the grid's corners as nearest points and the
-grid-to-grid bisection probes, which fall on multiples of 1/64. It is capped
-at 2^17 kept points per surface, after which the cache is reset.
+**Profile readers** in research's `build/heights/` each take
+`<profile> <dist root> <base>`. The base is `/tour/` or `/app/`, or `/` for
+0SFS: its page is `/fly/`, but its build serves the scripts from `/assets/`.
+With the wrong base the readers print zeros.
 
-In one traversal of the identity cases, it asks for 39.7 % of the heights the
-uncached path asks for; the 3×3 cache asked for 57 %. The test now requires
-less than 45 %. The pinned digest holds. Mutants caught: 14/15. The missed
-mutant drops the row's integer check; it is near-equivalent, because
-`row·65 + column` is unique for any integer column in 0–64, so it can collide
-only when two non-integer rows differ by exactly k/65.
+| Script | What it prints |
+| --- | --- |
+| `tree.mjs … '<root name regex>' [depth] [min]` | The top-down tree under matching frames, merged by name, inclusive ms/s |
+| `callers.mjs … '<name regex>' [depth] [min]` | Bottom-up callers of matching frames |
+| `bysource.mjs … '<source regex>'` | Inclusive and self ms/s per function of the matching sources |
+| `lines.mjs … '<source regex>' '<name regex>'` | Self ms/s per original source line |
+| `longtasks.mjs … [over ms] [show] [top] ['<frame regex>']` | The longest main-thread stretches and what filled them |
+| `errorlines.mjs … ['<text regex>']` | Self ms/s on lines that build an Error, which finds stack captures |
 
-Interleaved A/B, flight (`lattice-a` = dadbbcd, `lattice-b`), two pairs:
+**Other scratch tools**:
 
-| Rate | Measure | Before | After |
-|---|---|---|---|
-| 1× | Main thread busy | 53 %, 53 % | 49 %, 49 % |
-| 1× | Script | 45 %, 45 % | 41 %, 41 % |
-| 4× | fps | 15.8, 16.2 | 16.6, 17.4 |
+- research `build/phone/passes.mjs` counts WebGPU render passes per frame, with
+  their loads and stores.
+- research `build/phone/gpu-ab.mjs` measures GPU time per frame.
+- research `build/phone/pixels.mjs` compares pixels with a setting on and off,
+  with the page's clock stopped.
+- research `build/tiles-bug/probe.mjs` is the Google 3D Tiles stand-in probe.
+  It counts drawn meshes by geometric error, coarse tiles over finer ones and
+  eye pushes, and it never logs tile URIs.
+- Mutation runners are in engine `build/mutants/`, `build/mutants-2/`,
+  `build/evalview/mutants.py`, `build/lattice/` and `build/heights/`.
+- engine `build/probe/diff-patch.mjs` patches a differential check into a
+  bundle.
 
-After a034920 (probe build of `lattice-b`, load 5.2), `heightsAt` runs
-11,000 calls/s with 34,000 points/s. 59 % of calls carry a single point (the
-nearest point once the grid is cached). 18 % carry the whole 10-point hull
-after a revision bump. `heightsAt` costs 40.5 ms/s inclusive, of which the
-height lookups (`sampleTerrainGrid`) are 1.9 ms/s; the rest is per-call and
-per-point overhead in `heightsAt` (off-limits) and in
-`terrainHeightBatches.sample` (21.5 ms/s).
+**Proving identity.** Three patterns, used together:
 
-### Rejected: prefetch a group's points in one batch
+1. **A digest test pinned from the shipped code.**
+   `engine/tests/terrain/imagery/imagerySelectionIdentity.test.ts` pins the
+   selector's plans and measurements (`createHash` over seeded cases, with a
+   `SHIPPED_DIGEST` taken from a clean HEAD copy).
+2. **Mutants.** Each hand-made mutant must make the tests fail. List the ones
+   that are equivalent, and say why.
+3. **A differential probe in the running app**, where the code paths are
+   hard to reach in tests.
 
-The traversal evaluates a node's four children together, and a measurement
-evaluates its whole region list. The trial asked, before either, in one
-batch, for each tile's 3×3 grid and nearest points, and kept any exact point
-for the revision. In the identity cases, calls dropped by 33 % while heights
-rose by 17 %; the digest held. In the flight it lost: 1× main thread 39 %,
-39 % (a034920) against 44 %, 41 %, and 4× within noise. `heightsAt` did not
-get cheaper (28–37 → 37–44 ms/s) and the prefetch added 35–45 ms/s, so its
-cost is per point, not per call. The attempt is kept in
-`engine/build/attempts/imagerySelector.prefetch.ts`.
+**Where things live.**
 
-### a3b213c: collect a height batch's worker pixels faster (engine)
+- Babylon 8.56.2's source is in `~/gh/foss-earth/app/node_modules/@babylonjs/core`.
+  The engine has no `node_modules` of its own.
+- 3d-tiles-renderer is in `~/gh/foss-earth/node_modules/3d-tiles-renderer`.
+- In zsh, quote globs such as `--include='*.ts'`.
 
-`collectTerrainHeightPixels` (the pixels the `single` tier's parity check
-sends to its worker) now sorts the indices as a `Uint32Array` instead of an
-array with a comparator, and copies the heights in a loop. This is the same
-output by construction; a test checks ascending indices and bit-equal heights
-against the source grids, and three mutants are caught. Micro-benchmark:
-2.1 → 1.2 µs (3 points), 12 → 5 µs (30 points), 61 → 21 µs (300 points). It
-cost 15–22 ms/s of the flight's main thread before.
+## What changed
 
-### Uncommitted: share a view's region measurements (engine)
+All changes are pixel-identical by construction and test, unless the entry
+says otherwise. The figures are interleaved A/B medians, indicative, in ms of
+main thread per second at the phone drag at 4× CPU, unless the entry says
+otherwise.
 
-`measureImageryView` takes an optional `ImageryMeasurementCache`. The
-imagery runtime passes one cache to both its measurements: the plan's
-regions, every 100 ms while the view moves, and the loaded pages, whenever
-the page key, view or revision changes. They are mostly the same tiles at the
-same view. A kept measurement is given again only when all of these are
-unchanged:
+| Commit | Change | Result |
+| --- | --- | --- |
+| engine `dadbbcd` | Reuse imagery grid heights, samples and hulls within a surface revision | Flight 1× main thread 75–76 → 51 %; 4× 12.4–12.7 → 15.5–16.2 fps |
+| engine `a034920` | The same over a 65 × 65 lattice per tile | Flight 1× 53 → 49 %; 4× 15.8/16.2 → 16.6/17.4 fps |
+| engine `a3b213c` | Collect the parity check's pixels with a typed sort | 2–3× faster, by micro-benchmark |
+| engine `4b75363` | One view's measurements shared between the plan and the loaded pages | App 4× 50.6 → 56.7/56.0 fps (main 88 → 83/82 %); fly 4× 19.5 → 23.7/28.4 fps; 0 mismatches over 263,621 regions in the running app |
+| engine `ac1dd19` | Residency `stats()` in one pass | Same values by construction |
+| renderer `24b6a6d` | Hold a depth or stencil-only canvas clear until a draw needs it (`deferDepthClears`) | GPU inside a 360 image 3.62 → 1.61 ms per frame (−56 %, M5, phone viewport); one main pass per frame in every tour state, against up to 3; pixel-identical in 9 states |
+| sphere-image `b2f0ec9`, app `529fc65` | Fly into and out of 360 images as one spring-paced motion; `scene.panorama.flightGrowth` (Orb growth); entry view 120° | A feature fix the user asked for |
+| engine `5d1b132` | Google 3D Tiles stand-ins: the ground gives way to finer tiles, and `map.terrain.hideCoarseStandIns` (default on) hides far-too-coarse ones | The bug fix; see below |
+| engine `97a6ae1`, app `550b10d`, toolbar `4c1d7ee` | Skip DOM writes of unchanged values: the detail rail, the POI exit button, the download rate | Style recalcs 2.75 → 2.07 per frame, layouts 1.32 → 0.84 per frame; 49.8 → 50.5 fps |
+| toolbar `1872be5`, app `b9a12a2`, fly `dddb895` | Activity outline setting (`interface.toolbar.activityOutline`, Spinning by default, or Still) | Still saves about 47 ms/s of style and paint at 4× (50.5 → 52.7 fps, main 89 → 85 %); the default is unchanged |
+| sky `e4a3dc3` | Skip the star field's update when no star could be drawn at the exposure | Enter at 4×: main 29 → 25 %, script 20 → 16 %, by day |
+| engine `329dc6c` | Index stitched (float64 array) ground meshes for the anchor markers' ray | Marker raycast 40.5 → 14.6 ms/s; brute force 26.4 → 4.3 |
+| engine `90c0ef6` | Build the hidden-patch withdrawal Error only when a table is uploading | About 22 ms/s at 4×, by construction |
+| engine `545c5cb` | Packed transport for the worker's height double-check | Height work 58.5 → 35.1 ms/s |
+| engine `0600ad3` | Open-addressed typed point table for memoised heights | Height work 48.7 → 41.0 ms/s; lookup 32.4 → 13.5 ns |
+| engine `1afb938` | `heightsAt` leaf shortcut, no boxed-coordinate Maps | `heightsAt` self 13.1 → 9.9, inclusive 27.3 → 23.9 |
+| engine `f11a819` | Keep lattice heights across revisions for tiles that touch no changed terrain | Raster update 251.5 → 233.2; `surfaceSamples` 46.8 → 34.7; `heightsAt` 24.9 → 17.3 |
+| engine `1e3a0a3` | `evaluateView` without per-call objects; the off-screen hull test reuses the sampled heights | `evaluateView` 91.7 → 80.6; select 55.9 → 49.5; raster update 238.8 → 225.3 |
 
-- the surface object, its revision and the camera's ground height;
-- every number in the view and the source, compared with `Object.is`;
-- the tile's own bounds, min and max.
+Rejected after measuring: prefetching a group's heights in one batch (more
+heights for fewer calls, a loss in the flight; kept in engine
+`build/attempts/imagerySelector.prefetch.ts`); discarding the MSAA store
+(no GPU gain on the M5); horizon culling of the main camera's tiles (13–15 %
+of drawn tiles but about 1 % of vertices, and pixel identity is not airtight).
 
-Otherwise the tile is measured again. The cache is reset at 2^14 tiles.
+### The Google 3D Tiles stand-ins (engine `5d1b132`)
 
-This is bit-identical by construction, because a measurement is a function of
-exactly those inputs. The test in `imagerySelectionIdentity.test.ts` checks:
+3d-tiles-renderer 0.4.24 keeps a loaded tile drawn while its descendants load.
+Google's octree boxes overlap, so a coarse tile can stand in far from home. A
+depth-3 tile with an error of 263 km, centred in the Yukon, contains a camera
+at Minneapolis, and its mesh lies 6.5–6.8 km above the campus. The vertical
+ground sample hit it first. Eye contact then pushed the eye up, a higher eye
+picked coarser tiles, and the camera floated.
 
-- cached results against uncached, by digest;
-- a one-ulp change to each number in the view, more than 100 cases;
-- a revision bump, a ground shift, a source change and a copied surface;
-- a widened min on one tile and a raised max on another;
-- an unrevised surface.
+The fix has two parts:
 
-Mutants caught: 15/15 (`engine/build/mutants/measurementCache.mjs`). In the
-running app, a differential probe (`engine/build/probe/diff-patch.mjs`)
-measured every region both ways. Over 263,621 regions in a drag and its
-settle, there were 0 mismatches, comparing tiles by z/x/y, and 51 % of the
-regions were reused. Interleaved A/B: pending, `measure-a` against
-`measure-b`.
+1. The ground sample walks down to a finer Google mesh whenever
+   `coarser.height − finer.height ≤ coarser.error`.
+2. With `map.terrain.hideCoarseStandIns` on (the Map tab, on by default), a
+   tile with children is not drawn when its error exceeds both its distance
+   from the eye and 16 × max(100 m, the eye's height).
 
-### Uncommitted: residency stats in one pass (engine)
+On cold caches, in the "low" view:
 
-`imageryResidency.stats()` walked the entries about ten times, each walk a
-`filter` or `reduce` over a fresh array, and one update calls it up to four
-times. It now counts in one loop, in the same order. `missing` is still
-computed as before: `isMissing` may expire an entry, which bumps the
-revision and requests a render, so its order relative to the rest is kept.
-It gives the same values by construction. Tests and A/B pending.
+| Build | Eye height | Pushes |
+| --- | --- | ---: |
+| Base | 276 → 435 m | 14 |
+| Fix, setting off | 276 → 282.5 m | 2 |
+| Fix, default | 276 m throughout | 0 |
 
-### Baseline drift
+Settled views draw the same pixels, but the setting changes what is drawn while
+tiles load. That is the requested behaviour. The "one LOD per tile" option the
+user suggested would not have helped: the overlapping tiles are siblings, not
+ancestors. 0SFS's terrain-contact guard against kilometre jumps is probably
+redundant now, and was left in place.
 
-The terrain agent's uncommitted engine changes moved the flight's baseline
-between runs: the same a034920 code read 49 % at 1× at 23:45 and 39 % at
-07:31. Only A/B pairs built back to back from the same engine state compare.
+## Floors and gaps
 
-## Floors
+The table is in the [20 October audit](../../performance-audit.md#floors-and-gaps).
+A floor there is what is left when every cost we know how to remove is taken
+out, with every other part counted at its measured cost. So it is an upper
+bound. Each target has two floors: same behaviour, and with the decisions.
 
-### Flight frame (target 1)
+| Target | HEAD | Same behaviour | With the decisions |
+| --- | --- | --- | --- |
+| Flight 1× | 30 %, 36 % | the same | about 23–27 % |
+| App drag 1× | 26 % | about 25 % | about 21 % |
+| Tour drag 1× | 21 % | about 21 % | about 18 % |
+| Phone drag 4× | 72–73 % | about 68 % | about 58 % |
 
-The 1× frame rate is already at the 60 fps vsync cap, so the floor is on
-main-thread time per second. It is the work that must happen each frame:
+Every target is within 10 % of its same-behaviour floor only because the
+unexamined parts are counted whole. To lower a floor, show that one of these
+parts can be cheaper:
 
-- Babylon render: ~55 ms/s;
-- physics and simulation: ~15 ms/s;
-- HUD: ~6 ms/s;
-- imagery selection that must run as the view moves: ~10 ms/s, i.e. one
-  traversal per 100 ms at its time-sliced budget, with heights reused;
-- residency and publish: ~45 ms/s.
+- imagery selection (50 ms/s on the phone, 51–59 in the flight);
+- Babylon's render, with its UI occlusion pass and HUD observers;
+- the 360 orbs' frame (34 on the phone);
+- residency and publish;
+- the workers' replies.
 
-The sum is about 130 ms/s, or 13 % of a core at 1×. After dadbbcd the frame
-tick is 391 ms/s. Of that:
+Of the known pixel-identical costs, the terrain commit is the largest (below).
 
-- the raster update in `prepareFrame`: 201 ms/s, of which the imagery update
-  is 193:
-  - `refreshLoadedDetail`: 107 ms/s;
-  - select: 38;
-  - publish: 25;
-  - pump: 7;
-  - feedback: 7;
-  - stats: 5;
-- the second raster update via `setExternalViewState`: 86.5 ms/s;
-- Babylon render: 54 ms/s;
-- physics: 15 ms/s;
-- HUD: 6 ms/s.
+## Next: the terrain commit (designed, not started)
 
-### Dragging (target 2)
+At the phone drag at 4×, `commitTerrain` in `createRasterTilesRuntime.ts`
+costs 21–23 ms/s, concentrated in the long frames. The long frames are mostly
+terrain commits and the loaded-detail measurement. The parts, from the
+profiles:
 
-Baselines, 20 October, indicative, with the profiler's drag motion:
+- `stitchTerrainEdges` (`engine/src/babylon/meshRefinement.ts`), about
+  15 ms/s:
+  - its uploads through `updateTerrainPositions`, about 9.3 ms/s: the buffer
+    write 3.6–5.1 and the bounds rescan (`extractMinAndMax`) 3.8–4.9;
+  - its own time, 3.1–4.4;
+  - `patchPoint`, 0.9–1.7;
+  - `storedPositions`, 0.5–1.0.
+- `patchesForGeometryCommit`, about 4 ms/s. It builds string keys at every
+  level, from 0 up to the tile's.
+- The target uploads, about 1.4 ms/s.
 
-- app (`app-base`, load 3.8): 1× 59.2 fps, main thread 34 %, script 28 %;
-  4× 53 fps;
-- tour (`tour-base`): 1× main thread 24 %; 4× 57 fps.
+The design gives identical output by construction:
 
-This is already below the audit's 63 % and 36 %. The drop comes from
-dadbbcd, a034920 and other agents' work since then.
+- **A. Skip unchanged uploads.** In the edge pass, read the stored data until
+  the first write that changes a value, compared with `Object.is` so that
+  −0 → +0 counts. Only then copy. Skip the upload when nothing changed.
+  - Re-stitching against an unchanged neighbour usually gives a delta of
+    exactly 0: by Sterbenz, the band-0 write `a + (b − a)` is exactly `b`.
+  - A skipped upload also skips the ground BVH rebuild (`onGeometryUpdated`),
+    the VAO disposal, `_markSubMeshesAsAttributesDirty`, the bounds rescan and
+    the buffer conversion.
+  - The skip is safe because a frozen world matrix never changes, and a
+    parented mesh refreshes its bounds at render.
+- **B. Upload each committed tile once.** Stage the positions in a
+  `Map<Mesh, positions>` through both passes:
+  - `patchPoint` and the corner pass must read staged data first;
+  - the final upload must be the same data as now: a `number[]` if stitched,
+    else the `Float32Array` target;
+  - a `finally` in `commitTerrain` uploads whatever is staged, which keeps
+    the error path's test (`createRasterTilesRuntime.test.ts`, about line 962:
+    the throw, the revision bump, `changes("geometry")`);
+  - the `geometryWrites` counts change, so update the tests that assert them:
+    `seamPasses.max` 1 at about line 575, and "uploads only corners needing
+    repair", which expects 1, 0, 1.
+- **C. Fewer keys in `patchesForGeometryCommit`.** Build keys only at the
+  dirty levels in the first pass and at the visible levels in the second, in
+  the same order.
+- **D. A point evaluation that allocates nothing.** Keep the arithmetic order,
+  including the leading `0 +` of `reduce`: the result is
+  `((0 + d0·w0) + d1·w1) + d2·w2 + position[axis]`. Read `position.x/y/z`
+  directly, and keep the exported `patchPoint`.
+- **E. Fewer levels searched.** Look for edge neighbours and corner owners only
+  at the levels present in `patches`, perhaps with numeric keys per level.
+  Check the deepest terrain z first. The corner pass compares with `===`, not
+  `Object.is`; keep that.
+- **F. Maybe: compute the bounds ourselves.** Pass `updateExtends = false` and
+  compute the bounds bit-identically to Babylon's `extractMinAndMax`:
+  - start from ±`Number.MAX_VALUE`;
+  - apply `minimizeInPlaceFromFloats` and `maximizeInPlaceFromFloats` to each
+    vertex;
+  - apply the bias: `min.x -= min.x·bias.x + bias.y`, and the same for max;
+  - then `reConstruct` and `update(world)`.
 
-At 1× in the app, imagery measurement leads the self time:
+  It saves about 4–5 ms/s, but it touches Babylon's private state (`_extend`,
+  the points cache), so do it only with a proof and a test.
 
-| ms/s | Function |
-| ---: | --- |
-| 18.8 | `evaluateView` |
-| 18.1 | `surfaceSamples` |
-| 15.2 | `heightsAt` |
-| 9.7 | `terrainHeightBatches.sample` |
-| 6.1 | `sampleTileSurface` |
+Write the identity test first. Call it
+`engine/tests/terrainSeamIdentity.test.ts`, and follow
+`meshRefinement.test.ts` (`NullEngine`, a `patch(scene, z, x, y, height)`
+helper, frozen and parented placement). It needs:
 
-This is the work the shared measurement cache removes. The rest of the self
-time:
+- seeded random quadtree partitions, including tiles at x = 0 and
+  x = 2^z − 1 across the antimeridian;
+- mixed segment counts and random heights;
+- origins as large as the Earth's radius;
+- `Float32Array` targets;
+- several commit rounds, each mirroring `commitTerrain`: upload the targets,
+  then `stitchTerrainEdges(patchesForGeometryCommit(visible, dirtyKeys))`.
 
-- `applyWorldViewport`, 9.2 ms/s, and `getBoundingClientRect`, 4.3 ms/s.
-  Both are forced layouts: they read `clientWidth` and `clientHeight` after
-  the frame's DOM writes.
-- residency `stats()`, 3.7 + 1.8 ms/s (the single pass).
-- the anchor markers' occlusion raycast, about 7 ms/s in Babylon's
-  `intersectsTriangle` and `_intersectTriangles`, plus BVH preparation churn.
-- `refreshFeedback`, 2.2 ms/s. Caching the previous JSON would save about
-  half of that, but it would be correct only if nothing outside the runtime
-  ever mutates the feedback object, and nothing enforces that. Not pursued.
+Digest every mesh's final positions as float64 bytes, and its local and world
+bounding boxes and spheres. Pin `SHIPPED_DIGEST` from the current code before
+changing anything. Then implement, keep the digest, run mutants, run the
+engine checks, and A/B a tour build at the phone drag at 4×.
 
-The floor for a drag frame is the Babylon render, the camera update, and the
-imagery and terrain selection that must run as the view moves, once per
-100 ms. Using the flight's terms, that is about 120–130 ms/s at 1×, about
-12–13 % of a core.
+## Then, by measured cost
 
-## Left to do
+These are inclusive ms/s at the phone drag at 4× unless stated, and all are
+pixel-identical candidates:
 
-1. **Flight and dragging:**
-   - finish the measurement-cache A/B, then commit it if it wins;
-   - test, A/B and commit the single-pass residency `stats()`;
-   - then profile again and take the next largest item. The worker parity
-     path (`collectTerrainHeightPixels`, ~24 ms/s before a3b213c) is still on
-     the list.
-2. **Renderer memory:** `profile.mjs --memory` (macOS footprint plus a
-   memory-infra dump). It is written but has not been run yet; add a heap
-   snapshot.
-3. **GPU memory:** split tile textures from render targets.
-4. **Workers:** check whether each pool's size and memory pay off, with
-   `?set.native.workers=`.
-5. **Startup blocking:** check `crossOriginIsolated` after any change.
-6. **Tile bytes:** formats, compression, request order and caching only.
-7. **Write-up:**
-   - a dated section in `performance-audit.md` with before/after and a
-     floor/gap table;
-   - mark finished items in `optimization-backlog.md`;
-   - commit `profile.mjs`/`profile-tree.mjs` to research after checking the
-     `check:tools` manifest.
+1. **What is left of `evaluateView`** (80.6 inclusive, 16.1 self).
+   `surfaceSamples` (33.9) builds arrays per call. The hull loop and `outcode`
+   cost about 12, `footprintFrom` about 5.6 and `boundsFor` about 3.2.
+2. **`terrainHeightBatches`.** `generation()` costs about 2.4, and the per-call
+   LRU and result arrays 1–2 each. The flush's `add` costs about 6.5: its sort
+   2.3, for which an insertion sort of small key arrays gives the same order,
+   and its emission loop 2.4.
+3. **The rest of the marker raycast** (14.6): the predicate over every scene
+   mesh (`surfaceQuery.ts:49`) 2.2, `intersectsSegmentBounds` 1.5, a brute
+   force of about 4 on each mesh's first query, `isEnabled` 0.6.
+4. **`publishManaged`**: 27–29 at HEAD (about 45 before `90c0ef6`).
+   `prepareManagedPatchTable` costs 5.4 of it, `buildImageryDisplay` 3.8 and
+   `syncManagedPins` 2.1.
+5. **Uniform writes.** Babylon's `uniformBuffer._buffersEqual` costs about 4.0.
+6. **Entering a 360 image at 4×:** the sphere-image record about 12.4, and the
+   sky's atmosphere transmittance about 13.
+7. **The UI occlusion pass** (backlog C14), inside the render at
+   `uiOcclusion.ts:134`: 17–19 on the phone. Each frame, `coveredWorldClips` reads element boxes
+   (`getBoundingClientRect` 6.7) and runs `querySelectorAll` (2.6). The boxes
+   could be cached until the layout changes, if that is proved never to miss
+   a change.
+8. **The 360 orbs' frame** (sphere-image `viewer.ts` `onFrame`), 34 on the
+   phone. Not looked at yet.
+9. **Not looked at yet:**
+   - orb culling (backlog X2);
+   - verifying the four 360 experiments (X1); a pixel run with them was
+     started and stopped;
+   - memory (`profile.mjs --memory`, plus a heap snapshot);
+   - GPU memory, tile textures against render targets;
+   - the worker pools' sizes;
+   - startup blocking (check `crossOriginIsolated` after any change);
+   - tile bytes.
+
+Parked:
+
+- The **forced layouts**:
+  - `applyWorldViewport`'s first style recalc is paid for the CSS animations
+    (see Still).
+  - About 17 ms/s at 4× of later forced style and layout comes from reads
+    after mid-frame HUD writes. It could be removed by snapshotting the
+    canvas box at the start of the frame, or by deferring the HUD writes
+    until after the render's reads. Either needs a proof that those writes
+    never move the canvas.
+  - sphere-image's `viewportHeightCssPx` is about 0.5 %.
+- **`refreshFeedback`'s JSON comparison** (3.3). The feedback object is exposed
+  outside the runtime, so caching the string is not provably safe.
 
 ## Waiting on the user
 
-- **Double raster update in sim mode** (off-limits file, pixel-changing).
-  In 0SFS, `prepareFrame` in `createGlobeRuntime.ts` runs
-  `rasterTilesRuntime.update()` with the previous frame's view (118 ms/s at
-  1×). Then the sim tick sets the new view through `setExternalViewState`,
-  which runs `update()` again (87.5 ms/s). Each run gives imagery selection
-  its own 2 ms slice, so the traversal gets 4 ms a frame. Running only the
-  second would save about 100 ms/s, but the traversal would then finish later
-  after a move: tiles would arrive at different moments, though the settled
-  view would be the same. It would need a setting that defaults to the
-  current behaviour, and the file belongs to the terrain LOD agent.
-- **Per-point overhead in `heightsAt`** (off-limits file): done by the
-  terrain agent. Its uncommitted `rasterSurfaceSampler.ts` now keys cells by
-  number per level, and `terrainHeightBatches.ts` memoises a grid wrapper's
-  generation key and keeps its WeakRef. Re-profile once those are committed.
-- **Throttling the page re-measurement (pixel-changing).**
-  `syncDistribution` could re-measure pages at the selector's 100 ms cadence
-  rather than on every publish. That changes when the loaded-detail readout
-  updates, so it would go behind a setting that defaults to the current
-  behaviour. The setting would sit in the map settings, since `loading.ts` is
-  off-limits. Not built yet. The shared measurement cache reduces what is
-  left to gain from it.
-- **Anchor-marker occlusion as an any-hit query** (off-limits file).
-  `showAnchorMarkers` in `createGlobeRuntime.ts` (around l.1031) casts a
-  closest-hit ray per marker to decide whether the ground hides it. That
-  question needs only an any-hit query, which can stop at the first triangle
-  closer than the marker. The fallback goes through Babylon's
-  `intersectsTriangle`, about 7 ms/s while dragging, and the ground BVH
-  preparation (`groundAcceleration.ts`, one preparation in flight, at most 64
-  meshes) churns as tiles change. Pixel-identical, but it belongs to the
-  terrain LOD agent's file.
-- **Forced layouts while dragging** (pixel-changing on resize frames).
-  `applyWorldViewport` reads `canvas.clientWidth` and `clientHeight` each
-  frame, and `uiOcclusion` reads `getBoundingClientRect`, after the frame's
-  DOM writes: 9.2 and 4.3 ms/s of self time at 1×. A `ResizeObserver` cache
-  would remove the reads, but a resized frame would draw at the previous
-  size. Only part of the cost can be removed at all: one layout per frame is
-  needed whenever the DOM changes, so the gain is only any repeated layout. A
-  timeline trace must show which writers force it before this is worth a
-  setting.
+Each of these changes pixels or behaviour, so each needs a setting that
+defaults to today and the user's decision:
+
+- **Activity outline Still by default**, or a composited comet. The spinning
+  outline costs about 47 ms/s of style and paint at 4× (the setting exists).
+- **One raster update per frame in 0SFS.** `prepareFrame` runs the update with
+  the previous view, and `setExternalViewState` runs it again. The second call
+  costs 58–60 ms/s at 1× at HEAD. Of that, 24–26 is selection, which would
+  move to the remaining call, so dropping it probably saves about 32–35 ms/s.
+  Tiles would arrive at different moments during a move. Measure it as an A/B
+  before quoting a saving.
+- **The loaded-detail readout** (`refreshLoadedDetail`, 64–68 ms/s at the
+  phone drag at 4×, 38–54 in the flight at 1×). Re-measuring the pages at the
+  selector's 100 ms cadence, or at the throttled view, changes when the
+  readout moves.
+- **Verify imagery heights only at admission.** The worker's double check
+  never feeds the output. It is the WebAssembly design's safety net.
+- **Horizon culling of far-side Google tiles**, behind a setting: about
+  15 ms/s of CPU at 4×.
+- **Phones:**
+  - `renderer.resolutionScale` below 1 (P1);
+  - antialias off (P3);
+  - an opaque canvas (P7), wherever alpha is below 1;
+  - the four 360 experiments (X1).
+- **`map.terrain.hideCoarseStandIns`** is already on by default, as the
+  requested bug fix. It changes what is drawn while tiles load.

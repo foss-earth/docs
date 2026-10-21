@@ -21,6 +21,12 @@ What is already done, and how a speedup is proven to change nothing, is in
 [Performance](performance.md). The rules for when a frame is drawn are in
 [Render on demand](render-on-demand.md).
 
+Updated 20 October 2026 after the first performance session (the
+[20 October audit](performance-audit.md#20-october-2026)). Its finished items
+are marked Local. The items it added carry measured costs, marked
+"measured", and the session's next steps are in the
+[performance agent state](proposals/implementation/performance-agent-state.md).
+
 ## How to read the estimates
 
 **None of the gains below were measured.** They are estimates from the code, the
@@ -90,7 +96,7 @@ Most of this list cannot be ranked better without numbers. These come first.
 | ID | Item | Status | Owner | Effort | Tier |
 | --- | --- | --- | --- | :-: | :-: |
 | M1 | Power harness: record package, CPU and GPU watts while a fixed route replays. On macOS, `sudo powermetrics --samplers cpu_power,gpu_power -i 1000`, or `macmon` without sudo. Log watts beside frame time and the frame budget's streams. | Open | research `benchmarks/` | S | 1 |
-| M2 | A fixed, repeatable flight: recorded inputs replayed against a byte-for-byte tile cache, so A/B runs fly the same path. `benchmarks/globe-compare` and `scene-ab` are the start. | Partial | research, 0SFS route | M | 1 |
+| M2 | A fixed, repeatable flight: recorded inputs replayed against a byte-for-byte tile cache, so A/B runs fly the same path. `benchmarks/globe-compare` and `scene-ab` are the start. Since 20 October 2026, research's `startup-audit/profile.mjs` replays the same drag, phone finger drag and 360 entry and exit on every run, with a CPU profile named by source function, layout tracing and a reduced-motion switch (research `a26ca32`, `8dcfb02`, `4f5bd62`); tiles still come live. | Partial | research, 0SFS route | M | 1 |
 | M3 | Device matrix: M5 on battery in Low Power Mode, an Intel or older iGPU laptop, a mid Android phone on Chrome and Firefox, an iPhone on Safari. One real WebGL1 context. | Open | research | M | 2 |
 | M4 | Land the profiler streams in the app (`profiler-streams` branch) | Local | app, renderer | S | 1 |
 | M5 | Split the sky's CPU section into illumination, dome, stars and tables | Open | sky or engine | S | 2 |
@@ -116,6 +122,7 @@ largest power levers we have.
 | P10 | Pause or slow the globe while panels cover most of the canvas. `uiOcclusion.ts` already knows what is covered. | Open | engine, renderer | All | G T | Power while reading panels | S | 2 | — |
 | P11 | Temporal anti-aliasing and upscaling with jittered frames and motion vectors. Babylon has a TAA pipeline. Photogrammetry and moving aircraft need careful history rejection. | Open | renderer | WebGL2, WebGPU | F G | GPU −50% at 0.67 scale with quality near native | L | 4 | MSFS TAA, DLSS, FSR 2 |
 | P12 | Replace `backdrop-filter` blur and large shadows over the moving canvas with flat fills (PR42) | Open | ui, toolbar | All | F G T | Compositor work per frame | S | 2 | — |
+| P13 | A still Activity outline. The spinning comet on busy chips restyles and repaints them every frame. The setting `interface.toolbar.activityOutline` exists (toolbar `1872be5`, app `b9a12a2`, fly `dddb895`); Still is not the default, and that is the user's decision | Off | toolbar, apps | All | F G T | Measured: about 47 ms/s of style and paint at the phone drag at 4× CPU; 50.5 → 52.7 fps | S | 1 | System reduced-motion |
 
 ## Google Photorealistic 3D Tiles
 
@@ -142,6 +149,8 @@ recommended 20 px.
 | T14 | Preload along the flight path's next minutes, as raster terrain already does | Open | engine, 0SFS | All | F | Fewer coarse tiles ahead | M | 3 | CesiumJS `preloadFlightDestinations` |
 | T15 | Draw low-resolution tiles first, at a fraction of the screen height, while finer ones load | Open | engine | All | G | Time to first full view | M | 3 | CesiumJS `progressiveResolutionHeightFraction` |
 | T16 | Fade tiles in over a few frames instead of popping, when fade cost is below pop cost | Open | engine, port of `TilesFadePlugin` | All | F G | Perceived smoothness, not speed | M | 4 | 3d-tiles-renderer (three.js) |
+| T17 | Coarse stand-ins. A loaded coarse tile drawn while its descendants load can sit kilometres above the ground, because Google's octree boxes overlap. The ground sample now gives way to a finer tile within the coarser one's error, and `map.terrain.hideCoarseStandIns` (on) hides a tile with children whose error exceeds both its distance from the eye and 16 × the eye's height (engine `5d1b132`). A bug fix: the camera no longer floats | Local | engine | All | F G T | Measured: eye rise 276 → 435 m with 14 pushes before, none after | S | 1 | — |
+| T18 | Horizon culling for the main camera: tiles wholly below the horizon (`isSphereBelowHorizon`, already used for focus and proximity) are not selected | Open, needs decision | engine | All | F G | Measured: 13–15 % of drawn tiles but about 1 % of vertices; about 15 ms/s of CPU at the phone drag at 4×. Pixel identity is not airtight, so it needs a setting | S | 3 | CesiumJS horizon culling |
 
 ## Raster terrain and imagery
 
@@ -165,18 +174,26 @@ stitching.
 | R11 | A minimal unlit terrain shader with no unused Babylon material features (PR59) | Open | engine | All | F G | Fragment and driver work for every terrain pixel | M | 2 | MapLibre draped terrain |
 | R12 | Back-face culling where the camera cannot be under the terrain (PR60) | Open | engine | All | F G | Small | S | 3 | — |
 | R13 | Lower anisotropy under Save battery (PR37); the option exists | Partial | app | All | F G | Sampling bandwidth on oblique ground | S | 2 | — |
+| R14 | Commit terrain with each tile uploaded once and an unchanged seam not uploaded at all, with keys built only at the levels in use. The design, which gives identical output by construction, and its identity test are in the [performance agent state](proposals/implementation/performance-agent-state.md#next-the-terrain-commit-designed-not-started) | Open, designed | engine | All | F G | Measured cost: `commitTerrain` 21–23 ms/s at the phone drag at 4× CPU, mostly in long frames; about 9 of it is uploads that are often no-ops | S | 1 | — |
+| R15 | Imagery heights and measurements reused instead of recomputed: grid, lattice and hull heights within a revision, and across revisions for tiles no changed terrain touches; one measurement per view shared by the plan and the readout; packed worker transport; typed point tables; a leaf shortcut; no per-call objects in `evaluateView` (engine `dadbbcd`, `a034920`, `a3b213c`, `4b75363`, `ac1dd19`, `545c5cb`, `0600ad3`, `1afb938`, `f11a819`, `1e3a0a3`). Bit-identical, by pinned digests and mutants | Local | engine | All | F G | Measured: flight 1× main thread 75 → 51 → 49 % with the first two; at the phone drag at 4×, height work 58.5 → 35.1 ms/s, then `evaluateView` 102.9 → 80.6 ms/s | M | 1 | — |
 
 ## Main thread, CPU and memory
 
 | ID | Item | Status | Owner | Backend | Load | Gain (estimate) | Effort | Tier | Precedent |
 | --- | --- | --- | --- | --- | --- | --- | :-: | :-: | --- |
 | C1 | Collision BVH, built per tile in a worker, queried through a per-frame ground cache around the aircraft. The prototype took 0.0008 ms for five rays against 2.25 ms. Not integrated. (CP13) | Open | engine query, 0SFS cache | All | F | Near-ground physics CPU −95% | M | 1 | FlightGear ground cache, Rigs of Rods, three-mesh-bvh |
-| C2 | Reuse vectors, arrays and matrices on hot paths, and leave unchanged uniforms alone (PR12) | Open | all libraries | All | F G T | Garbage-collection pauses | M | 3 | — |
+| C2 | Reuse vectors, arrays and matrices on hot paths, and leave unchanged uniforms alone (PR12). Done for the imagery measurement (`evaluateView`, engine `1e3a0a3`). Babylon's `uniformBuffer._buffersEqual` still costs about 4 ms/s at the phone drag at 4× | Partial | all libraries | All | F G T | Garbage-collection pauses | M | 3 | — |
 | C3 | Render from an `OffscreenCanvas` in a worker. Babylon supports it. Input, DOM overlays and every host port would have to cross a message boundary. | Open | renderer, engine, apps | WebGL2, WebGPU | F G T | Main thread free for input and UI; smoother on phones | XL | 4 | — |
 | C4 | Rust/WASM for measured CPU cores, with a binary per map family (raster; Google 3D Tiles), plus sky and projections. Move TypeScript into workers first; ship threaded and single-threaded builds with a TypeScript fallback ([plan](proposals/webassembly.md), [implementation brief](proposals/implementation/webassembly-agent.md)). | Open | native (new), engine, sky, projections | All | F G T | Tile, terrain, ground-query, sky and preparation CPU; prove each gain | L | 4 | Google Earth is C++ in WebAssembly |
-| C5 | Separate camera updates from status publication; defer hidden panel work (PR10, PR11) | Open | engine, ui | All | F G T | DOM and serialization per frame | M | 2 | MSFS glass cockpit refresh rate |
+| C5 | Separate camera updates from status publication; defer hidden panel work (PR10, PR11). Writes of unchanged values are skipped since 20 October 2026: the detail rail, the POI exit button and the download rate (engine `97a6ae1`, app `550b10d`, toolbar `4c1d7ee`), with style recalcs 2.75 → 2.07 and layouts 1.32 → 0.84 per frame at the phone drag at 4×. About 17 ms/s of forced style and layout from reads after mid-frame HUD writes is left | Partial | engine, ui | All | F G T | DOM and serialization per frame | M | 2 | MSFS glass cockpit refresh rate |
 | C6 | Audit timers and per-frame callbacks that run while nothing changes, as [Render on demand](render-on-demand.md#checklist) asks | Open | all | All | G T | Idle power | S | 1 | — |
 | C7 | Cross-origin isolation, on by default, with headers from the apps' service worker; then `SharedArrayBuffer` and WebAssembly threads. Keep the transferred-buffer and TypeScript paths, bounded startup and per-core failure diagnostics ([plan, step 3](proposals/webassembly.md#3-isolation-from-the-service-worker), [implementation brief](proposals/implementation/webassembly-agent.md)). On an isolated page whose terrain is prepared in mesh workers, decode workers publish each elevation tile's heights once in a `SharedArrayBuffer`, which the page and the mesh workers read without a copy (Component execution → Terrain heights → Shared memory, `native.sharedHeights`, on by default since 19 October 2026 with WebAssembly in worker pools, applies after a reload). Elsewhere heights are transferred as before. Checked in Node and in headless Chrome on an isolated dev server (114 of 114 tiles shared). | Open | app, ui, engine | All | F G T | Shared tile data and ground queries from a physics worker; finer timers where supported | M for isolation | 2 | Google Earth: C++ in WebAssembly with threads |
+| C8 | Index stitched ground meshes, whose positions are float64 arrays, for the anchor markers' occlusion ray, rather than scanning each raster tile's 8,192 triangles every frame (engine `329dc6c`) | Local | engine | All | G T | Measured: marker raycast 40.5 → 14.6 ms/s at the phone drag at 4× | S | 1 | three-mesh-bvh |
+| C9 | No Error stack captured for every hidden patch on every publish (engine `90c0ef6`) | Local | engine | All | F G T | Measured: about 22 ms/s at a heavy phone drag at 4× | S | 1 | — |
+| C10 | Skip the star field's update when no star could be drawn at the exposure (sky `e4a3dc3`) | Local | sky | All | G T | Measured: entering a 360 image by day at 4×, main thread 29 → 25 % | S | 1 | — |
+| C11 | One raster update per frame in 0SFS. `prepareFrame` updates with the previous view, then `setExternalViewState` updates again | Open, needs decision | engine | All | F | Measured: the second call costs 58–60 ms/s of the flight's main thread at 1× at HEAD, but 24–26 of that is selection, which would move to the remaining call, so probably about 32–35 would be saved; tiles would arrive at different moments while moving | S | 1 | — |
+| C12 | Re-measure the loaded-detail readout at the selector's 100 ms cadence, or at the throttled view, not on every publish | Open, needs decision | engine | All | F G | Measured: `refreshLoadedDetail` costs 64–68 ms/s at the phone drag at 4× and 38–54 in the flight at 1×, and most of it would go; the readout would move at a different time | S | 2 | — |
+| C14 | Keep the UI occlusion pass's element boxes until the layout changes. `coveredWorldClips` (`uiOcclusion.ts`) reads every covering element's box and runs `querySelectorAll` in each frame's render | Open | engine | All | F G | Measured: the pass costs 17–19 ms/s at the phone drag at 4×, `getBoundingClientRect` 6.7 and `querySelectorAll` 2.6 of it; pixel-identical only if no change of layout can be missed | S | 2 | — |
 
 ## Loading, network and startup
 
@@ -227,6 +244,7 @@ then the WebGL that last worked. An item here needs a fallback on the others.
 | B5 | `shader-f16` for colour and lighting math where precision allows (PR44) | Open | sky, sphere-image, engine | F G T | ALU and registers on Apple and mobile GPUs | M | 3 |
 | B8 | GPU timestamps drive P8 (the pass timer already works; the frame timer reads 0) | Partial | renderer | F G T | Makes P8 exact on WebGPU | S | 2 |
 | B9 | Exhaust depth from the main depth attachment instead of a second depth pass (see 0SFS backlog) | Open | renderer exposes, 0SFS uses | F | One geometry pass less while exhaust shows | M | 2 |
+| B13 | One render pass per frame. Babylon's depth or stencil-only clear before a rendering group (the 360 panorama, the location marker) ended the main pass and began another, which loads and stores every attachment again. The engine now holds such a clear until a draw needs it (`deferDepthClears`, renderer `24b6a6d`). Pixel-identical in 9 states | Local | renderer | T G | Measured: GPU inside a 360 image 3.62 → 1.61 ms a frame (−56 %) on the M5 at a phone's viewport; main passes per frame from up to 3 to 1 | S | 1 |
 
 ### WebGL2 and WebGPU, not WebGL1
 
@@ -323,6 +341,15 @@ What each product does that this list copies. Items marked "have" are done here.
   help on dual-GPU Windows laptops; try it there under Save battery.
 - **Bounding-sphere culling and blocked material dirty flags.** Tried and
   reverted in the first performance pass.
+- **Discarding the main pass's multisampled store** (20 October 2026). No GPU
+  gain measured on the M5 (3.009 against 3.003 ms a frame), and it would need a
+  guarantee that the pass never restarts.
+- **Prefetching a traversal group's heights in one batch** (20 October 2026).
+  Fewer calls but 17 % more heights, and a loss in the flight: the cost of a
+  height is per point, not per call.
+- **One level of detail per Google tile** (20 October 2026). The coarse
+  tiles drawn with finer ones are siblings whose boxes overlap, not ancestors,
+  so it would not have stopped the floating camera (T17 did).
 
 ## Sources
 

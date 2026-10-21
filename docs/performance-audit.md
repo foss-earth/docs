@@ -10,6 +10,296 @@ It covers how fast each one starts, how evenly it draws, how busy it keeps the
 CPU, and how much memory it holds. Run the audit again after a change that could
 move these numbers, and add a dated section rather than editing the old one.
 
+## 20 October 2026
+
+**What changed.** A day of runtime work on the three apps, mostly in the
+engine. Each change is listed below with its own A/B. Every change is
+pixel-identical by construction and test, except where an entry says
+otherwise. They are committed and not yet pushed, at engine `1e3a0a3`,
+renderer `24b6a6d`, sphere-image `b2f0ec9`, sky `e4a3dc3`, toolbar `1872be5`,
+app `b9a12a2` and fly `dddb895`.
+
+The before/after below also includes engine `33e897e`, the terrain proximity
+LOD, which another agent committed the same day. It cut the runtime selection
+cost too. The tour deployed on 20 October has engine `90c0ef6`, not the later
+height and measurement work.
+
+**Runs.** These figures are indicative. The tool is research's frame profiler,
+`scripts/benchmarks/startup-audit/profile.mjs`, not the 19 October runner.
+
+- It makes the same cold and warm visits under Fast 4G, then 8 s stretches
+  with the CPU profiler on.
+- Each target ran as interleaved pairs: base, HEAD, HEAD, base.
+- The machine ran on battery under `caffeinate -i`, with load averages of 2 to
+  3.5 on 10 cores.
+- The base builds are those kept from before the work:
+  - fly `dist-base`, 19 October, before any change;
+  - app `app-base` and tour `tour-base`, the morning of 20 October, after
+    `dadbbcd`, `a034920` and `a3b213c`, so they understate the change;
+  - tour `layout-base`, for the phone, built at 14:07 after the held clears,
+    `33e897e` and the stand-in fix, but before the layout guards, so it shows
+    only the afternoon's changes.
+- The raw results are in research's `build/final/` and
+  `build/benchmarks/startup-audit/profile-final-*`.
+
+### What stands out
+
+1. **The flight's main thread fell from about three quarters of a core to
+   about a third.**
+   - At 1×, the main thread was busy 79 % and 69 % of the time before, and
+     30 % and 36 % at HEAD.
+   - At 4×, the flight drew 12.8 and 14.1 frames/s before, and 43.8 and
+     24.9 at HEAD.
+   - The aircraft flies itself, so each run sees different ground, and the 4×
+     figures vary the most.
+   - Most of the saving is imagery selection and measurement: the heights are
+     reused instead of asked for again, and one measurement serves two
+     consumers.
+2. **On the phone drag at 4×, the afternoon's changes alone took the main
+   thread from 82–84 % to 72–73 %.**
+   - Frames/s rose from 52.6 and 53.0 to 55.3 and 55.8, and the 95th
+     percentile frame from 33.3 to 16.7 ms.
+   - Idle time rose from 155–171 to 262–266 ms/s.
+   - The marker raycast fell from 40–43 to 15 ms/s.
+   - The imagery update fell from 220–225 to 166–168 ms/s.
+   - Style recalculations fell from 2.7 to 1.9 per frame, and layouts from
+     1.2 to 0.8.
+   - On the desktop at 4×, the tour's main thread fell from 71–76 % to
+     53–55 %, and the app's frame rate rose from 47.9–51.1 to
+     56.8–57.6 frames/s.
+3. **A 360 image costs the GPU less than half what it did.**
+   - Babylon cleared the depth buffer before the panorama's rendering group,
+     which ended the main pass and began another.
+   - The renderer now holds that clear until a draw needs it. Every tour
+     state draws in one render pass, where it used up to three.
+   - Inside a 360 image, GPU time per frame fell from 3.62 to 1.61 ms
+     (−56 %) on the M5 at a phone's viewport.
+4. **Coarse Google 3D Tiles no longer lift the camera.** It was a bug, not a
+   speed problem; see [Coarse stand-ins](#coarse-stand-ins) below.
+5. **Each target is within 10 % of the floor that keeps today's behaviour,
+   counting the parts not yet examined at their measured cost.** The rest is
+   either a change in behaviour that waits on a decision, or a part not yet
+   shown to be cheaper, imagery selection first. See
+   [Floors and gaps](#floors-and-gaps).
+
+### Before and after
+
+Main thread as a fraction of one core, and frames per second. Each cell gives
+the two runs.
+
+| Page | Stretch | Base main thread | HEAD main thread | Base frames/s | HEAD frames/s |
+| --- | --- | --- | --- | --- | --- |
+| `/fly/` | flying, 1× | 79 %, 69 % | 30 %, 36 % | 58.9, 58.7 | 59.1, 58.9 |
+| `/fly/` | flying, 4× | 100 %, 100 % | 98 %, 99 % | 12.8, 14.1 | 43.8, 24.9 |
+| `/app/` | dragging, 1× | 29 %, 35 % | 26 %, 26 % | 59.5, 59.2 | 59.4, 59.4 |
+| `/app/` | dragging, 4× | 86 %, 89 % | 73 %, 71 % | 47.9, 51.1 | 56.8, 57.6 |
+| `/tour/minneapolis/` | dragging, 1× | 23 %, 24 % | 21 %, 21 % | 59.3, 59.2 | 59.2, 59.3 |
+| `/tour/minneapolis/` | dragging, 4× | 71 %, 76 % | 53 %, 55 % | 57.4, 57.7 | 58.1, 57.9 |
+| `/tour/minneapolis/`, phone | dragging, 4× | 84 %, 82 % | 73 %, 72 % | 52.6, 53.0 | 55.3, 55.8 |
+
+The phone row's base is `layout-base`, so it shows only the afternoon's
+changes. In the tour's desktop drags, style recalculations fell from about 2.9
+to 1.9 a frame, and layouts from about 1.15 to 0.85. In the app's, style
+recalculations fell from about 2.9 a frame to 1.9 at 1× and 2.3 at 4×.
+
+Every visit ended cross-origin isolated, with shared memory. Every profile
+shows Babylon's WebGPU engine and none of its WebGL one. The app's warm visit showed content in 4986 and 5142 ms at HEAD, against 5974 and
+5963 ms before. That was not looked into. The tour's did not change, at about
+2 s.
+
+### Each change and its own A/B
+
+Medians of interleaved pairs, in ms of main thread per second, at the phone
+drag at 4× CPU, unless stated otherwise.
+
+| Change | Commit | Before | After |
+| --- | --- | --- | --- |
+| Imagery grid heights reused within a surface revision | engine `dadbbcd` | Flight 1×: main thread 75–76 %; 4× 12.4–12.7 frames/s | 51 %; 15.5–16.2 frames/s |
+| The same over a 65 × 65 lattice per tile | engine `a034920` | Flight 1×: 53 %; 4× 15.8, 16.2 frames/s | 49 %; 16.6, 17.4 frames/s |
+| The parity check's pixels collected with a typed sort | engine `a3b213c` | 12 µs for 30 points | 5 µs |
+| One view's measurements shared by the plan and the loaded pages | engine `4b75363` | App 4×: 50.6 frames/s, 88 %; fly 4×: 19.5 frames/s | 56.7 and 56.0, 83 % and 82 %; 23.7 and 28.4 |
+| Residency stats in one pass | engine `ac1dd19` | About ten passes, four times an update | One pass, same values |
+| Depth or stencil-only clears held until a draw needs them | renderer `24b6a6d` | GPU inside a 360 image: 3.62 ms a frame; up to 3 passes | 1.61 ms; 1 pass |
+| Unchanged values not written to the DOM | engine `97a6ae1`, app `550b10d`, toolbar `4c1d7ee` | 2.75 style recalcs and 1.32 layouts a frame; 49.8 frames/s | 2.07 and 0.84; 50.5 frames/s |
+| No star field update when no star can be drawn | sky `e4a3dc3` | Entering a 360 image by day, 4×: main thread 29 % | 25 % |
+| Stitched ground meshes indexed for the markers' ray | engine `329dc6c` | Marker raycast 40.5 | 14.6 |
+| No Error stack per hidden patch per publish | engine `90c0ef6` | About 22 in a heavy drag | 0, by construction |
+| The worker's height check sent as one packed table | engine `545c5cb` | Height work 58.5 | 35.1 |
+| Memoised heights in typed open-addressed tables | engine `0600ad3` | Height work 48.7 | 41.0 |
+| A batch's heights from the last leaf tile found | engine `1afb938` | `heightsAt` 27.3 (13.1 self) | 23.9 (9.9 self) |
+| Lattice heights kept for tiles no changed terrain touches | engine `f11a819` | Raster update 251.5; `heightsAt` 24.9 | 233.2; 17.3 |
+| `evaluateView` without per-call objects | engine `1e3a0a3` | `evaluateView` 91.7; select 55.9 | 80.6; 49.5 |
+
+A few points on these:
+
+- **Proof.** The imagery changes keep a pinned digest of the selector's plans
+  and measurements, and catch hand-made mutants. The measurement cache also
+  ran a differential probe in the app: no mismatches over 263,621 regions.
+- **Separate baselines.** The phone figures come from different days' builds,
+  so add them up only within one row, not across rows.
+- **Rejected after measuring:**
+  - prefetching a group's heights in one batch: more heights for fewer
+    calls, and slower;
+  - discarding the main pass's multisampled store: no GPU gain on the M5;
+  - horizon culling the main camera's tiles: about 1 % of vertices, and not
+    provably identical.
+
+### Floors and gaps
+
+A floor here is what is left of a moving frame when every cost we know how to
+remove is taken out. Every other part is counted at its measured cost, so
+these floors are upper bounds. They show what is known, not what is possible.
+Each target has two:
+
+- **Same behaviour:** only the pixel-identical savings found so far.
+- **With the decisions:** also the changes in behaviour that wait on the user
+  (see [Waiting on a decision](#waiting-on-a-decision)).
+
+The figures are from the two HEAD runs of each target. At 1× a frame is capped
+at 60 frames/s, so the floors are in main-thread time.
+
+| Target | Measured at HEAD | Floor, same behaviour | Floor, with the decisions | Gap to the second |
+| --- | --- | --- | --- | --- |
+| Flight, `/fly/`, 1× | 30 %, 36 % | The same: nothing pixel-identical is known | About 23–27 % | About 1.3× |
+| Map drag, `/app/`, 1× | 26 %, 26 % | About 25 % | About 21 % | About 1.25× |
+| Tour drag, `/tour/minneapolis/`, 1× | 21 %, 21 % | About 21 % | About 18 % | About 1.2× |
+| Phone drag, tour, 4× | 73 %, 72 % | About 68 % | About 58 % | About 1.25× |
+
+So every target is within 10 % of its same-behaviour floor. Each part of what
+is left either needs a decision, or is a part counted whole that has not yet
+been shown to be cheaper. Those parts, none of them shown to be necessary:
+
+- **Imagery selection:**
+  - 51–59 ms/s in the flight at 1×;
+  - 35–38 in the app at 1×;
+  - 16 in the tour at 1×;
+  - 50 on the phone at 4×.
+
+  It already starts at most one traversal per 100 ms while moving, so its
+  floor is the cost of one traversal. It is the first place to look for a
+  lower floor.
+- **Babylon's render:** 48–60 ms/s at 1×, and 202 on the phone. On the phone
+  that includes the UI occlusion pass (17–19), which reads element boxes every
+  frame, and the HUD observers (15).
+- **The 360 orbs' frame** (sphere-image's `onFrame`): 10–11 ms/s in the tour
+  at 1×, and 34 on the phone.
+- **The rest:** residency and publish, terrain selection, the workers'
+  replies, and the browser's own work outside script.
+
+**The flight at 1×.** What separates it from its floor with the decisions:
+
+- **The raster update runs twice a frame** (backlog C11). The second call
+  costs 58–60 ms/s. Of that, 24–26 is selection, which would move to the
+  remaining call, so about 32–35 ms/s would probably be saved.
+- **The loaded-detail readout is re-measured on every publish** (C12). It
+  costs 38–54 ms/s, 10–13 of it in the second call. Most of the rest would go
+  if it were measured at the selector's 100 ms cadence.
+- **`applyWorldViewport` forces a style recalculation every frame**
+  (16 ms/s). In the tour, the busy outline's CSS animations cause it, and
+  Still removes it. The flight's cause has not been traced.
+
+Selection is the largest part counted whole. Counting the readout's own
+measurements, `evaluateView` costs 51 ms/s in all, `measureFocus` 20 and
+`footprintFrom` 16.
+
+**The phone drag at 4×.** The known costs between it and its floors:
+
+| Cost | ms/s at 4× | Kind | Backlog |
+| --- | --- | --- | --- |
+| The loaded-detail readout, re-measured on every publish | 64–68; about 55 would go at a 100 ms cadence | Decision | C12 |
+| The spinning Activity outline's style and paint | About 47 | Decision: Still | P13 |
+| Forced style and layout after mid-frame HUD writes | About 17 | Same behaviour; parked until it is proved that those writes never move the canvas | C5 |
+| The terrain commit's repeated uploads, keys and searches | About 13 of 23–24 | Same behaviour; designed | R14 |
+| The marker raycast's remaining waste | About 8 of 15 | Same behaviour | — |
+| Height-batch sorting and output, and uniform comparisons | About 6 | Same behaviour | — |
+
+The four same-behaviour rows add up to about 44 ms/s, so the floor is about
+68 %. With the two decisions, about 146 ms/s, the floor is about 58 %.
+
+The parts counted whole, on the phone:
+
+- Babylon's render, 202–203: opaque meshes 69, transparent 51–52, active-mesh
+  evaluation 28, the UI occlusion pass 17–19, HUD observers 15;
+- imagery selection, 50;
+- the 360 orbs' frame, 34;
+- residency and publish, 27–29;
+- terrain selection and new tile meshes, 23;
+- the work outside the frame, about 55: the workers' replies, height batches,
+  tile fetches and input;
+- the browser's own work outside script.
+
+### Coarse stand-ins
+
+The symptoms:
+
+- the camera floated up with nothing touched;
+- a very coarse tile showed with a finer one beneath it;
+- coarse tiles appeared on the horizon.
+
+The cause: 3d-tiles-renderer keeps a loaded tile drawn while its descendants
+load. Google's octree boxes overlap, so such a stand-in can be far from its
+own ground.
+
+- One depth-3 tile, with a geometric error of 263 km, is centred in the Yukon.
+  It still contains a camera at Minneapolis, and its mesh lies 6.5 to 6.8 km
+  above the campus.
+- The ground sample under the eye hit it first, and the eye contact pushed the
+  camera up. A higher eye chose coarser tiles, and so on.
+
+The fix is engine `5d1b132`:
+
+- The ground under the eye now gives way to a finer tile within the coarser
+  one's error below it.
+- With **Hide coarse stand-ins** (`map.terrain.hideCoarseStandIns`, Map tab,
+  on by default), a tile with children is not drawn when its error exceeds
+  both its distance from the eye and 16 times the eye's height.
+
+On cold caches, in the view that floated:
+
+| Build | Eye height | Pushes |
+| --- | --- | ---: |
+| Before | 276 → 435 m | 14 |
+| Fix, setting off | 276 → 282.5 m | 2 |
+| Fix, default | 276 m throughout | 0 |
+
+Settled views draw the same pixels. While tiles load, the setting draws less.
+
+### Waiting on a decision
+
+Each of these would change pixels or timing, so each needs a setting that
+defaults to today:
+
+| Change | What it would save |
+| --- | --- |
+| **Still** as the default Activity outline (the setting exists) | About 47 ms/s of style and paint in a phone drag at 4×; 50.5 → 52.7 frames/s |
+| One raster update per frame in 0SFS | Probably about 32–35 ms/s of the flight at 1×. The second call costs 58–60, but its selection would move to the first. Tiles would arrive at other moments while moving |
+| Re-measure the loaded-detail readout at the selector's cadence | Most of its 38–54 ms/s in the flight at 1×, and about 55 of its 64–68 ms/s in a phone drag at 4×. The readout would change at other moments |
+| Verify imagery heights only at admission | Most of the worker check's remaining cost |
+| Horizon culling of far-side Google tiles | About 15 ms/s at 4× |
+
+Also for phones:
+
+- a render scale below 1;
+- no antialiasing;
+- an opaque canvas;
+- the four 360 experiments.
+
+### How these were measured
+
+These figures come from the frame profiler. The 19 October section used the
+audit runner. The browser, machine, viewport, throttling and visits are the
+same as below, with these differences:
+
+- **The profiler** names main-thread time by source function, through the
+  builds' source maps.
+- **The phone runs** use `--phone`: 412 × 915 CSS pixels at 2.625 device
+  pixels per CSS pixel, dragged with one finger.
+- **The CPU profiler** costs a little itself, so compare these figures with
+  each other, not with the 19 October ones.
+
+The tools, the A/B method and the next steps are in the
+[performance agent state](proposals/implementation/performance-agent-state.md).
+
 ## 19 October 2026
 
 **Builds.** The builds deployed on 19 October 2026: tour `43874b9`, app
