@@ -287,6 +287,28 @@ segment. Use natural widths and minimal padding, and preserve the visible
 boundary when groups wrap. Do not replace these groups with unbounded text
 scattered across the paragraph or with only a top separator.
 
+An item's thumbnail or icon, name and actions belong inside that same visible
+enclosure, including a compact current-item summary. Use item-specific artwork
+where available. A wrapping paragraph grid alone is not a boundary. If a gallery
+already shows the item's image and title, put its action inside that card rather
+than repeating its identity in a separate summary.
+
+### A card's primary action covers the whole card
+
+When an item card has one primary action, its image, title, status, padding and
+compact action label all activate that action. A selected/current card remains
+actionable: open that item's settings/editor when it has one, rather than
+selecting it again or doing nothing. Selection alone does not disable a card.
+For example, clicking anywhere on the loaded aircraft's gallery card opens its
+settings, just as its **Edit** label does.
+
+Use one native button or link with a visible focus indicator and an accessible
+name that describes the action and item. A compact **Edit** or **Open** label
+belongs inside that same control; do not nest an interactive button inside it.
+Keep genuinely distinct secondary actions as separate controls. Check the image,
+title, status, empty card space and action label, plus keyboard activation, to
+ensure they reach the same primary action.
+
 ### Nested rectangles show what holds what
 
 What a part holds sits inside it, never indented under it. A component's
