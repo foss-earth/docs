@@ -1,7 +1,9 @@
 # Performance agent state
 
-Updated 21 October 2026, during the third performance session (below, "Third
-session"). Long runs now go to [the cloud runs](performance-cloud-runs.md). A resumed session should be able to continue from this file alone.
+Updated 21 October 2026, at the end of the third performance session (below,
+"Third session", with its next steps). Long runs now go to
+[the cloud runs](performance-cloud-runs.md). A resumed session should be able
+to continue from this file alone.
 The results are in the audit: the
 [first session](../../performance-audit.md#20-october-2026) and the
 [second](../../performance-audit.md#21-october-2026).
@@ -150,7 +152,30 @@ The run list (R1 to R5) covers:
 - memory, heap and GPU memory;
 - startup blocking and bytes.
 
-The cloud agent clones from GitHub, so it needs the commits above pushed.
+The cloud agent clones from GitHub, so it needs the commits above pushed. At
+the session's end none is pushed, nor are docs `9ccd2b6` and `c0acf77`.
+Pushing is the user's decision (see [Waiting on the user](#waiting-on-the-user)).
+
+Scratch kept from this session, all gitignored:
+
+- research `build/s3/`: the A/B tools (below) and each run's results;
+  `probe/renderer-orbcount.ts` and `probe/orbcount.patch`, R3's probe as a
+  file and a patch;
+- tour and app `build/perf/bt-a`, `bt-b` and `bt-p` (the occlusion probe);
+- 0SFS `fly/build/perf/fe-s3-a` and `fe-s3-b`, R1's two flight arms, built
+  and never run. R1 rebuilds its own arms in the cloud.
+
+**Next steps, in order:**
+
+1. If the user pushes, the cloud agent can run R1 to R5. Read its results into
+   the audit and the backlog, and act on any R1 failure first.
+2. `hasPendingTiles` (item 10 below): read the two callers' frequency from a
+   saved profile, then add it with a unit test that it agrees with
+   `getLoadingDiagnostics` on pending.
+3. Keep to wins that hold by construction and are proved by unit tests and
+   identity tests. Add any long run they need to the cloud runs as R6 onward.
+4. X2's culling, if R3 finds enough off-screen draws (the design is in item 9
+   below).
 
 Measured locally (research `build/s3`, `bt-a` = the files before `d1ed7ef`,
 `af7505e`, `fd52dd7` and `be3f60a`, against `bt-b` = after; three interleaved
@@ -328,7 +353,9 @@ from at the same time:
   `<label> exit <code> overlap <0|1>` to `status`, with the overlapping
   command. A shell's one-line command that only names `profile.mjs`, such as
   an agent's `pgrep` check, does not count: before that fix, those flagged
-  most runs with no culprit.
+  most runs with no culprit. A `node -e` script whose text names
+  `profile.mjs` still counts, and falsely flagged `bt-phone-bt-a-4` (that run
+  is valid). Keep `profile.mjs` out of other command lines during runs.
 - `pairs.sh <name> <arm a> <arm b> [phone app tour]` runs a b b a a b per
   target: the tour's phone drag at 4×, the app's drag at 1× and 4×.
 - `frames.mjs <name> <a> <b>` prints the main-thread share, fps, main-thread
@@ -402,8 +429,10 @@ checkouts. Research's `tools-manifest.json` then needs a receipt for each one.
 - research `build/phone/passes.mjs` counts WebGPU render passes per frame, with
   their loads and stores.
 - research `build/phone/gpu-ab.mjs` measures GPU time per frame.
-- research `build/phone/pixels.mjs` compares pixels with a setting on and off,
-  with the page's clock stopped.
+- research's `scripts/benchmarks/startup-audit/pixels.mjs` (committed in
+  `c91c10f`; the copy in `build/phone/` is older) compares pixels with a
+  setting on and off, with the page's clock stopped. It logs `NOT READY` when a
+  page never becomes ready, which makes the comparison meaningless.
 - research `build/tiles-bug/probe.mjs` is the Google 3D Tiles stand-in probe.
   It counts drawn meshes by geometric error, coarse tiles over finer ones and
   eye pushes, and it never logs tile URIs.
@@ -727,6 +756,23 @@ These are inclusive ms/s at the phone drag at 4× unless stated, from the
    - orb culling (backlog X2), R3. Culling is exact only for an orb whose
      quad lies wholly outside one clip half-space; R3 counts those. Below the
      horizon is not exact: the terrain may not cover the orb while tiles load.
+     If R3 finds enough, the design is:
+     - the orb's vertex shader computes
+       `gl_Position = viewRotProj * vec4(quadCenter + pos.x*quadU + pos.y*quadV, 1)`,
+       with `pos` from (-1, -1) to (1, 1), so the four corners are known on
+       the CPU after `orbQuad`. In Babylon's row-vector layout,
+       `clip.x = x*m[0] + y*m[4] + z*m[8] + m[12]`, and so on;
+     - skip an orb only when all four corners are beyond one of `x > w`,
+       `x < -w`, `y > w`, `y < -w` or `w < 0`, with a relative slack (R3's
+       probe has the test);
+     - hook `scene.onBeforeActiveMeshesEvaluationObservable`, which runs once
+       per camera, and set `mesh.isVisible` there. The orbs use
+       `alwaysSelectAsActiveMesh`, so Babylon's own frustum test never sees
+       them;
+     - first check that no `RenderTargetTexture` lists the orbs in its
+       `renderList`, since the hook would hide them there too, and that the
+       uniforms are the frame's own and not from a delayed frame
+       (`delayFrames`).
    - verifying the four 360 experiments (X1), R2. The earlier pixel run never
      became ready (it hit the 240 s limit), so most moments were unsteady, and
      it proved nothing.
@@ -760,8 +806,13 @@ Parked:
 
 ## Waiting on the user
 
-Each of these changes pixels or behaviour, so each needs a setting that
-defaults to today and the user's decision:
+**Push.** This session's commits are unpushed: engine `b7e4e05`, `fd52dd7`
+and `be3f60a`; sphere-image `c0422ef` and `d1ed7ef`; renderer `af7505e`;
+research `d1e8eb6` and `c91c10f`; docs `9ccd2b6` and `c0acf77`. The cloud
+runs need them on GitHub. Asked, not yet answered.
+
+Each of the following changes pixels or behaviour, so each needs a setting
+that defaults to today and the user's decision:
 
 - **Activity outline Still by default**, or a composited comet. The spinning
   outline costs about 47 ms/s of style and paint at 4× (the setting exists).

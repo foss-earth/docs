@@ -10,6 +10,51 @@ It covers how fast each one starts, how evenly it draws, how busy it keeps the
 CPU, and how much memory it holds. Run the audit again after a change that could
 move these numbers, and add a dated section rather than editing the old one.
 
+## 21 October 2026, third session
+
+**What changed.** Six runtime changes, each pixel-identical by construction
+and test, committed and not yet pushed:
+
+- engine `b7e4e05`: each republished imagery table is compared with the
+  bound one cell by cell, built into one reused block. An unchanged table
+  allocates nothing, and a 32-bit FNV collision can no longer leave a stale
+  table bound;
+- engine `fd52dd7`: the published imagery feedback's JSON is kept for the
+  next comparison;
+- engine `be3f60a`: the UI covers are drawn in one draw, not one per cover
+  (backlog C14);
+- sphere-image `c0422ef`: the orb draws read the canvas height once per camera
+  pass and trim their draw records in batches;
+- sphere-image `d1ed7ef`: a frozen asset's preview candidates are ranked once
+  per preview range and texture limit, not for every orb in every frame;
+- renderer `af7505e`: the frame-time window stays sorted, instead of being
+  copied and sorted every frame for the 95th percentile.
+
+**Runs.** Short and local, by the user's choice: the machine is a fanless
+laptop. Each was three interleaved pairs of the files before against after,
+with the method of the second session's section below. Raw results are in
+research's `build/s3/`.
+
+- `b7e4e05`: `prepareManagedPatchTable` fell from 4.8–5.4 to 2.9–3.7 ms/s at
+  the phone drag at 4×. In the app at 4×, `publishManaged` fell from 34.2–40.2
+  to 24.6–29.8. Every arm separates.
+- `d1ed7ef`, `af7505e`, `fd52dd7` and `be3f60a` together: sphere-image
+  `selection.ts`'s self time at the phone drag at 4× fell from 10.6 ms/s to
+  below the readers' cut (separate).
+- Whole frames are within noise. The phone drag at 4× took 14.16 ms of main
+  thread a frame before and 14.09 after; the app at 1× took 3.89 and 3.88.
+- The single occlusion draw drew once per frame with covers, with no failure,
+  on WebGPU in the tour and the app and on WebGL2 in the app.
+- Every visit was cross-origin isolated, with shared memory.
+
+So the floors and gaps of the second session stand, within noise.
+
+**Not run here.** The flight check of these commits, the 360 experiments' pixels
+and timing (X1), the off-screen orb count (X2), memory, heap and GPU memory,
+and startup blocking and bytes are written up for a cloud VM in
+[performance-cloud-runs.md](proposals/implementation/performance-cloud-runs.md).
+They need these commits pushed.
+
 ## 21 October 2026
 
 **What changed.** A second runtime session on the three apps, the evening
