@@ -1,12 +1,64 @@
 # Performance agent state
 
-Updated 21 October 2026, at the end of the third performance session (below,
-"Third session", with its next steps). Long runs now go to
+Updated 22 October 2026 with the UMN tour continuation below. Long runs normally go to
 [the cloud runs](performance-cloud-runs.md). A resumed session should be able
 to continue from this file alone.
 The results are in the audit: the
 [first session](../../performance-audit.md#20-october-2026) and the
 [second](../../performance-audit.md#21-october-2026).
+
+## UMN tour continuation, 22 October
+
+The user explicitly authorized overnight local testing and autonomous work,
+committing only confirmed gains, and asked for specifications instead of very
+difficult implementations. That supersedes the third session's short-run-only
+limit for this continuation. Scope is the UMN tour and its shared dependencies.
+No deploy or push is authorized by this continuation.
+
+Confirmed and committed locally:
+
+- engine `1589628`: `hasPendingTiles`, with existing lifecycle checkpoint
+  parity, and complete diagnostics in one selected-key pass. All 1,355 tests,
+  typecheck and lint pass. This completes item 10 and the old next step 2.
+- sphere-image `438b7e7`, documentation `f58967a`: conservative shader-quad
+  culling, completing the exact off-screen part of X2. About 51% fewer marker
+  draws; main-thread time/frame about 5% lower on WebGPU in separated pairs;
+  WebGL2 within noise. Exact pixels in nine states on WebGPU, WebGL2 and
+  WebGL1. All 282 tests and implementation checks pass; five mutants are caught.
+- tour `ffc532d`: enable the three qualified non-shader paths as host defaults,
+  retaining saved/URL overrides; record results and six advanced implementation
+  specs. Typecheck, changed tests and full CI pass (77 tests, one media-on-disk
+  skip). The old all-experiments and simpler-shader defaults remain off.
+
+The source and evidence summary, the tour's qualified non-shader renderer
+defaults, and final integration checks are maintained in
+[the tour continuation report](https://github.com/UMN-VR/tour/blob/main/docs/performance-continuation.md)
+(local: `~/gh/UMN-VR/tour/docs/performance-continuation.md`). Its
+[advanced implementation handoff](https://github.com/UMN-VR/tour/blob/main/docs/performance-next-agent.md)
+specifies dynamic atlas storage, elevation memory ownership, coherent frame
+geometry, remaining marker batching, backend-aware early preload and optional
+panel loading. Read those before repeating an older next step below.
+
+Important results:
+
+- X1 all-on changes WebGL pixels by up to two channel values. Do not promote
+  the simpler shader as strictly equivalent output. The other three paths
+  match the pixel matrix and lower panorama render CPU 19–24% in separated
+  pairs, with whole-frame timings within noise.
+- The baseline's 7776-square map atlas uses about 307.5 MiB; the heap also
+  contains many 1 MiB shared elevation-grid backing-store nodes. Physical
+  memory ownership still needs measuring; the handoff does not call it a leak.
+- A simple lazy WebGPU implementation import saves 336,666 raw / 82,920 gzip
+  eager bytes but delays GPU renderer startup about 0.46 s and content about
+  0.41 s in separated pairs. It was removed. The preload spec records the
+  missing critical-path design; do not reapply the prototype as a win.
+
+Scratch is under tour `build/perf-night/`, research `build/night/` and
+`build/benchmarks/startup-audit/*night-*`, and engine/sphere-image/renderer
+`build/night/`. Other tasks' AGENTS/guidance, ports and headset edits remain
+untouched and uncommitted by this work. The historical sections below retain
+their original context; their outstanding item 10 and off-screen-count run
+are now superseded.
 
 ## The brief
 
