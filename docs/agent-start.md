@@ -38,7 +38,7 @@ use the corresponding GitHub repo's README and public exports. Do not read every
 | Scenes, placements and image navigation | [foss-earth/scenes](https://github.com/foss-earth/scenes) |
 | Image viewer, structures, previews and common services | `foss-earth/sphere-image`, `sphere-equirectangular`, `sphere-cubemap`, `sphere-tiled-cubemap`, `rectangle-image`, `preview-sheets`, `images` |
 | Atmosphere / astronomy / manual wind | `foss-earth/sky`, `foss-earth/weather` |
-| Native/WASM integration | `foss-earth/native`; individual cores stay with their component owners |
+| Native/WASM integration | The app's `foss-earth/native` entry (`app/src/native/`); each core's `*-WASM/` stays with its component owner: `engine` (raster, terrain, ground), `renderer` (google), `sky`, `sphere-image` (projections) |
 | Reusable browser automation / screenshots | [foss-earth/browser-testing](https://github.com/foss-earth/browser-testing) |
 | Shared CI / install tools | `foss-earth/ci`, `foss-earth/dev_installer`; other orgs have their own wrappers |
 | Cross-repository guides / research | `foss-earth/docs`, `foss-earth/research`, `foss-earth/experiments` |
