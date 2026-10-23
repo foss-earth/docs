@@ -144,3 +144,18 @@ held by a gesture:
   360 sphere is an unanchored angular impulse, it hides any existing marker and
   never displays one.
 
+
+## 6. Things drawn over the view pass gestures through
+
+Anything drawn over the globe or a 360 image—link buttons, labels, anchor
+markers—passes every gesture through to the renderer by default and catches
+only the gestures it names. A pinch, wheel, trackpad pinch or drag that begins
+on one moves the view under it, exactly as it would a pixel away; otherwise the
+browser takes the gesture and zooms or scrolls the page.
+
+- Give the overlay `pointer-events: none`, and read the gestures it names from
+  the renderer's surface, hit-testing where they land.
+- A 360 image's link buttons (`createSceneHotspots`) name a tap, one contact
+  that begins and ends on the same link within `input.mouse.dragThreshold`,
+  and a mouse's hover for the pointer cursor. A keyboard or assistive click
+  still reaches the button.
