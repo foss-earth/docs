@@ -91,7 +91,7 @@ test("limits long excerpts and lists sessions in a directory with spaces", () =>
 });
 
 test("redacts common credential forms including JSON, URLs and private-key blocks", () => {
-  const input = 'https://example.invalid/?key=SECRET1&session=SECRET2 {"api_key":"SECRET3"} FOSS_EARTH_GOOGLE_KEY=SECRET4\n' +
+  const input = 'https://example.invalid/?key=SECRET1&session=SECRET2&gkey=SECRET7 {"api_key":"SECRET3"} FOSS_EARTH_GOOGLE_KEY=SECRET4 GOOGLE_3D_TILES_KEY="SECRET8"\n' +
     'Authorization: Bearer SECRET5\n-----BEGIN PRIVATE KEY-----\nSECRET6\n-----END PRIVATE KEY-----';
   assert.doesNotMatch(redact(input), /SECRET/);
 });

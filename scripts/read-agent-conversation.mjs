@@ -35,7 +35,7 @@ export function redact(text) {
     .replace(/-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g, "[redacted private key]")
     .replace(/\bBearer\s+[A-Za-z0-9._~+\/-]+=*/gi, "Bearer [redacted]")
     .replace(/\bsk-[A-Za-z0-9_-]{16,}/g, "[redacted]")
-    .replace(/(\b(?:key|api[_-]?key|access_token|refresh_token|session|authorization|FOSS_EARTH_GOOGLE_KEY)["']?\s*[:=]\s*)(?:"[^"\n]*"|'[^'\n]*'|[^\s&"'<>]+)/gi, "$1[redacted]");
+    .replace(/(\b(?:gkey|key|api[_-]?key|access_token|refresh_token|session|authorization|GOOGLE_3D_TILES_KEY|FOSS_EARTH_GOOGLE_KEY)["']?\s*[:=]\s*)(?:"[^"\n]*"|'[^'\n]*'|[^\s&"'<>]+)/gi, "$1[redacted]");
 }
 
 const summaryText = text => /^\s*(?:This session is being continued from a previous conversation|This conversation was compacted|<summary>)/i.test(text);
