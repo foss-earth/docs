@@ -26,14 +26,29 @@ The deploy first records the commit of each checkout the app is built from in
 `app/deployed-from.json`, and commits and pushes it in `app` when one moved, so
 new code in a library is a new version of the app (About's record; see
 [CONTRIBUTING](https://github.com/foss-earth/.github/blob/main/CONTRIBUTING.md#versions)).
-It stops if `app`'s branch lacks commits its remote has. Then it runs
-`npm run build` in `app/`, which typechecks and writes `app/dist/` with Vite's
-base `/app/`, and `npm run build` in `foss-earth.github.io`, which copies that
-directory to `dist/app/` and adds the landing page (`index.html`,
-`landing.css`, `foss-earth-sw.js`). Last, it fetches `origin/gh-pages`,
-replaces that branch with `dist/`, and leaves `eac-prototype/` and `examples/`
-in place. The deploy commit records the short SHA of the `app` checkout. GitHub Pages serves
-the `gh-pages` branch from the repository root. `main` is not changed.
+It stops if `app`'s branch lacks commits its remote has. Then it compares
+that record with the one in the published app page (About's `rebuildReason`).
+When the page was built from this `app` commit and the checkouts its
+`deployed-from.json` names, none of which has moved or has changes not
+committed, with no `VITE_` setting and the same `FOSS_EARTH_ISOLATION`, it
+builds nothing, keeps the published app and publishes the landing page beside
+it. Otherwise it says why, and runs `npm run build` in `app/`, which typechecks
+and writes `app/dist/` with Vite's base `/app/`, and `npm run build` in
+`foss-earth.github.io`, which copies that directory to `dist/app/` and adds the
+landing page (`index.html`, `landing.css`, `foss-earth-sw.js`).
+
+Last, it fetches `origin/gh-pages` and puts the new branch together from git
+objects, without checking it out: `dist/` in place of everything but
+`eac-prototype/` and `examples/`, or the landing page's files over what the
+branch has when the app is kept. Both add an empty `.nojekyll`, so Pages serves
+the files without running Jekyll over them first. When that is what the branch
+already has, it pushes nothing. The deploy commit records the short SHA of the
+`app` checkout, or of this one when the app is kept. GitHub Pages serves the
+`gh-pages` branch from the repository root. `main` is not changed.
+
+`npm run deploy -- --force` builds the app even when the published one is the
+same. `npm run deploy -- --dry-run` records nothing in `app` and pushes nothing:
+it prepares the `gh-pages` commit and says how many files it would change.
 
 ## Before the first deploy on a machine
 
@@ -71,8 +86,10 @@ https://umn-vr.github.io/tour/. It is built from `~/gh/UMN-VR/tour` against
 these same sibling checkouts (`foss-earth` and `@foss-earth/ui` are `file:`
 links), so a globe change is not on the tour until the tour is published too.
 `npm run deploy` there records what the tour is built from in its
-`deployed-from.json`, as the app's deploy does, then builds and pushes the tour
-repository's own `gh-pages` branch. It keeps the photographs already published. The club homepage is a
+`deployed-from.json`, as the app's deploy does. It then builds and pushes the
+tour repository's own `gh-pages` branch, unless the published tour was built
+from the same commits, as the app's deploy checks (`--force` builds it anyway).
+It keeps the photographs already published. The club homepage is a
 different repository and this command does not publish it.
 
 ```sh
@@ -87,7 +104,8 @@ them, and a first visit reloads once to be answered by it
 ([app-files.md](https://github.com/foss-earth/ui/blob/main/docs/app-files.md#cross-origin-isolation)).
 A build does this unless `FOSS_EARTH_ISOLATION` says otherwise when it is built: `report-only`
 sends only the report-only headers, which block nothing, and `off` builds the app as it was
-before. Both deploys pass the variable to the build:
+before. Both deploys pass the variable to the build, and build again when the published page
+was built for another mode:
 
 ```sh
 cd ~/gh/foss-earth/foss-earth.github.io && FOSS_EARTH_ISOLATION=off npm run deploy
