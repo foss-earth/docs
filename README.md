@@ -12,6 +12,9 @@ See the other repositories at https://github.com/foss-earth.
 
 Start here:
 
+- [Agent task index](docs/agent-start.md): concise navigation across all three organizations; inspect a repo with `node scripts/agent-context.mjs <path>`.
+- [Custom test links and feedback](docs/test-feedback.md): checklist, notes and selected diagnostics in one downloadable file.
+
 - [Follow-ups](docs/todo.md): work across the Earth repositories that isn't done yet, including WebAssembly builds.
 - [Performance](docs/performance.md): the bit-identical JavaScript speedups, the frame-budget streamgraphs, and what is left.
 - [Performance audit](docs/performance-audit.md): what the tour, the app and 0SFS cost to start and to run, in frames, CPU and memory, and how to measure it again.
@@ -28,6 +31,7 @@ Guides and rules:
 - [UI layout](docs/ui-layout.md)
 - [Render on demand](docs/render-on-demand.md)
 - [Development](docs/development.md)
+- [Testing as an agent](docs/agent-testing.md): desktop, phone and tablet shots with touch steps, and the VR headset emulator and its checks
 - [WebAssembly cores](docs/webassembly-cores.md): the TypeScript and Rust twins, where each lives, the apps' execution settings and the toolchain
 - [Read previous agent conversations](docs/agent-conversations.md): local Claude/Codex JSONL reader, session discovery, search and bounded excerpts
 - [Deploying](docs/deploying.md)
@@ -38,6 +42,7 @@ Guides and rules:
 
 Proposals:
 
+- [Human and agent documentation system](docs/proposals/documentation-system.md): shared generation, scripted images/animations, agent reference and rollout across Earth, 0SFS and UMN-VR
 - [Shared image viewer implementation specification](docs/proposals/shared-image-viewer-implementation.md)
 - [Shared image viewer implementation status](docs/proposals/shared-image-viewer-status.md)
 - [Image repositories](docs/proposals/image-repositories.md)
