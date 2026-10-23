@@ -40,9 +40,14 @@ repository below is still to come.
   windows rise clear of it.
 - **An emulated headset for tests** (`app/src/dev/headsetEmulator.ts`,
   `headsetEmulator()` in `foss-earth/vite`). On a dev server only,
-  `?headsetEmulator=quest3` puts Meta's Immersive Web Emulation Runtime in
-  place of WebXR. `window.__fossEarthHeadset` drives it as a person would, and
-  `npm run check:headset` goes through a visit.
+  `?headsetEmulator=quest2` (or `quest3`, `questPro`, `visionpro`) puts Meta's
+  Immersive Web Emulation Runtime in place of WebXR. An unknown name is
+  refused. `window.__fossEarthHeadset` drives a Quest as a person would, and
+  `pinch` drives the Vision Pro stand-in. The VR tab lists controller controls
+  or pinch controls, one list, once the session presents. `npm run check:headset`
+  is the Quest 2 controller visit. `npm run check:headset -- --comprehensive`
+  adds Quest 3 and the controllerless visit. The contract is
+  [Headset test suites](implementation/headset-suites.md).
 
 ## Still to do
 

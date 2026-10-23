@@ -9,7 +9,7 @@ the page rather than from pictures where it can.
 | --- | --- | --- |
 | Desktop | `shots.mjs`, with clicks, keys, drags and printed values | [screenshots.md](https://github.com/foss-earth/browser-testing/blob/main/docs/screenshots.md) |
 | Phone or tablet | the same, with `device: "phone"` or `"tablet"` and touch steps | [Phones and tablets](#phones-and-tablets) |
-| VR headset | a dev-server page with `?headsetEmulator=quest3`, driven by `window.__fossEarthHeadset` | [VR headsets](#vr-headsets) |
+| VR headset | a dev-server page with `?headsetEmulator=quest2` (or `quest3`, `questPro`, `visionpro`), driven by `window.__fossEarthHeadset` | [VR headsets](#vr-headsets) |
 | A real phone | the dev server's printed HTTPS network link or QR code | [development.md](development.md#testing-on-a-phone) |
 
 ## Before every test
@@ -103,11 +103,12 @@ link out from under a window's resize handle.
 
 ## VR headsets
 
-The dev server of each app gives a page opened with `?headsetEmulator=quest3`
-(or `quest2`, `questPro`) an emulated headset: Meta's Immersive Web Emulation
-Runtime in place of WebXR. Entering VR draws an eye each, side by side, over
-the page, so a screenshot shows what the headset would. No build holds the
-emulator.
+The dev server of each app gives a page opened with `?headsetEmulator=quest2`
+(or `quest3`, `questPro`, `visionpro`) an emulated headset: Meta's Immersive
+Web Emulation Runtime in place of WebXR. Entering VR draws an eye each, side
+by side, over the page, so a screenshot shows what the headset would. No build
+holds the emulator. An unknown name is refused. `visionpro` tracks nothing
+until `pinch`, which is the trigger for that profile.
 
 `window.__fossEarthHeadset` uses the headset as a person would. Each verb waits
 for the frames that show its result.
@@ -122,6 +123,7 @@ for the frames that show its result.
 | `press`, `release`, `click(hand, button?)` | the trigger by default; `"squeeze"` is the grip |
 | `stick(hand, x, y)`, `scroll(hand, y, frames?)` | leans the thumbstick; y < 0 is forward, which scrolls a window pointed at |
 | `move(panel, rightDeg, upDeg)` | takes a window with the grip and lets it go there |
+| `pinch(target)` | Vision Pro: pinches a target. Nothing is tracked before or after. A Quest profile throws |
 | `frames(count)` | waits for frames drawn |
 | `toLocal(point)`, `toWorld(point)` | a scene point in the headset space, and back |
 | `session()` | the page's headset session, for what the verbs don't cover |
@@ -180,16 +182,31 @@ that the step doesn't return the whole state.
 
 ### The checks
 
-`npm run check:headset` in `~/gh/foss-earth/app` goes through a visit as a
-person in a headset would, in 27 checks. It enters VR, looks about, snap-turns,
-opens a photograph from the map with the trigger, follows a link, and goes back
-to the map with the grip. Then it opens a window from the **+**, scrolls it,
+While a session presents, the VR tab shows one control list. A Quest shows
+Trigger, Grip, the thumbstick, and +. Vision Pro shows Pinch and +, and does
+not list a grip or a thumbstick. Before the session presents, the list is hidden.
+
+`npm run check:headset` in `~/gh/foss-earth/app` is the fast visit: Quest 2,
+the controller visit. It enters VR, looks about, snap-turns, opens a
+photograph from the map with the trigger, follows a link, and goes back to
+the map with the grip. Then it opens a window from the **+**, scrolls it,
 floats it and docks it again, presses a toolbar button, and ends the session.
-The report and pictures go to `build/headset/<time>/`.
+The report and pictures go to `build/headset/<time>/`. The check opens the
+page with the dropdown tab picker, so **+** opens the window menu. The app's
+own default opens a new tab.
+
+`--device=quest3` or `--device=questPro` runs that controller visit once on
+that profile. `--comprehensive` runs Quest 2, Quest 3, and then Vision Pro.
+The Vision Pro leg is the controllerless visit: it pinches a photograph, a
+link, the **+**, and a toolbar button. It does not snap-turn, scroll, or grip.
+Its report is in `build/headset/<time>/visionpro/`. The two visits are
+`headset-controller.mjs` and `headset-controllerless.mjs`.
 
 ```sh
-npm run check:headset                                                            # starts its own dev server
-npm run check:headset -- --url=https://localhost:3600/app/                       # a running one
+npm run check:headset                                                            # Quest 2, its own dev server
+npm run check:headset -- --device=quest3                                         # the controller visit on Quest 3
+npm run check:headset -- --comprehensive                                         # Quest 2, Quest 3, Vision Pro
+npm run check:headset -- --url=https://localhost:3600/app/                       # a running server
 npm run check:headset -- --url=https://localhost:8660/tour/<page>/ --scene=page  # a tour page's own scene
 ```
 
