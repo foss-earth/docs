@@ -170,7 +170,7 @@ Record why it changes direction; do not call frame-time feedback a watt meter.
 ## Settings and reporting
 
 Follow the [settings contract](settings.md): automatic behavior has a visible
-allowed range and can be pinned. Keep `native.workers` as its existing worker
+allowed range and can be pinned. Keep `wasm.workers` as its existing worker
 lifetime limit; add a separately named active-compute allowance. Do not silently
 reinterpret saved values. Controller windows, headroom, queue-age limits,
 cooldowns and probe bounds are registered parameters with units and provenance;

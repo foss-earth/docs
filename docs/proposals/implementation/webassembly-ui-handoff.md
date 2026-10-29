@@ -23,7 +23,7 @@ not permission to redo the settled design. A concurrent session is adding
 deployed isolation (plan step 3) in the app-files service worker. Current local
 evidence: `app/build/component-execution/browser-map-mode/report.json` and
 `functional.md`. No browser/preview owned by the UI conversation remains running.
-Read the [closure checkpoint](webassembly-native-state.md#ui-checkpoint-safe-to-close-this-conversation-18-october-2026)
+Read the [closure checkpoint](webassembly-state.md#ui-checkpoint-safe-to-close-this-conversation-18-october-2026)
 for verification scope and remaining work. Historical backend notes below must
 be reconciled with the shared-memory agent's final results.
 
@@ -38,25 +38,25 @@ Read first:
 - .github/AGENTS.md and each affected repository's AGENTS.md.
 - docs/docs/ui-layout.md, especially the segmented choice design and concise
   label rules. These are explicit user preferences, not optional suggestions.
-- docs/docs/proposals/implementation/webassembly-native-state.md and the
+- docs/docs/proposals/implementation/webassembly-state.md and the
   shared-memory agent's final contract/results handoff linked there
   (docs/docs/proposals/implementation/webassembly-shared-memory-ui-handoff.md). Read
   current code: this prompt's backend inventory can become historical.
 - docs/docs/proposals/implementation/webassembly-shared-memory-handoff.md for
   scope and constraints. Do not redo completed runtime work or claim a future
   threaded implementation works without checking the actual bytes/results.
-- native/README.md and the plan docs/docs/proposals/webassembly.md Status table.
-- app/src/app/nativePanel.ts, nativePanel.css, nativeReport.ts, browserPolicy.ts,
-  engine/src/settings/catalogue/native.ts, ui/src/shell/choiceGroup.ts,
+- the `*-WASM/` READMEs and the plan docs/docs/proposals/webassembly.md Status table.
+- app/src/app/wasmPanel.ts, wasmPanel.css, wasmReport.ts, browserPolicy.ts,
+  engine/src/settings/catalogue/wasm.ts, ui/src/shell/choiceGroup.ts,
   ui/src/shell/settings/controls.ts and ui/src/styles/ui.css.
 - Current UI evidence: app/build/component-execution/functional.md and
   browser-map-mode/report.json (compact titles/help, inline title/control flow,
   expanded-first order, actual tints, live mode filtering, desktop/phone,
   stable sources, no page errors, normal Chrome exits). Earlier browser runs
-  record superseded layouts. Read the cleanup notes linked from native state.
+  record superseded layouts. Read the cleanup notes linked from WebAssembly state.
 
 Settled requirements:
-- The tab is Component execution. Retain its stable internal native ID and
+- The tab is Component execution. Retain its stable internal ID and
   saved placement. Sections are Global defaults and Components. Each component holds its
   settings and real running state, with diagnostics behind a trailing ?. There is no
   separate Currently running section. Use component, not CPU core, for sky/terrain/etc.
@@ -126,18 +126,18 @@ Settled requirements:
 - Keep timing/parity/copy/cache/scope details behind ?. Do not restore the
   dense six-column debug table or fill the tab with repeated explanations.
 - No visual-quality defaults or default backend changes without evidence and
-  user authorization. Keep legacy native.tier/native.core.* URLs and saved
-  settings compatible, and preserve dedicated foss-earth/native exports for
+  user authorization. Keep legacy wasm.tier/wasm.core.* URLs and saved
+  settings compatible, and preserve dedicated foss-earth/wasm exports for
   fly's runtime mocks.
 
 Current settings baseline before the shared-memory agent (verify changes):
-- native.tier includes legacy typescript|typescript-worker|single|auto|threaded
-  and custom. Custom reads native.implementation=typescript|wasm,
-  native.placement=original|worker, native.parallelism=auto|serial.
-- Component selection native.core.<id>=inherit|auto|custom (legacy tiers also
+- wasm.tier includes legacy typescript|typescript-worker|single|auto|threaded
+  and custom. Custom reads wasm.implementation=typescript|wasm,
+  wasm.placement=original|worker, wasm.parallelism=auto|serial.
+- Component selection wasm.core.<id>=inherit|auto|custom (legacy tiers also
   valid), plus .implementation/.placement/.parallelism with inherit supported.
 - serial means one independent worker per component, not one application thread.
-  Only raster/terrain currently have independent-job pools. native.workers is
+  Only raster/terrain currently have independent-job pools. wasm.workers is
   a combined worker budget. The shared-memory agent must document new meanings
   and settings rather than hiding a different runtime behind these labels.
 - Component execution already has split controls, immediate pending/apply,
@@ -172,7 +172,7 @@ After the shared-memory agent finishes:
   checks one heavy job at a time. Recheck known unrelated failures rather than
   assuming they persist. Browser profiles/screenshots/logs stay in ignored build/.
 
-Update ui-layout, native state, native README, plan Status and this handoff with
+Update ui-layout, WebAssembly state, `*-WASM/` READMEs, plan Status and this handoff with
 what is complete, exact URLs/check commands, actual capability/fallbacks and
 remaining TODOs. Functional UI completion and performance gains are separate.
 Preserve concurrent dirty work; re-read before exact edits. No staging, commits,

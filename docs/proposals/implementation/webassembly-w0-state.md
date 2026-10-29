@@ -29,7 +29,7 @@ what a fresh agent must still resolve.
   geometry, sky and projections. These are numeric slices, not completed
   whole-family gates. Only the earlier raster decoder has functional proof;
   newer cores remain unvalidated and opt-in. W0 must not be marked done to
-  accommodate that progress. See the native package READMEs and the main
+  accommodate that progress. See the `*-WASM/` READMEs and the main
   plan's latest status for conversion details.
 - Stable Rust's `wasm32-unknown-unknown` target was installed after the user
   instructed resumption. That decision is answered, not a pending approval.

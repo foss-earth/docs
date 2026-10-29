@@ -93,7 +93,7 @@ has a paste-ready assignment, gates W0–W12 and their acceptance checks.
 - GitHub Pages stays the host.
 - Shared memory is on by default, with the headers it needs added by the apps'
   service worker.
-- Rust for the new native cores.
+- Rust for the new WASM cores.
 - One binary per map family (Google 3D Tiles; raster terrain and imagery) and
   one per library core.
 - Each binary has a threaded and a single-threaded build, and the TypeScript is

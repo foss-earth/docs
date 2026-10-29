@@ -10,8 +10,8 @@ complete: isolation is built but not deployed.
 
 ## What runs
 
-Only the **sky** has a shared build (`@foss-earth/native-sky/shared`). With
-`native.core.sky=threaded` (or a global `native.tier=threaded`), the sky worker
+Only the **sky** has a shared build (`@foss-earth/sky/sky-WASM/shared`). With
+`wasm.core.sky=threaded` (or a global `wasm.tier=threaded`), the sky worker
 becomes the coordinator of N cooperating threads over one fixed
 `WebAssembly.Memory`:
 
@@ -47,12 +47,12 @@ Their `actual` says what really ran. The raster and terrain worker pools are
 
 | Setting | Values | Notes |
 |---|---|---|
-| `native.tier` / `native.core.sky` | adds `threaded`, labelled "Shared-memory threaded WASM (sky only)" | Legacy tiers and URLs keep working. Custom mode has no threaded path: `implementation=wasm` resolves to `single`. |
-| `native.threads` (new) | 1–8, default `max(1, min(4, hardwareConcurrency − 1))` | Label "Shared-memory threads". Home native → selection, level `all`. `appliesLive: false`, so it needs Apply/reload like the other execution settings. It counts the coordinator, so 1 means no helpers. |
-| `native.workers` | unchanged meaning: one total worker budget | A threaded sky's helpers come from it. They are reserved (threads − 1) **only** on an isolated page; otherwise the slots stay with decoding. |
-| `native.sharedHeights` (new, app `terrainNativeWorkerConfig.ts`) | boolean, default off | Label "Terrain heights in shared memory". Home native → cores, level `all`; registered by the app, so only its hosts draw it. Decode workers publish each elevation tile once in a `SharedArrayBuffer`, and the policy asks for it only when Terrain geometry runs in workers. `appliesLive: false`. |
+| `wasm.tier` / `wasm.core.sky` | adds `threaded`, labelled "Shared-memory threaded WASM (sky only)" | Legacy tiers and URLs keep working. Custom mode has no threaded path: `implementation=wasm` resolves to `single`. |
+| `wasm.threads` (new) | 1–8, default `max(1, min(4, hardwareConcurrency − 1))` | Label "Shared-memory threads". Home wasm → selection, level `all`. `appliesLive: false`, so it needs Apply/reload like the other execution settings. It counts the coordinator, so 1 means no helpers. |
+| `wasm.workers` | unchanged meaning: one total worker budget | A threaded sky's helpers come from it. They are reserved (threads − 1) **only** on an isolated page; otherwise the slots stay with decoding. |
+| `wasm.sharedHeights` (new, app `terrainWasmWorkerConfig.ts`) | boolean, default off | Label "Terrain heights in shared memory". Home wasm → cores, level `all`; registered by the app, so only its hosts draw it. Decode workers publish each elevation tile once in a `SharedArrayBuffer`, and the policy asks for it only when Terrain geometry runs in workers. `appliesLive: false`. |
 
-## Plan (`nativeCorePlan`, engine `settings/catalogue/native.ts`)
+## Plan (`wasmCorePlan`, engine `settings/catalogue/wasm.ts`)
 
 These are the existing fields, plus:
 
@@ -61,7 +61,7 @@ These are the existing fields, plus:
 - `sharedMemory: boolean`: a threaded request for a core with a shared build.
 - `threadedFallback: "no-shared-build" | null`: known before startup.
 
-## Report (`NativeCoreReport`, app `nativeReport.ts`; the Copy report line "Component execution: [...]")
+## Report (`WasmCoreReport`, app `wasmReport.ts`; the Copy report line "Component execution: [...]")
 
 These are the plan's fields, plus:
 
@@ -86,7 +86,7 @@ These are the plan's fields, plus:
   - `startup-timeout`
   - `worker-*`
 - `parity`: for the sky, `{ tables, radiance, irradiance, fan, fanRows: { solo, parallel } }`. Each is `same`, `unchecked` or a mismatch. `fan` is the single core's fan path; `fanRows` is the batched path the threaded core uses.
-- `shared: NativeSharedReport | null`: the shared core as it ran, null when none started. It has:
+- `shared: WasmSharedReport | null`: the shared core as it ran, null when none started. It has:
   - `actual`: `threaded` or `retired`, with `retiredReason`;
   - `crossOriginIsolated`;
   - `memoryBytes` and `memoryGrows: false`;
@@ -94,7 +94,7 @@ These are the plan's fields, plus:
   - `batches`: `{ total, parallel, solo, rows, directions, rowsByThread, waitMs, maxWaitMs }`;
   - `copies`: `{ inBytes, outBytes }`;
   - `lastBatch`.
-- `detail` (sky): `worker`, `jobs`, `startupMs`, `nativeCalls`, `fanRows`, `lastJob`, `totals`, `meanRoundTripMs` and `meanWorkMs`.
+- `detail` (sky): `worker`, `jobs`, `startupMs`, `wasmCalls`, `fanRows`, `lastJob`, `totals`, `meanRoundTripMs` and `meanWorkMs`.
 
 The sky worker's name is JSON, e.g.
 `{"kind":"earth-sky","kernel":"threaded","threads":4}`. That is what was asked
@@ -102,7 +102,7 @@ for, not what ran. Use the report for status.
 
 ## What the UI shows (19 October 2026)
 
-In `app/src/app/nativePanel.ts`, under Components → Sky. Sky is the only
+In `app/src/app/wasmPanel.ts`, under Components → Sky. Sky is the only
 component with a shared build, so no other component shows these controls.
 Terrain heights has its own Shared memory switch, for the decoded tiles
 rather than threads; see the end of this list. A global switch at the top of
@@ -119,9 +119,9 @@ the tab turns both on at once; see the first item.
   a shared use, so that can be turned off.
 - **Sky → Shared memory [Off|On] ?** comes right after the sky's Implementation
   (after Mode while Mode is Global). It is the shared two-position slider.
-  On sets `native.core.sky=threaded`. Off restores the sky's earlier choice,
+  On sets `wasm.core.sky=threaded`. Off restores the sky's earlier choice,
   or single WASM if that choice was itself threaded.
-- **Shared-memory threads** (`native.threads`, the standard count control)
+- **Shared-memory threads** (`wasm.threads`, the standard count control)
   shows beside it only while Shared memory is on. Global's Show all
   parameters still lists it.
 - **On a page that isn't cross-origin isolated** the slider is disabled. It
@@ -161,7 +161,7 @@ the tab turns both on at once; see the first item.
   Discard restores it. Host sections get the panel's Apply through
   `section(…, { reload })`, and their own pending box is hidden. Before this
   change, their box repeated the panel's and reloaded without the edits.
-- **Terrain heights → Shared memory [Off|On] ?** (`native.sharedHeights`)
+- **Terrain heights → Shared memory [Off|On] ?** (`wasm.sharedHeights`)
   follows Terrain heights' manual choices and shows in every mode. It uses
   the same slider, pending mark, Apply & reload and Discard.
   - The status "Needs geometry workers" shows while Terrain geometry would
@@ -169,7 +169,7 @@ the tab turns both on at once; see the first item.
   - "Not isolated" and the disabled slider behave as the sky's do.
   - Help says how many tiles arrived "in shared memory".
 
-Unit tests: `app/src/app/nativePanel.test.ts`, 21 tests. They cover:
+Unit tests: `app/src/app/wasmPanel.test.ts`, 21 tests. They cover:
 
 - placement and the single instance;
 - the global switch: all on, "Partly on", and its reload URL;
@@ -192,8 +192,8 @@ Unit tests: `app/src/app/nativePanel.test.ts`, 21 tests. They cover:
 These checks are functional. They make no speed claim (see
 [Results](#results-chrome-155-macos-10-hardware-threads)). Since 19 October
 2026 the defaults are WebAssembly in worker pools with both uses of shared
-memory on (`native.sharedSky` and `native.sharedHeights`; see the
-[native state](webassembly-native-state.md#defaults-webassembly-in-worker-pools-with-shared-memory-19-october-2026)).
+memory on (`wasm.sharedSky` and `wasm.sharedHeights`; see the
+[WebAssembly state](webassembly-state.md#defaults-webassembly-in-worker-pools-with-shared-memory-19-october-2026)).
 Where the page can't share memory, the switches show that default as Off,
 grayed, and only a request from the URL or a saved choice as On.
 
@@ -203,8 +203,8 @@ From `app/`:
 
 ```sh
 FOSS_EARTH_ISOLATION=enforce FOSS_EARTH_COEP=require-corp npm run dev -- --port 5174 --strictPort
-# http://localhost:5174/app/?set.native.threads=4, then Components → Sky → Shared memory
-npx vitest run --configLoader native src/app/nativePanel.test.ts src/app/nativeReport.test.ts
+# http://localhost:5174/app/?set.wasm.threads=4, then Components → Sky → Shared memory
+npx vitest run --configLoader native src/app/wasmPanel.test.ts src/app/wasmReport.test.ts
 node build/sw-isolation/execution-check.mjs <run> [base URL] [--phone-only]   # QUERY= sets the query
 node build/sw-isolation/probe.mjs <run> <url> <expression>…                   # WIDTH, HEIGHT, SETTLE
 ```
@@ -212,11 +212,11 @@ node build/sw-isolation/probe.mjs <run> <url> <expression>…                   
 The other apps' servers, which `execution-check.mjs` doesn't start:
 
 - tour: in `~/gh/UMN-VR/tour`, the same dev command on `--port 5176`. Check
-  with `QUERY='panoramaTest=1&set.native.threads=4'` and base
+  with `QUERY='panoramaTest=1&set.wasm.threads=4'` and base
   `http://localhost:5176/tour/minneapolis/`.
 - fly: in `~/gh/0sfs/fly`, `npm run dev -- --port 5175 --strictPort`
   (not isolated). Open
-  `http://localhost:5175/fly/?set.native.core.sky=threaded&set.native.threads=4`.
+  `http://localhost:5175/fly/?set.wasm.core.sky=threaded&set.wasm.threads=4`.
 
 ### Remaining TODOs
 
@@ -338,7 +338,7 @@ profiles separate from their WASM work.
 ### Apps
 
 Isolated dev servers with
-`set.native.tier=typescript&set.native.core.sky=threaded&set.native.threads=4&set.native.workers=10&set.map.loader.decodeWorkers=2`.
+`set.wasm.tier=typescript&set.wasm.core.sky=threaded&set.wasm.threads=4&set.wasm.workers=10&set.map.loader.decodeWorkers=2`.
 
 | App | Result | Evidence |
 |---|---|---|
@@ -354,7 +354,7 @@ From `app/`:
 
 ```sh
 FOSS_EARTH_ISOLATION=enforce npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
-# http://127.0.0.1:5173/app/?set.native.tier=typescript&set.native.core.sky=threaded&set.native.threads=4&set.native.workers=10&set.map.loader.decodeWorkers=2
+# http://127.0.0.1:5173/app/?set.wasm.tier=typescript&set.wasm.core.sky=threaded&set.wasm.threads=4&set.wasm.workers=10&set.map.loader.decodeWorkers=2
 
 node build/shared-memory/browser-parity.mjs                 # kernel parity and timing, browser worker
 # A/B arms 1-9 (or one arm prefix); a used --out is refused, to keep its evidence
@@ -372,7 +372,7 @@ All of these scripts are gitignored scratch and run from `app/`. Each closes its
 browser and server in `finally`. After a killed run, use
 `browser-testing/scripts/chrome-clones.sh --clean`.
 
-From `native/`:
+From the Rust workspace (now `npm run build:wasm` in `sky/`):
 
 ```sh
 npm run build:sky-shared

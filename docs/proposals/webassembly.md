@@ -27,7 +27,7 @@ The gains are estimates to order the work; step 0 measures them.
 
 The next conversation's focused assignment is the
 [Rust/WASM A/B handoff](implementation/webassembly-ab-handoff.md). Its retained
-[native state](implementation/webassembly-native-state.md) and
+[WebAssembly state](implementation/webassembly-state.md) and
 [W0 state](implementation/webassembly-w0-state.md) distinguish implemented
 source from usable integration and qualified measurements.
 
@@ -85,7 +85,7 @@ Its internals aren't public. What is known comes from Google's
 - **Shared memory is on by default.** The apps ask to be cross-origin isolated
   on every visit, the first one included. Settings → App files → Shared memory
   turns it off. Without isolation everything still works, more slowly.
-- **New native cores are Rust.** JSBSim stays C++ built with Emscripten.
+- **New WASM cores are Rust.** JSBSim stays C++ built with Emscripten.
 - **One binary per map family, and one per library core.** The map families are:
   - Google Photorealistic 3D Tiles;
   - raster terrain and imagery.
@@ -117,7 +117,7 @@ Its internals aren't public. What is known comes from Google's
     compares. Elsewhere it checks the hashes, the size budget and the tests.
 
 A page runs one of three tiers, chosen once at startup in
-`engine/src/native/tier.ts`:
+`engine/src/settings/catalogue/wasm.ts`:
 
 | Tier | Chosen when | Runs |
 | --- | --- | --- |
@@ -130,7 +130,7 @@ only when its feature is used, and may fall back independently. A raster map
 never downloads Google's binary to decide its tier. Reserve memory for the
 page as a whole, including the sky, textures and JSBSim, not just each core.
 
-`?set.native.tier=threaded`, `single` or `typescript` requests a tier for A/B
+`?set.wasm.tier=threaded`, `single` or `typescript` requests a tier for A/B
 runs. It cannot bypass a failed capability check. Diagnostics → Copy report
 says the requested tier, the actual tier of each active core and why it ran.
 Compile, startup, memory, timeout and parity failures fall back for that core
@@ -170,14 +170,14 @@ when it finishes: the date, what was measured, and where the evidence is.
 | 1 | Not started | | |
 | 2 | Not started | | |
 | 3 | Built, not deployed, 2026-10-18 | The app's service worker adds COOP, COEP `require-corp` and CORP to built pages, their workers and kept files; a first visit reloads once. Earth, tour and fly builds served as Pages serves them: isolated from the first visit in Chrome 155, Firefox 158 and Safari 27, threaded sky 4/4. Every map, search, airports and the tour's photos loaded with 0 blocked requests in Chrome and Firefox. In Safari, which shows a check no requests, every map and photo drew with no tile error or COEP report, and search and airports showed results. In Chrome, the 0SFS site's landing page and phone controller also work in fly's worker's scope. A frame, no service worker and the setting off start unisolated on single WASM, with no reload loop. Carto now answers every origin with an "API key required" tile, isolated or not. Not run in Safari: Shift-reload, no service worker, the 0SFS site. Safari on the iPhone is the user's check | [Step 3, Checked](#3-isolation-from-the-service-worker) |
-| 4 | In progress, 2026-10-18 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress. Compact Component execution UI separates implementation, placement and worker parallelism, with component inheritance and explicit Apply and reload; Components combines settings and real status in expanded titles, with name-only collapsed titles and persistent trailing ? help. Expanded titles join the control grid as its first item; expanded components sort before minimized ones. Components filter live by basemap mode while retaining hidden overrides and reports. Desktop/phone functional checks pass. UI cleanup checkpoint complete for the verified baseline. Sky shared-memory build (atomics, fixed 4 MiB shared memory) with `native.threads`, plan/report `threads`/`sharedMemory`/`threadedFallback`/`shared`, budgeted helpers and a reasoned threaded → single → TS ladder. Component execution, 19 October: Sky has Shared memory [Off\|On] and Shared-memory threads. The slider is disabled with "Not isolated" on an unisolated page; titles show the shared threads that ran ("WASM (4 shared threads)") and short fallbacks. Checked in Earth and the tour (isolated) and in fly (unisolated), desktop and phone ([UI](implementation/webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)). Full qualification remains | [Native source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
-| 5 | In progress, 2026-10-18 | Terrain targets selectable/parity checked; paired worker placement regressed ~1.8 s, auto TS. Added sparse adopted-grid imagery batches with exact f64/cache/page fallback, 176 dense/sparse cases / 147,110 coordinates; full-grid copies removed. Whole-app A/A drift is 5–5.5 s; no imagery gain qualified, auto TS. Raster auto now TS after slower WASM evidence. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
-| 6 | In progress, 2026-10-18 | Worker TS/WASM BVH build connected to synchronous scene query adapter with immutable index export, current transforms, ties, normals, mutation invalidation and original-picker fallback. 514 actual native/snapshot/reference rays match; index-update invalidation tested. App fixed-ray fixture query cost −40%, both query arms TS; WASM build slower. Raster walker/flight cache retained; representative flight gate remains. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
-| 7 | In progress, 2026-10-18 | TS/WASM Google worker connected through lazy Babylon adapter; hierarchy/material/container lifetime checked. Chrome WebGL2/WebGPU 48 exact pixel cases: 36 actual WASM, 12 explicit ICC-original fallback. EXIF also original. Packing and real Google view/performance gates remain. | [Native state](implementation/webassembly-native-state.md#in-app-ab-what-exists-now) |
-| 8 | In progress, 2026-10-18 | Selectable worker sky and exact TS star colors with synchronous billboards; full 9,096-star GPU buffers match. Final repeated app mean page task 12.04→7.37 s (−38.8%): placement gain; star batching adds observed −9.1%. WASM sky 7.44 s, no whole-app gain. Shared-memory threaded sky, exact in every arm and integrated in Earth, tour and fly: per-job worker sky work 3.05→1.73–1.83 ms (4 threads), round trip −0.2 to −0.4 ms, no page/frame gain beyond A/A, total sky CPU up. Global default since 19 October: `single` with the shared sky and shared heights, not a speed claim. | [Native state](implementation/webassembly-native-state.md#measured-results) |
+| 4 | In progress, 2026-10-18 | Installed stable WASM target; real raster binary and byte parity completed; bounded raw ABI packages and worker-only loading in progress. Compact Component execution UI separates implementation, placement and worker parallelism, with component inheritance and explicit Apply and reload; Components combines settings and real status in expanded titles, with name-only collapsed titles and persistent trailing ? help. Expanded titles join the control grid as its first item; expanded components sort before minimized ones. Components filter live by basemap mode while retaining hidden overrides and reports. Desktop/phone functional checks pass. UI cleanup checkpoint complete for the verified baseline. Sky shared-memory build (atomics, fixed 4 MiB shared memory) with `wasm.threads`, plan/report `threads`/`sharedMemory`/`threadedFallback`/`shared`, budgeted helpers and a reasoned threaded → single → TS ladder. Component execution, 19 October: Sky has Shared memory [Off\|On] and Shared-memory threads. The slider is disabled with "Not isolated" on an unisolated page; titles show the shared threads that ran ("WASM (4 shared threads)") and short fallbacks. Checked in Earth and the tour (isolated) and in fly (unisolated), desktop and phone ([UI](implementation/webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)). Full qualification remains | [WASM source](https://github.com/foss-earth/docs/blob/main/docs/proposals/implementation/webassembly-agent.md#gate-w4-toolchain-packages-and-loader) |
+| 5 | In progress, 2026-10-18 | Terrain targets selectable/parity checked; paired worker placement regressed ~1.8 s, auto TS. Added sparse adopted-grid imagery batches with exact f64/cache/page fallback, 176 dense/sparse cases / 147,110 coordinates; full-grid copies removed. Whole-app A/A drift is 5–5.5 s; no imagery gain qualified, auto TS. Raster auto now TS after slower WASM evidence. | [WebAssembly state](implementation/webassembly-state.md#in-app-ab-what-exists-now) |
+| 6 | In progress, 2026-10-18 | Worker TS/WASM BVH build connected to synchronous scene query adapter with immutable index export, current transforms, ties, normals, mutation invalidation and original-picker fallback. 514 actual WASM/snapshot/reference rays match; index-update invalidation tested. App fixed-ray fixture query cost −40%, both query arms TS; WASM build slower. Raster walker/flight cache retained; representative flight gate remains. | [WebAssembly state](implementation/webassembly-state.md#in-app-ab-what-exists-now) |
+| 7 | In progress, 2026-10-18 | TS/WASM Google worker connected through lazy Babylon adapter; hierarchy/material/container lifetime checked. Chrome WebGL2/WebGPU 48 exact pixel cases: 36 actual WASM, 12 explicit ICC-original fallback. EXIF also original. Packing and real Google view/performance gates remain. | [WebAssembly state](implementation/webassembly-state.md#in-app-ab-what-exists-now) |
+| 8 | In progress, 2026-10-18 | Selectable worker sky and exact TS star colors with synchronous billboards; full 9,096-star GPU buffers match. Final repeated app mean page task 12.04→7.37 s (−38.8%): placement gain; star batching adds observed −9.1%. WASM sky 7.44 s, no whole-app gain. Shared-memory threaded sky, exact in every arm and integrated in Earth, tour and fly: per-job worker sky work 3.05→1.73–1.83 ms (4 threads), round trip −0.2 to −0.4 ms, no page/frame gain beyond A/A, total sky CPU up. Global default since 19 October: `single` with the shared sky and shared heights, not a speed claim. | [WebAssembly state](implementation/webassembly-state.md#measured-results) |
 | 9 | Not started | | |
 | 10 | Not started | | |
-| 11 | In progress, 2026-10-18 | Bounded exact source windows support unchanged 8192×4096 RGB through actual sphere-image CLI worker preparation. 378 cases / 2,683,584 f32 values and 264 encoded outputs match; peak WASM payload 60.5 MB / memory 95.6 MB. Observed WASM slower; no speed gate complete. Browser direct photos already sample textures on GPU. | [Native state](implementation/webassembly-native-state.md#known-blockers-and-useful-next-work) |
+| 11 | In progress, 2026-10-18 | Bounded exact source windows support unchanged 8192×4096 RGB through actual sphere-image CLI worker preparation. 378 cases / 2,683,584 f32 values and 264 encoded outputs match; peak WASM payload 60.5 MB / memory 95.6 MB. Observed WASM slower; no speed gate complete. Browser direct photos already sample textures on GPU. | [WebAssembly state](implementation/webassembly-state.md#known-blockers-and-useful-next-work) |
 | 12 | Not started | | |
 
 ## 0. Measure against Google Earth
@@ -594,7 +594,7 @@ the UMN tour (`/tour/twin-cities/`) and 0SFS fly (`/fly/`), and with the
 served as GitHub Pages serves it: no COOP, COEP or CORP,
 `Cache-Control: max-age=600`, ETag, and a folder redirected to its slash. Each
 page asked for the threaded sky with 4 threads
-(`set.native.core.sky=threaded&set.native.threads=4`); the sky's default stays
+(`set.wasm.core.sky=threaded&set.wasm.threads=4`); the sky's default stays
 TypeScript. The scripts are local and not committed:
 `app/build/sw-isolation/check.mjs` in FOSS Earth's checkout,
 `build/sw-isolation/fly-probe.mjs` in fly's, and
@@ -668,7 +668,7 @@ Rust twin sits beside its TypeScript reference, in `<name>-WASM/` next to
 `<name>-TS/`, in the repository that owns the core. See
 [WebAssembly cores](../webassembly-cores.md). The plan below is kept as written.
 
-**Repository.** A new repository, `foss-earth/native`, holds one Cargo
+**Repository.** A new repository holds one Cargo
 workspace. One repository keeps:
 
 - one toolchain pin;
@@ -680,10 +680,10 @@ Each binary is still built and versioned on its own.
 | Crate | Holds | Ships as |
 | --- | --- | --- |
 | `earth-core` | WGS84 ellipsoid, geodetic and tile math, float32 rounding as Babylon stores it, the BVH, the JavaScript-exact helpers below | Linked into each binary below |
-| `earth-raster` | Raster terrain meshes and height grids | `@foss-earth/native-raster` |
-| `earth-google` | Google Photorealistic 3D Tiles: glb reading, packing, BVHs | `@foss-earth/native-google` |
-| `earth-sky` | Atmosphere and stars | `@foss-earth/native-sky` |
-| `earth-projections` | Equirectangular, cube and tiled-cube conversions | `@foss-earth/native-projections` |
+| `earth-raster` | Raster terrain meshes and height grids | `@foss-earth/engine/raster-WASM` |
+| `earth-google` | Google Photorealistic 3D Tiles: glb reading, packing, BVHs | `@foss-earth/renderer/google-WASM` |
+| `earth-sky` | Atmosphere and stars | `@foss-earth/sky/sky-WASM` |
+| `earth-projections` | Equirectangular, cube and tiled-cube conversions | `@foss-earth/sphere-image/projections-WASM` |
 
 Each package holds:
 
@@ -771,7 +771,7 @@ single-threaded tier. Do not retry a failed allocation repeatedly. Measure
 combined memory when raster, Google, sky and JSBSim coexist during a switch;
 dispose retired pools and their memories when no reader retains them.
 
-**Loader**, in `engine/src/native/`:
+**Loader**, in each core's `*-WASM/index.js`:
 
 - `tier.ts` records the startup capability ceiling and each core's actual tier.
 - `load.ts` compiles each binary once with `WebAssembly.compileStreaming`. It
@@ -785,7 +785,7 @@ output types and bounds, cancellation, timeout and disposal. Ignore stale
 results after a map switch. Close unused `ImageBitmap`s and terminate failed
 workers; retain or copy inputs needed for fallback before transferring them.
 Synthetic tests cover worker death, failed fetch/compile, detached buffers,
-cancellation and repeated create/dispose cycles. A failed native core must
+cancellation and repeated create/dispose cycles. A failed WASM core must
 not silently disable other cores. Library ports inject the chosen core so
 `sky` and the projection libraries do not gain a dependency on `engine`.
 
@@ -904,11 +904,11 @@ the actual tier.
   only the threaded tier. Decode workers copy heights into a
   `SharedArrayBuffer` and post it without a transfer, so mesh workers read the
   page's grids without a copy (Component execution → Terrain heights → Shared
-  memory, `native.sharedHeights`, on by default since 19 October 2026, applies after a reload). Where targets are built on the page a transfer already
+  memory, `wasm.sharedHeights`, on by default since 19 October 2026, applies after a reload). Where targets are built on the page a transfer already
   costs nothing, so the setting does nothing there. Without isolation heights
-  are transferred as before. Nothing writes a grid after decoding. The native
+  are transferred as before. Nothing writes a grid after decoding. The WASM
   terrain core and sampler accept shared heights and snapshot them; the binary
-  is unchanged. Checked in Node, in the native parity checks and in headless
+  is unchanged. Checked in Node, in the WASM parity checks and in headless
   Chrome on an isolated tour dev server: 114 of 114 tiles arrived shared and
   49 mesh targets were built from them.
 - The decode pool now asks for no more workers than the worker budget leaves

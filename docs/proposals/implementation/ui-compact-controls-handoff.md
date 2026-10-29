@@ -44,10 +44,10 @@ Read first:
    current effect. This is the authoritative design, not an example to reinterpret.
 3. ui/src/shell/choiceGroup.ts, ui/src/shell/settings/controls.ts and
    ui/src/styles/ui.css. These already contain the shared compact track; use it.
-4. app/src/app/nativePanel.ts and its tests for the current Component execution
+4. app/src/app/wasmPanel.ts and its tests for the current Component execution
    implementation, and app/build/component-execution/functional.md plus
    browser-map-mode/report.json for the latest verified Component execution UI.
-   Earlier browser folders contain diagnostic/superseded layouts. The native
+   Earlier browser folders contain diagnostic/superseded layouts. The WebAssembly
    state document links the evidence and the three separate assignments.
 5. Relevant panel/setting owners in renderer, engine, sky, images/sphere/scenes,
    toolbar, app, tour and fly before changing their consumers.
@@ -103,7 +103,7 @@ Explicit user requirements, all apply throughout the UI:
 - A saved choice is not necessarily active. Reload-only settings need immediate
   Changes pending feedback and an explicit apply action; running status must
   reflect actual services. Do not silently reload or claim an unavailable
-  backend started. Preserve native URLs, setting IDs and saved tab placement.
+  backend started. Preserve WASM URLs, setting IDs and saved tab placement.
 
 Scope and approach:
 - Audit all reachable tabs/panels, not only Component execution: Renderer,
@@ -130,7 +130,7 @@ Scope and approach:
   shared factories by reading current diffs before each exact edit. You may
   begin with read-only audits while they finish; do not overwrite their changes
   or change execution architecture as part of a visual cleanup.
-- Keep the app's separate foss-earth/native entry; fly mocks runtime wholesale.
+- Keep the app's separate foss-earth/wasm entry; fly mocks runtime wholesale.
   Do not change rendering/visual-quality defaults, camera/gesture physics,
   authored placement, worker/backend defaults or performance policy in this task.
 

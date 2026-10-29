@@ -2,7 +2,7 @@
 
 Prepared 25 October 2026. Start in `/Users/felg/gh/foss-earth`, with `/Users/felg/gh/0sfs` available.
 It follows the scene-capture work in `app/scripts/capture-scenes/`
-([workflow](../../../../app/docs/proposals/scene-screenshot-capture.md)), which made the 0SFS landing
+([workflow](https://github.com/foss-earth/app/blob/main/docs/proposals/scene-screenshot-capture.md)), which made the 0SFS landing
 page's sky pictures. Those pictures show the Sun as a bare disc, 13 px across, with no glare. The
 user wants an opt-in lens flare, and will re-capture the pictures once it lands.
 

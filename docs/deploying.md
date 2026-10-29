@@ -119,12 +119,12 @@ curl -s https://foss-earth.github.io/app/foss-earth-sw.js | grep -o '"isolation"
 ```
 
 Both say `enforce`. Then open the app in a browser with the threaded sky asked for,
-<https://foss-earth.github.io/app/?set.native.core.sky=threaded> (the default is still
+<https://foss-earth.github.io/app/?set.wasm.core.sky=threaded> (the default is still
 TypeScript): the first visit reloads once, the console's `crossOriginIsolated` is `true`, and
 Copy report says
 `Isolation: isolated (crossOriginIsolated true, enforce, setting on, after one reload)`, and
 its `Component execution:` line gives the sky's `actual` as `threaded (worker)`. On the tour
-the same holds for <https://umn-vr.github.io/tour/twin-cities/?set.native.core.sky=threaded>.
+the same holds for <https://umn-vr.github.io/tour/twin-cities/?set.wasm.core.sky=threaded>.
 A browser that cannot be isolated, as a private window without service workers, starts at
 once without the reload, the sky runs single-threaded, and the report says why. A visitor can
 turn isolation off in Settings → App files → Cross-origin isolation.

@@ -49,12 +49,12 @@ toolchain installation or browser capture occurred.
 
 Steps 1 and 2 are implemented as an opt-in fixed experiment:
 
-- `native.compute=legacy` remains the default. `fixed` enables one host-owned
+- `wasm.compute=legacy` remains the default. `fixed` enables one host-owned
   service across raster decode, terrain geometry, imagery height caching,
   atlas decode/preparation, ground indexing, Google preparation and sky.
   This host policy serves Earth, the UMN tour and flight's legacy Babylon host.
-- `native.computeLanes` is a separate pin, 1–32, initially 32 and effectively
-  bounded by the existing `native.workers` lifetime/memory budget. Existing
+- `wasm.computeLanes` is a separate pin, 1–32, initially 32 and effectively
+  bounded by the existing `wasm.workers` lifetime/memory budget. Existing
   worker and backend settings retain their meaning. No chip constants or E-core
   ceiling; browser topology remains logical concurrency plus unknown E count.
 - A positive capacity shortage queues and wakes on releases/limit changes.
@@ -63,14 +63,14 @@ Steps 1 and 2 are implemented as an opt-in fixed experiment:
   event-driven aging; the optional height cache has lower host urgency. Host and
   task priority each contribute only their sign, so even arbitrary large tile
   scores cannot defeat aging; local pools retain their full priority ordering.
-  `native.computeAging` exposes the experimental 1000 ms fairness interval.
+  `wasm.computeAging` exposes the experimental 1000 ms fairness interval.
 - Worker promises do not own execution grants: dispatched cancellation keeps
   its grant until reply or explicit owner retirement. Retired means a requested
   Worker termination action, **not** an exit acknowledgement or measured CPU
   cessation. Atlas native input/canvas holds still require their separate
   existing retirement proofs even after compute retirement.
 - Module preparation happens before numeric admission, with its own
-  `native.computeInitialization` allowance (experimental default 1). Cached
+  `wasm.computeInitialization` allowance (experimental default 1). Cached
   module loads have bounded results; timed-out late cores are abandoned/disposed.
   Kernel startup fallback/parity remains with the numeric owner. Initial worker
   JavaScript loading and browser-owned compilation/bitmap decoding are not a
@@ -84,7 +84,7 @@ Steps 1 and 2 are implemented as an opt-in fixed experiment:
   control word gates which helpers may claim rows; it does not resize memory,
   stacks or a live generation. Helpers still claim useful rows dynamically.
   Off/obsolete queued sky generations cancel without selecting page fallback.
-- `native.computeObserve=false` stays the default. On, bounded component totals
+- `wasm.computeObserve=false` stays the default. On, bounded component totals
   distinguish shared admission wait from admitted elapsed spans, queue age,
   useful/stale/failed replies and termination actions. Pool queue-to-dispatch
   time includes its own queue/preparation and is named separately. Counters
@@ -174,9 +174,9 @@ any hardware timing; separate checkouts do not remove interference.
    route, completed work and readiness requirements equal. Start with current
    scheduling as control and a fixed range including full allowed width; a
    reliable E count may add a candidate but cannot remove wider candidates.
-3. A candidate load can use `?set.native.compute=fixed&set.native.computeLanes=2`
-   and optionally `&set.native.computeObserve=true`. Retain the existing
-   `native.workers` value, shared-sky thread request and all quality/FPS settings.
+3. A candidate load can use `?set.wasm.compute=fixed&set.wasm.computeLanes=2`
+   and optionally `&set.wasm.computeObserve=true`. Retain the existing
+   `wasm.workers` value, shared-sky thread request and all quality/FPS settings.
    Change only the lane pin for other fixed arms. Full capacity is the effective
    existing worker allowance, not the device's E count.
 4. Coordinate a bounded capture slot with the performance owner. Apply research's

@@ -3,12 +3,12 @@
 Every optimization shipped, rejected, held, waiting on a decision or still
 open, across FOSS Earth, 0SFS and the UMN tour, from 12 October 2026 on. Read
 it before choosing work, so that nothing is retried by accident. The current
-state, the next candidates and the method are in
-[Resume performance work](performance-work.md).
+handoff is [28 October][e-resume]. The October 22
+[agent state](proposals/implementation/performance-agent-state.md) is history.
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-099). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-106). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -19,11 +19,18 @@ reports still cite, to the current ones.
 
 ## Shipped
 
-Newest first. "Unpushed" means local `main` was ahead of `origin/main` at the
-end of the 24 October session.
+Newest first. "Unpushed" means local `main` was ahead of `origin/main` when
+the row was written. As of 28 October, engine `main` is ahead by `deed8b5`
+only. P-101, P-102 and P-106 are still uncommitted.
 
 | ID | Date | Commits | Change | Measured | Report |
 | --- | --- | --- | --- | --- | --- |
+| P-106 | 28 Oct | engine, uncommitted local work | `fillQueue()` skips its demand-order missing-image scan when the private missing map is empty. The nonempty path and P-102 stats cache are unchanged | Isolated paired Node, 30 rounds of 2,000 calls: 256 resident/no missing 4.172 → 2.663 ms; 4,000 resident/no missing 87.370 → 60.618 ms. Median paired savings 36.12% and 30.85%, each 30/30 faster, outside the complete unchanged-control range. Nonempty missing and public `pump()` timings are inconclusive. Not a frame-rate claim | [queue scan][e-res-queue] |
+| P-102 | 27 Oct | engine, uncommitted local work | `imageryResidency.stats()` keeps its counts until residency changes and returns a new object copied from those counts. A generation counter clears on writes that can change the result: entry state, slots and reserved bytes, demand, missing records, pins, overflow, unplaced, upload counters, in-flight uploads, upload refusals, and dispose. An idle `pump()`, an upload that places nothing, and `setPinned` with the same slots do not invalidate. A missing record is a change once `now()` reaches it. A reentered change notification does not store a half-updated pass, and mutating `limits` on a returned object does not leak | Node, 4,000 resident images and 200 missing: about 9.4 → 0.028 µs/call (median of five loops of 2,000). Not a frame-rate claim | [residency stats][e-res] |
+| P-101 | 27 Oct | engine, uncommitted local work | `terrainLightPlugin` skips `updateFloat4` and `updateFloatArray` when every component is `Object.is`-equal to the last write on that same uniform buffer (`WeakMap`). A new buffer, a new effect, or any changed value still writes; `setTexture` still runs on every bind that has a night map | Node, 8,000 identical binds against the always-write loop, no overlap: uniform buffer 5.22 → 2.88 ms; effect-forwarded writes 5.20 → 2.96 ms (about 1.8×). Not a frame-rate claim | [terrain light][e-light] |
+| P-104 | 27 Oct | engine `deed8b5`, unpushed | Imagery runtime collects visible bindings and loaded pages in one pass, and compares loaded page keys as sets | Isolated Node collection about 2.25 → 0.46 ms for 256 patches; page-key equality about 11–38% at 64–1,024 pages. Not a frame-rate claim. The browser cohort could not separate frames/s | [runtime][e-run] |
+| P-103 | 27 Oct | engine `deed8b5`, unpushed | Imagery selection reuses a ready 65×65 lattice, the nearest corner's hull positions, and the hull sphere | Node selection plus loaded-detail: 337.2 → 299.7 ms, 10.87% against an unchanged control, 28 of 30 pairs. Not a frame-rate claim | [selector][e-sel] |
+| P-088 | 27 Oct | engine `deed8b5`, unpushed | Height pixels compact unique keys into the sort buffer during the counting pass | Node captured batches 4.304 → 4.021 ms (−6.6%). Not isolated in the browser arm | [heights][e-heights27] |
 | P-001 | 24 Oct | engine `5931043`, unpushed | Imagery display page, depth and table lookups come from a typed-array quadtree that searches each ancestor once per build | Fly C172 at 4×: `publishManaged` 118.6–125.7 → 67.3–75.9 inclusive; `buildImageryDisplay` self 31.5–33.8 → 15.6–17.6; frames/s 28.3–29.5 → 30.9–32.4 | [display tree][e-tree] |
 | P-002 | 24 Oct | engine `89f265f`, unpushed | `loadedImageryPages` computes each cell's page inline and skips cells that repeat the page to their left or above | 4×: 4.5–14.1 → 3.0–3.6 inclusive | [loaded pages][e-pages] |
 | P-003 | 24 Oct | engine `7e61c70`, unpushed | Height pixels are packed with 32-bit slot and index keys, which fall back exactly to 64-bit keys | 4×: packer `add` self 18.2–23.7 → 10.1–12.5; height `flush` 27.7–32.1 → 19.0–20.4 inclusive; 1× `flush` 10.0–11.6 → 7.3–8.0. With P-002, `syncDistribution` 4× 102.7–113.3 → 83.1–93.3 | [height keys][e-keys] |
@@ -77,6 +84,7 @@ row here.
 
 | ID | Date | Idea | Result | Report |
 | --- | --- | --- | --- | --- |
+| P-100 | 27 Oct | Reuse per-call scratch in `evaluateView` and stored grid-hull positions in `measureFocus`; `toScreen` takes an optional out point | Node five-view replay, 16 rounds: median 158.9 → 159.5 ms (ranges 148.2–196.1 and 151.6–171.5); reverted | [view scratch][e-scratch] |
 | P-046 | 22 Oct | Rewrite the selector's screen-area loop | 388 vs 382.4 ms, against 391.7 vs 386.6 for unchanged source; reverted | [flight frame][f-frame] |
 | P-047 | 22 Oct | Delay the selector's hull construction | 402.1 vs 399.6 ms over 12 rounds; reverted | [flight frame][f-frame] |
 | P-048 | 22 Oct | `Math.hypot` → `Math.sqrt` | Not exact: the result bits differ | [flight frame][f-frame] |
@@ -84,7 +92,7 @@ row here.
 | P-050 | 22 Oct | Skip `publishManaged` on staged revisions | Not exact: it changes what is published | [flight frame][f-frame] |
 | P-051 | 22 Oct | A view cache that measures an old view while the flight moves | Not exact | [agent prompts][f-prompts] |
 | P-052 | 21 Oct | Hash-only (FNV-1a) table equality as proof | A birthday search finds collisions in seconds; P-017 compares bytes instead | [state, item 4][state-cost] |
-| P-053 | 22 Oct | Global `set.native.core.imagery=typescript` (`nimg`) as a speedup | It also removes page batching and memoization. Selection 1×: 47.3–53.1 → 147.0–173.1; main thread 35–39% → 47–54%. Says nothing about verification alone (P-073) | [flight frame][f-frame], [heights candidates][e-heights] |
+| P-053 | 22 Oct | Global `set.wasm.core.imagery=typescript` (`nimg`) as a speedup | It also removes page batching and memoization. Selection 1×: 47.3–53.1 → 147.0–173.1; main thread 35–39% → 47–54%. Says nothing about verification alone (P-073) | [flight frame][f-frame], [heights candidates][e-heights] |
 | P-054 | 21 Oct | Flight dynamics in a worker (fly `901a401` keeps the main-thread solver) | Gate failed: at most 0.64 ms/frame movable; one more frame of input latency; the Google 60 m route 6.4% slower; total CPU rises | [worker results][f-worker] |
 | P-055 | 21 Oct | Replace JSBSim's C++/WASM with Rust; worker pools for dependent simulation steps or one small field; an exhaust worker chosen from a microbenchmark; polygon reduction alone as a CPU fix | Rejected in the 21 October review | [21 October][f-1021], [exhaust worker][f-exhaust] |
 | P-056 | 22 Oct | A hunk-only gear commit | Superseded by the whole-file commit in P-013. Do not retry it or describe it as pending | [22 October handoff][f-handoff] |
@@ -146,18 +154,17 @@ Already decided, for reference:
 ## Open
 
 Candidates without a result yet, with the latest measured cost. The ranking
-and the first steps are in
-[Resume performance work](performance-work.md#next-work).
+and the first steps are in [28 October][e-resume].
 
 | ID | Area | Candidate | Latest cost | Notes |
 | --- | --- | --- | --- | --- |
-| P-086 | engine imagery selector | What is left of `evaluateView`, `surfaceSamples`, `footprintFrom`, `heightsAt` and `sample`, and `measureImageryView` across its callers | Fly C172 4×, 24 Oct: `evaluateView` self 53.9, inclusive 160.6; `surfaceSamples` 30.6; `footprintFrom` 15.3; `heightsAt` 12.2; `sample` 11.5; `measureImageryView` 136.1 inclusive. App 4× drag: `evaluateView` self 47.0 | P-046 to P-051 failed or are not exact. Keep the floating-point order. Brief: Agent 1 in [agent prompts][f-prompts] |
+| P-105 | engine imagery residency | Remaining `fillQueue` work after P-102 and P-106: entry count, ordered-demand walk, nonempty missing path | 27 Oct 4× still C172: self 9.4, before P-106 | Same file as P-102. P-106 skips only the empty missing-map scan; there is no new browser measurement |
+| P-086 | engine imagery selector | What is left of `evaluateView`, `surfaceSamples`, `footprintFrom`, `heightsAt` and `sample`, and `measureImageryView` across its callers | Fly C172 4×, 27 Oct, after `deed8b5`: `evaluateView` self 44.5, inclusive 111.8; `surfaceSamples` 24.3; `footprintFrom` 20.8; `heightsAt` 8.2; `measureFocus` 13.6 | P-046, P-047, P-048, P-051, and P-100 failed or are not exact. Do not retry scratch reuse or `Math.hypot`. Keep the floating-point order. `heightsAt` must keep handing out a fresh coordinates array |
 | P-087 | engine imagery display | `buildImageryDisplay` after P-001 | Fly 4× self 18.7 | [display tree][e-tree] |
-| P-088 | engine heights | Hypothesis 1: compact the unique keys in place during the counting pass | Packer `add` 4× self 10.1–12.5 after P-003 | `src/browser/terrainHeightPixels.ts` still counts, then copies. The engine `build/perf-heights` scratch predates P-003 and is stale. [heights candidates][e-heights] |
 | P-089 | engine distribution | `syncDistribution`'s own `measureImageryView` and the rest of `publishManaged` | `syncDistribution` 4× 83.1–93.3; `publishManaged` 4× 67.3–75.9 | The cadence is P-074. [loaded pages][e-pages] |
-| P-090 | engine viewport and forced layout | `applyWorldViewport` and the reads after mid-frame HUD writes | Self at 4×: fly 34.2, app 28.7, tour 26.4; `getBoundingClientRect` 10.4–13.8 in the app and tour | Its first style recalc pays for the CSS animation (P-071). About 17 at 4× of later forced style and layout needs a proof that the HUD writes never move the canvas. P-049 is not exact |
+| P-090 | engine viewport and forced layout | `applyWorldViewport` and the reads after mid-frame HUD writes | 27 Oct 4× still C172, after `deed8b5`: self 48.6. Earlier 4×: fly 34.2, app 28.7, tour 26.4; `getBoundingClientRect` 10.4–13.8 in the app and tour | Its first style recalc pays for the CSS animation (P-071). Later forced style and layout need a proof that the HUD writes never move the canvas. P-049 is not exact |
 | P-091 | exhaust depth | Per-mesh eligibility and the eight-corner projection | 7.8–14.6 before exhaust `f7d994e` (23 Oct), which changed depth eligibility | Take a new baseline first. Brief: Agent 4 in [agent prompts][f-prompts] |
-| P-092 | Babylon uniforms | `writeBuffer`, `_buffersEqual`, `_updateFloatArrayForEffect` | 4×: `writeBuffer` 11.5–14.7 in every target; app phone `_buffersEqual` 8.3, `_updateFloatArrayForEffect` 8.9 | Not broken down yet |
+| P-092 | Babylon uniforms | `writeBuffer`, `_buffersEqual`, `_updateFloatArrayForEffect` | 27 Oct 4× still C172: `writeBuffer` 22.3; uniform-buffer file 41.2. Earlier targets: `writeBuffer` 11.5–14.7; app phone `_buffersEqual` 8.3 | P-101 skips identical terrain-light writes. It does not cover Babylon's own compare. Do not patch Babylon |
 | P-093 | engine UI occlusion | Cache `worldBoxOf` boxes until the layout changes | 16.7–19 on the phone | Needs a proof that a cache never misses a change; the first read is the frame's first forced layout, so removing it may move the cost rather than save it. [state, by cost][state-cost] |
 | P-094 | fly | Smaller leads: `measureFocus`, `syncManagedPins`, garbage collection, swept collision, F-35B view updates, unprofiled main-thread work | Fly 4×: `measureFocus` 11.7, `syncManagedPins` 9.8. 21 Oct: GC 2.8–3.7 ms/s (8 at 60 m); swept collision 0.40 ms/frame at 60 m; F-35B view updates about 0.55 ms/frame; trace p95 2–4.5 ms above profiled p95 on Google | [worker results][f-worker] |
 | P-095 | 0SFS cockpit | Skip drawing the world where opaque cockpit meshes cover it | Not measured | [0SFS follow-ups](https://github.com/0SFS/docs/blob/main/TODO.md) |
@@ -213,6 +220,14 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [e-binding]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-22/binding.md
 [e-heights]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-22/heights-candidates.md
 [e-notes]: https://github.com/foss-earth/engine/blob/main/docs/performance-notes.md
+[e-scratch]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/view-scratch.md
+[e-light]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/terrain-light.md
+[e-res]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/residency-stats.md
+[e-res-queue]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/residency-stats.md#p-106-empty-missing-set-queue-scan--28-october
+[e-resume]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/resume.md
+[e-sel]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/selector.md
+[e-run]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/runtime.md
+[e-heights27]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-26/heights.md
 [f-frame]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-22/flight-frame.md
 [f-handoff]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-22/session-handoff.md
 [f-prompts]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-22/agent-prompts.md

@@ -25,12 +25,12 @@ through integration and focused end-to-end evidence.
 
 Read first, in order:
 1. ~/gh/foss-earth/.github/AGENTS.md and each affected repository's AGENTS.md.
-2. docs/docs/proposals/implementation/webassembly-native-state.md, especially
+2. docs/docs/proposals/implementation/webassembly-state.md, especially
    execution-settings feedback, measurements and ownership/toolchain sections.
 3. docs/docs/proposals/implementation/webassembly-ab-handoff.md and the program
    plan docs/docs/proposals/webassembly.md, especially isolation, worker
    ownership, shared-memory publication, toolchain and pool budgeting.
-4. native/README.md, native/toolchain.lock.json, actual Rust/wrapper/worker code.
+4. The `*-WASM/` READMEs and `toolchain.lock.json` files, actual Rust/wrapper/worker code.
 5. docs/docs/proposals/implementation/webassembly-ab-results-2026-10-18.md and
    the raw evidence relevant to your selected workload.
 6. docs/docs/ui-layout.md. The UI requirements are settled; do not redesign it.
@@ -42,7 +42,7 @@ Current facts, to verify rather than redo:
 - All built WASM instances currently have private, unshared memories. SIMD
   flags exist; atomics/shared builds and a cooperating Rust thread runtime do
   not. Multiple existing workers provide independent-job parallelism only.
-- Legacy native.tier=threaded currently falls back to TypeScript; it is NOT an
+- Legacy wasm.tier=threaded currently falls back to TypeScript; it is NOT an
   implemented threaded backend. Never report it as one.
 - The actual app's coarse sky placement and TS star batching reduce page task
   time; Rust arithmetic in the same worker has no established whole-app gain.
@@ -50,7 +50,7 @@ Current facts, to verify rather than redo:
   Terrain's many small jobs regressed from dispatch overhead. Ground's ~40%
   fixture query gain is spatial indexing; both query arms use TypeScript and
   WASM construction was slower. Shared memory/threads are not assumed faster.
-- Native target preparation parity is exact; heights retain f64 interpolation
+- WASM target preparation parity is exact; heights retain f64 interpolation
   because f32 changes slopes/plans. Keep reduction and operation order, realm
   Math behavior and exact f32 stores. No fast math or visual-quality reductions.
 - Global default remains original TypeScript. Auto currently chooses TS sky
@@ -59,25 +59,25 @@ Current facts, to verify rather than redo:
 
 Execution-settings contract (coordinate with the concurrently edited files):
 - User-facing tab: Component execution. Sections: Global defaults and Components (settings plus real running
-  state, diagnostics behind a trailing ? in both expanded/collapsed titles). Internal native tab/section IDs remain stable.
-- native.tier retains legacy typescript|typescript-worker|single|auto|threaded;
-  custom selects independent manual fields native.implementation=typescript|wasm,
-  native.placement=original|worker, native.parallelism=auto|serial.
-- Component mode is native.core.<component>=inherit|auto|custom, with legacy
+  state, diagnostics behind a trailing ? in both expanded/collapsed titles). Internal tab/section IDs remain stable.
+- wasm.tier retains legacy typescript|typescript-worker|single|auto|threaded;
+  custom selects independent manual fields wasm.implementation=typescript|wasm,
+  wasm.placement=original|worker, wasm.parallelism=auto|serial.
+- Component mode is wasm.core.<component>=inherit|auto|custom, with legacy
   tiers still accepted. Its .implementation/.placement/.parallelism fields
   each accept inherit as well as the corresponding global values.
 - Today serial limits raster/terrain independent-job pools to one worker each;
   auto permits their existing pools. These are NOT shared-memory thread counts.
-  native.workers bounds the combined preparation-worker factories.
-- nativeCorePlan() and componentExecution* helpers live in
-  engine/src/settings/catalogue/native.ts; actual reports live separately in
-  app/src/app/nativeReport.ts and the public foss-earth/native entry.
+  wasm.workers bounds the combined preparation-worker factories.
+- wasmCorePlan() and componentExecution* helpers live in
+  engine/src/settings/catalogue/wasm.ts; actual reports live separately in
+  app/src/app/wasmReport.ts and the public foss-earth/wasm entry.
 - When adding shared execution, extend the actual plan/report/capability
   contract explicitly. Distinguish requested/actual implementation, independent
   workers, cooperating thread count, shared memory, startup/pending work and
   fallback reasons. Do not relabel current worker pools as threaded WASM.
 - UI appearance is being edited in ui/src/shell/choiceGroup.ts,
-  ui/src/styles/ui.css, app/src/app/nativePanel.ts and app/src/app/nativePanel.css.
+  ui/src/styles/ui.css, app/src/app/wasmPanel.ts and app/src/app/wasmPanel.css.
   Avoid those files during this parallel assignment. Document the new contract
   and integration point for the follow-on UI agent instead. Shared numeric
   runtime, engine worker protocols, app worker factories/budgeting and scoped
@@ -131,7 +131,7 @@ Evidence and delivery:
   Do not edit any served code during a run. Dispose workers and normally close
   browsers in finally, including failures.
 - Record exact launch URLs/harness commands, fallbacks and limitations. Keep
-  native README, native state and the plan Status table current. Clearly mark
+  `*-WASM/` READMEs, WebAssembly state and the plan Status table current. Clearly mark
   what now runs threaded, what remains private/single, and any unqualified gains.
 - Write a concise contract/results handoff for the UI follow-on agent and link
   it from the state document. Do not mark the full program complete after one

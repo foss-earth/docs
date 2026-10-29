@@ -4,7 +4,7 @@ Prepared 18 October 2026, after the final app A/B and ground invalidation fix.
 Start in `/Users/felg/gh/foss-earth`, with `/Users/felg/gh/0sfs` and
 `/Users/felg/gh/UMN-VR` as additional directories, then paste the prompt.
 The [original assignment](webassembly-ab-handoff.md) retains its scope,
-constraints and completion criteria. The [native state](webassembly-native-state.md)
+constraints and completion criteria. The [WebAssembly state](webassembly-state.md)
 records implementation detail; the [comparison guide](webassembly-ab-results-2026-10-18.md)
 contains exact launch URLs, commands, scenarios and evidence. All work remains
 local and uncommitted.
@@ -20,7 +20,7 @@ inline icon at the end of its help text.
 UI conversation checkpoint (18 October): this UI slice is complete and safe to
 close. The shared-memory agent is still active; let it finish independently.
 Use [the post-runtime UI handoff](webassembly-ui-handoff.md) after its final
-results, rather than redoing the cleanup. The [state checkpoint](webassembly-native-state.md#ui-checkpoint-safe-to-close-this-conversation-18-october-2026)
+results, rather than redoing the cleanup. The [state checkpoint](webassembly-state.md#ui-checkpoint-safe-to-close-this-conversation-18-october-2026)
 records current evidence, retained decisions and the remaining integration work.
 Baseline statements below predate that agent's in-progress runtime artifacts.
 
@@ -32,11 +32,11 @@ measurement; do not repeat completed work or stop at isolated kernels.
 
 Read first, in this order:
 - ~/gh/foss-earth/.github/AGENTS.md and each affected repository's AGENTS.md.
-- ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-native-state.md,
+- ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-state.md,
   especially current integration, measured results and remaining work.
 - ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-ab-handoff.md:
   the original scope, constraints and completion criteria still apply.
-- ~/gh/foss-earth/native/README.md and the plan's current Status table in
+- the `*-WASM/` READMEs and the plan's current Status table in
   ~/gh/foss-earth/docs/docs/proposals/webassembly.md.
 - ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-ab-results-2026-10-18.md:
   use its exact Earth/tour/fly URLs, component overrides and harness commands.
@@ -45,7 +45,7 @@ Read first, in this order:
   ground-index-final/integrated-summary.{json,md}. Inspect relevant raw arms.
 
 Implemented and checked (verify, do not redo):
-- Six app cores follow native.tier and native.core.<core> overrides in Earth,
+- Six app cores follow wasm.tier and wasm.core.<core> overrides in Earth,
   the UMN tour and 0SFS fly: raster, sky, terrain, imagery, google and ground.
   Legacy URL choices: typescript | typescript-worker | single | auto | threaded;
   custom selects the separate manual settings. The tab is Component execution.
@@ -68,7 +68,7 @@ Implemented and checked (verify, do not redo):
   page misses are immediate and memoized; worker replies are compared with
   saved page answers before cache admission. Original height buffers are never
   cloned/detached; sparse snapshots are released after jobs. Validation:
-  176 actual native dense/sparse cases / 147,110 coordinates and 71 engine
+  176 actual WASM dense/sparse cases / 147,110 coordinates and 71 engine
   tests, plus typecheck/build/lint. Do not restore whole-grid uploads.
 - Sky tables, illumination and dome evaluation use one selectable TS/WASM
   worker. Star atmosphere and final colors use TypeScript in that same worker
@@ -90,14 +90,14 @@ Implemented and checked (verify, do not redo):
   Mutation invalidates before queries; stale builds cannot publish. The final
   fix handles same-length Geometry.updateIndices() identity changes that bypass
   Babylon notifications; 10 ground tests and engine typecheck/build/lint pass.
-  Earlier 514 native/snapshot/reference rays also matched. Raster cell walking,
+  Earlier 514 WASM/snapshot/reference rays also matched. Raster cell walking,
   flight ground caches and 120 Hz physics remain unchanged.
 - Projections handle unchanged 8192x4096 RGB f32 sources (384 MiB) through exact
   bounded source windows in actual sphere-image CLI worker preparation.
   378 differential cases / 2,683,584 f32 values and 264 encoded outputs matched;
   tested WASM payload/memory peaks were 60.5/95.6 MB within 128/256 MiB caps.
   Codecs/pyramid remain JS; direct browser photos already sample textures on GPU.
-  prepared.json records native status and resolved component/module hashes.
+  prepared.json records WASM status and resolved component/module hashes.
 - UI refinement is complete for this slice: compact shared segmented choices,
   short labels/digits, natural reading order, ? last, inline source icon in help,
   rounded paragraph groups and explanation on demand. Components folds real
@@ -116,13 +116,13 @@ Implemented and checked (verify, do not redo):
   app/build/component-execution/functional.md has commands and test limitations.
 - Component execution tab and Copy report expose actual scope/backend, parity, fallback,
   timings/copies/cache counters in all three apps. Earth/tour additionally
-  provide window.__fossEarthPanoramaTest.nativeCores() with ?panoramaTest=1;
-  fly does not install that hook. native.workers budgets host factories together.
-  Keep app exports in foss-earth/native because fly mocks runtime wholesale.
+  provide window.__fossEarthPanoramaTest.wasmCores() with ?panoramaTest=1;
+  fly does not install that hook. wasm.workers budgets host factories together.
+  Keep app exports in foss-earth/wasm because fly mocks runtime wholesale.
 
 Measured results to retain:
 - The final matrix has 20 source-stable arms with one common served-source
-  version and 1,260 per-file receipts, including actual native/reference/worker
+  version and 1,260 per-file receipts, including actual WASM/reference/worker
   artifacts and harness inputs. Six further source-stable ground arms follow
   the index-identity fix. Earlier preliminary runs are diagnostic history.
 - Sky mean page task: original 12.043 s -> TS sky worker with page stars
@@ -133,7 +133,7 @@ Measured results to retain:
   architecture gains with TS stars. WASM sky mean was 7.444 s (+1.0% versus
   the same TS worker architecture, within variation): no whole-app Rust gain.
 - Imagery original/TS-worker repeat drift was 5.0-5.5 s, so no whole-app gain
-  is qualified. Native arms admitted parity-same results without drops/fallback;
+  is qualified. WASM arms admitted parity-same results without drops/fallback;
   sparse input was about 31 MB per run, with no retained snapshot bytes after
   jobs. Exact memoized page misses are common to both worker arms. Late TS/WASM
   worker totals were 365/581 ms; the page reference was faster. Keep auto TS.
@@ -175,7 +175,7 @@ Working rules:
   outputs; retain disturbances and report inconclusive when noisy.
 - Scratch/logs/profiles/screenshots stay in the owning repo's ignored build/.
   Existing tools only; offline pinned builds. Dispose workers/Chrome on every exit.
-- First-use parity precedes native admission. Preserve executing-realm Math,
+- First-use parity precedes WASM admission. Preserve executing-realm Math,
   f64 operation order and exact f32 stores; no fast math, reduced samples or
   lower detail. Bound startup/jobs/memory/cancellation/generation lifetime.
 - Consult current state/check logs for historical failures and recheck them
@@ -185,8 +185,8 @@ Working rules:
   not block focused correctness or shared-machine relative A/B.
 
 Final delivery: working exact launch URLs/commands, equal-work scenarios,
-actual native scope, report locations, fallbacks and limits. Keep native state,
-native/README.md, comparison guide and plan Status current. Separate functional
+actual WASM scope, report locations, fallbacks and limits. Keep WebAssembly state,
+the `*-WASM/` READMEs, comparison guide and plan Status current. Separate functional
 completion, architecture gains, Rust gains and unmeasured power/program gates.
 
 Proceed autonomously with reversible implementation and necessary checks.

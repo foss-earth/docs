@@ -6,7 +6,7 @@ known gaps in the current local checkouts. Read it with the
 and [optimization backlog](../../optimization-backlog.md). The separate
 [W0 state](webassembly-w0-state.md) preserves live-comparison prerequisites.
 This document supersedes older
-handoff statements that no native Earth code existed; it does not mark the
+handoff statements that no WASM Earth code existed; it does not mark the
 program's performance gates complete.
 
 ## Current direction
@@ -29,7 +29,7 @@ functional checks needed for its chosen workload: that is a scoped override of
 the earlier source-writing testing pause. It does not authorize an unrelated
 full-suite campaign, W0 battery/Google qualification, or deployments. Follow
 that prompt for the next task's exact scope. A session working that prompt
-on 17 October wired the sky into the apps, added the Native tab and ran the
+on 17 October wired the sky into the apps, added the Component execution tab and ran the
 first in-app A/B. Its results are below, and the
 [resume prompt](webassembly-ab-resume.md) continues from them. Current launch
 URLs, equal-work commands and evidence locations are collected in the
@@ -50,19 +50,19 @@ layout, or a measured percentage of total CPU time.
 The user chose these defaults after trying them on a Mac and an Android phone,
 and judged that they work well enough. A visitor with no saved choice gets:
 
-- **`native.tier` = `single`.** Every core runs its single-threaded WASM in
-  background workers, with worker pools (`native.parallelism` = `auto`). Each
+- **`wasm.tier` = `single`.** Every core runs its single-threaded WASM in
+  background workers, with worker pools (`wasm.parallelism` = `auto`). Each
   core is still admitted only after its first result equals the TypeScript
   reference, and otherwise returns to TypeScript and says why.
-- **`native.sharedSky` = on** (engine `src/settings/catalogue/native.ts`).
-  A sky that runs WASM runs its shared-memory build, with `native.threads`
+- **`wasm.sharedSky` = on** (engine `src/settings/catalogue/wasm.ts`).
+  A sky that runs WASM runs its shared-memory build, with `wasm.threads`
   threads. It changes only a WASM sky, so the TypeScript arms of an A/B are
   unchanged; set it off for a single-threaded WASM arm. Sky → Shared memory
-  and the global Shared memory set it. They ask for `native.core.sky=threaded`
+  and the global Shared memory set it. They ask for `wasm.core.sky=threaded`
   only when the sky would not run WASM.
-- **`native.sharedHeights` = on.** Terrain heights go into shared memory,
+- **`wasm.sharedHeights` = on.** Terrain heights go into shared memory,
   which the terrain mesh workers that `single` starts read.
-- **`native.workers`** now counts the default selection's own workers. It is
+- **`wasm.workers`** now counts the default selection's own workers. It is
   the elevation recommendation and the imagery worker, as before, plus the
   sky, imagery heights, Google, ground, two mesh workers and the shared sky's
   helpers. Before, `single` left the elevation pool nothing on a device with
@@ -95,7 +95,7 @@ left running by this conversation (latest run records normal browser exits and
 an empty surviving-process list).
 
 Retained design and behavior are in [ui-layout](../../ui-layout.md), the shared
-AGENTS.md files, native/README.md and the UI source/tests. Latest evidence is
+AGENTS.md files, the `*-WASM/` READMEs and the UI source/tests. Latest evidence is
 `app/build/component-execution/browser-map-mode/report.json`: desktop/phone,
 compact titles and persistent ?, inline title/control flow, expanded-first
 ordering, actual TS/WASM tints, live 2D/3D applicability, preserved hidden state,
@@ -140,13 +140,13 @@ tier are unchanged. No speed claim: nothing here has been measured in an A/B.
   - The page no longer works out its own target for every worker job, only
     for the one parity check.
   - Worker geometry is adopted without a copy, both in the worker (TypeScript
-    output only; native output may be a view the core reuses) and on the page.
+    output only; WASM output may be a view the core reuses) and on the page.
   - A target prepared before a segment-count change is no longer uploaded to
     the rebuilt mesh. The page path had this race too.
     `tests/terrainMeshWorkerIntegration.test.ts` fails without the guard.
 - **Shared heights (plan step 5.6).**
   - Component execution → Terrain heights → **Shared memory**
-    (`native.sharedHeights`, app `terrainNativeWorkerConfig.ts`) is off until
+    (`wasm.sharedHeights`, app `terrainWasmWorkerConfig.ts`) is off until
     the user has tried it, and applies after a reload like the other
     execution choices. The policy (`app/src/app/browserPolicy.ts`) reads it. It is passed on
     only when terrain targets are prepared in mesh workers: where the page
@@ -165,7 +165,7 @@ tier are unchanged. No speed claim: nothing here has been measured in an A/B.
     storage, crypto, Blob or GPU upload of heights. The only check that
     rejects shared heights is the full-grid path of the height-batch worker,
     and the page never uses it: it sends sparse copies.
-  - `native-terrain` `core.js` and `heightSampler.js` accept shared heights
+  - `terrain-WASM` `core.js` and `heightSampler.js` accept shared heights
     and snapshot them. The rebuilt `terrain.wasm` is byte-identical (sha256
     `24e02faa…aba1`), and only its receipt changed. `npm run check:terrain`
     builds 25 cases from shared heights, and `check:height-batches` samples a
@@ -178,7 +178,7 @@ tier are unchanged. No speed claim: nothing here has been measured in an A/B.
 - **Checked.**
   - Engine: 1201 tests, typecheck and lint.
   - App: 424 tests, typecheck and lint.
-  - Native: 43 tests, `check:terrain` and `check:height-batches`.
+  - WASM: 43 tests, `check:terrain` and `check:height-batches`.
   - Headless Chrome on the user's tour dev server (localhost:5173, not
     isolated), default and `typescript-worker` arms: terrain loaded, page and
     worker heights matched, 0 exceptions, and the only console message was
@@ -191,7 +191,7 @@ tier are unchanged. No speed claim: nothing here has been measured in an A/B.
     exceptions. With the setting off, 0 tiles were shared. That run's first
     load also logged "The tour could not start": Vite bundled new
     dependencies and reloaded the page while it started.
-  - After the setting moved to Component execution (`native.sharedHeights`),
+  - After the setting moved to Component execution (`wasm.sharedHeights`),
     the same server: 113 of 113 tiles shared with it on, 0 with it off and 0
     in the default tier. With the tab opened from the + menu, the switch sat
     under Terrain heights: On with no status in `typescript-worker`, Off with
@@ -205,11 +205,11 @@ tier are unchanged. No speed claim: nothing here has been measured in an A/B.
 
 ## Component execution shared memory, 19 October 2026
 
-Component execution now shows the shared-memory sky (`app/src/app/nativePanel.ts`;
+Component execution now shows the shared-memory sky (`app/src/app/wasmPanel.ts`;
 [what it shows, checks and commands](webassembly-shared-memory-ui-handoff.md#what-the-ui-shows-19-october-2026)):
 
 - **The controls.** Components → Sky → **Shared memory [Off|On] ?** comes after
-  Implementation. The standard **Shared-memory threads** (`native.threads`)
+  Implementation. The standard **Shared-memory threads** (`wasm.threads`)
   shows while it is on. Both are pending until Apply and reload, and Discard
   restores them.
 - **Availability** comes from the page's `crossOriginIsolated`. When the page
@@ -237,7 +237,7 @@ Component execution now shows the shared-memory sky (`app/src/app/nativePanel.ts
 - **Two-finger twist over Google tiles.** On an Android phone, turning two
   fingers in place over Google tiles did not orbit the ground anchor in the
   tiers that prepare Google tiles in a worker
-  (`nativePlans.google.placement === "worker"`). A worker-prepared tile (renderer
+  (`wasmPlans.google.placement === "worker"`). A worker-prepared tile (renderer
   `src/babylon/googleTilePreparation.ts`) put its glTF pointers in the node's
   `metadata.gltf`; Babylon's loader keeps them in `_internalMetadata`. Picking
   (engine `src/sprites/picking.ts`) takes any metadata key outside
@@ -274,10 +274,10 @@ isolation is built and checked in Chrome, Firefox and Safari, but not
 deployed. Component execution shows it
 ([below](#component-execution-shared-memory-19-october-2026)).
 
-- **Build.** `native/crates/earth-sky-shared` shares
+- **Build.** `sky/sky-WASM/crates/earth-sky-shared` shares
   `crates/earth-sky-kernel` with the single build.
   `npm run build:sky-shared` produces
-  `packages/native-sky/shared/sky-shared.wasm`:
+  `sky/sky-WASM/shared/sky-shared.wasm`:
   - atomics and bulk memory;
   - imported shared memory, a fixed 4 MiB (64 pages), never grown;
   - 8 stack slots of 64 KiB.
@@ -298,9 +298,9 @@ deployed. Component execution shows it
   `Math`. Each mode (solo, parallel) is compared bit for bit with the TS
   reference on its first batch. The tables, radiance and irradiance keep their
   existing comparisons.
-- **App.** `native.core.sky=threaded` (or global `threaded`) with the new
-  `native.threads` (1–8, default min(4, hardware threads − 1)) asks for it.
-  - Helpers are workers taken from `native.workers`, and are reserved only on an
+- **App.** `wasm.core.sky=threaded` (or global `threaded`) with the new
+  `wasm.threads` (1–8, default min(4, hardware threads − 1)) asks for it.
+  - Helpers are workers taken from `wasm.workers`, and are reserved only on an
     isolated page.
   - The ladder is threaded → single → TypeScript worker. Each rung keeps its
     reason, with no reload loop.
@@ -322,16 +322,16 @@ deployed. Component execution shows it
   halves; the page and frames do not improve; total CPU rises (see
   [Measured results](#measured-results)).
 - **Checks.**
-  - `native`: `npm run check:sky-shared` and `npm test`, including
+  - the Rust workspace: `npm run check:sky-shared` and `npm test`, including
     `tests/sky-shared.test.mjs`.
-  - `app`: `nativePanel`, `skySharedHelpers`, `nativeReport`, `skyWorkerConfig`,
+  - `app`: `wasmPanel`, `skySharedHelpers`, `wasmReport`, `skyWorkerConfig`,
     `browserPolicy` and `vite/crossOriginIsolation` tests.
-  - `engine`: `tests/nativeTier.test.ts`.
+  - `engine`: `tests/wasmTier.test.ts`.
 
 ## Execution settings feedback, 18 October 2026
 
 The user selected **Component execution** as the tab name and authorized the
-redesign. The previous combined Native execution selector and six-column status
+redesign. The previous combined WASM execution selector and six-column status
 table have been replaced by **Global defaults** and **Components**. Each
 component combines settings and real running status. Collapsed titles show
 only the name and trailing ?; expanded titles show Name: TS/WASM (N workers/main)
@@ -388,16 +388,16 @@ storage. **Discard pending changes** restores the startup choices. Timings,
 parity and work scope are expandable details. The UI follows the
 [settings design requirements](../../ui-layout.md#settings-describe-one-decision-and-its-current-effect).
 
-Stable tab/section IDs and legacy `native.tier` / `native.core.<component>` URLs
+Stable tab/section IDs and legacy `wasm.tier` / `wasm.core.<component>` URLs
 are retained. `custom` selects separate manual settings:
-`native.implementation=typescript|wasm`, `native.placement=original|worker`, and
-`native.parallelism=auto|serial`; component fields append the same names to
-`native.core.<component>` and add `inherit`. `serial` actually limits raster
+`wasm.implementation=typescript|wasm`, `wasm.placement=original|worker`, and
+`wasm.parallelism=auto|serial`; component fields append the same names to
+`wasm.core.<component>` and add `inherit`. `serial` actually limits raster
 and terrain pools to one worker each; Auto permits their existing pool sizes
-within `native.workers`. This is per-component independent-job scheduling, not
+within `wasm.workers`. This is per-component independent-job scheduling, not
 one thread for the entire app. The default and measured backend choices remain
 unchanged. Focused settings, app composition, inheritance and reload tests live
-in engine/tests/nativeTier.test.ts and app/src/app/{nativePanel,browserPolicy}.test.ts.
+in engine/tests/wasmTier.test.ts and app/src/app/{wasmPanel,browserPolicy}.test.ts.
 
 The following describes the **last verified app/UI baseline before the active
 shared-memory assignment**, not the current existence of work-in-progress build
@@ -428,7 +428,7 @@ now uses the compact parameter track; this also fixes custom Renderer choices
 at their UI owner. The standards and remaining audit TODOs are in
 [UI layout](../../ui-layout.md#compact-segmented-choices), and summaries are in
 all three organizations' shared AGENTS.md files. No rendering/quality defaults
-changed. `nativePanel.ts` imports its own `nativePanel.css`; the Earth app did
+changed. `wasmPanel.ts` imports its own `wasmPanel.css`; the Earth app did
 not load these styles while they lived only in the optional host shell sheet.
 This makes the compact layout a property of the shared panel in all hosts.
 The standard choice factory now encloses logical controls and preserves one
@@ -483,22 +483,22 @@ Six app cores follow the startup selection in the Earth app, the UMN tour
 | `google`: supported GLB/JPEG preparation | Original Babylon loader | One TS worker plus lazy Babylon resource adapter | Same adapter/worker, WASM geometry after first-use parity; browser JPEG decode |
 | `ground`: immutable spatial indices | Original Babylon picking | TS BVH construction in one worker; synchronous TS traversal | WASM BVH construction in same worker; exported indices queried synchronously in TS |
 
-- **Selection.** `native.tier` is one of `typescript`, `typescript-worker`,
-  `single`, `auto`, `custom` or legacy `threaded`. The component overrides `native.core.raster`,
-  `native.core.sky`, `native.core.terrain`, `native.core.imagery`,
-  `native.core.google` and `native.core.ground` take `inherit` or a tier. All need a reload; a URL
+- **Selection.** `wasm.tier` is one of `typescript`, `typescript-worker`,
+  `single`, `auto`, `custom` or legacy `threaded`. The component overrides `wasm.core.raster`,
+  `wasm.core.sky`, `wasm.core.terrain`, `wasm.core.imagery`,
+  `wasm.core.google` and `wasm.core.ground` take `inherit` or a tier. All need a reload; a URL
   sets them for one load:
-  - `http://127.0.0.1:5173/app/?set.native.tier=typescript-worker` vs
-    `?set.native.tier=single`: the equal-work A/B;
-  - `?set.native.tier=typescript`: the original placement;
-  - `?set.native.core.sky=single`, `?set.native.core.raster=single`, or
-    `?set.native.core.terrain=single`: one core alone.
+  - `http://127.0.0.1:5173/app/?set.wasm.tier=typescript-worker` vs
+    `?set.wasm.tier=single`: the equal-work A/B;
+  - `?set.wasm.tier=typescript`: the original placement;
+  - `?set.wasm.core.sky=single`, `?set.wasm.core.raster=single`, or
+    `?set.wasm.core.terrain=single`: one core alone.
 
-  `nativeCorePlan` in `engine/src/settings/catalogue/native.ts` resolves each
-  core to `{placement: original|worker, kernel}`. `NATIVE_CORES` holds each
+  `wasmCorePlan` in `engine/src/settings/catalogue/wasm.ts` resolves each
+  core to `{placement: original|worker, kernel}`. `WASM_CORES` holds each
   core's scope and `auto` choice: sky `typescript-worker`; all others
   `typescript`. Raster auto now follows the recorded slower-WASM evidence.
-  `threaded` runs the sky's shared-memory build with `native.threads`
+  `threaded` runs the sky's shared-memory build with `wasm.threads`
   cooperating threads on an isolated page, and falls back to single WASM with a
   reason elsewhere. Other cores have no shared build and report
   `threadedFallback: "no-shared-build"`.
@@ -531,15 +531,15 @@ Six app cores follow the startup selection in the Earth app, the UMN tour
     FOV/exposure or a pending/stale reply uses immediate page reference colors.
 - **Terrain mesh workers.**
   - Terrain mesh target preparation at the `applyGrid` seam of `engine/src/babylon/createRasterTilesRuntime.ts`
-    is dispatched to a pool of terrain mesh workers when `native.tier` or `native.core.terrain` requests a worker placement.
+    is dispatched to a pool of terrain mesh workers when `wasm.tier` or `wasm.core.terrain` requests a worker placement.
   - The protocol in `engine/src/browser/terrainMeshWorkerProtocol.ts` and kernel in `terrainMeshWorkerKernel.ts`
-    run TypeScript or single-threaded Rust/WASM (`@foss-earth/native-terrain`).
-  - First-use bit-parity validation: the worker compares its first native calculation against the TypeScript reference
+    run TypeScript or single-threaded Rust/WASM (`@foss-earth/engine/terrain-WASM`).
+  - First-use bit-parity validation: the worker compares its first WASM calculation against the TypeScript reference
     (`targetPositions` and bounds) before admitting WASM. A mismatch or load failure reverts the worker to TypeScript.
   - Generation tracking: `targetSeq` checks drop stale target preparations when tile detail changes before a worker replies.
   - On worker failure, `applyGrid` automatically falls back to synchronous on-page `prepareTerrainNumericGeometry`.
   - Settle-after-target: terrain settling waits for async worker target preparation to complete and apply, preventing premature settling.
-- **Worker budget.** `native.workers` bounds the combined host worker factories.
+- **Worker budget.** `wasm.workers` bounds the combined host worker factories.
   Dedicated optional cores reserve slots before the elevation pool fills;
   terrain mesh preparation uses at most two. Queue/memory bounds remain per
   service. Budget exhaustion reports a complete reference fallback.
@@ -558,12 +558,12 @@ Six app cores follow the startup selection in the Earth app, the UMN tour
   preserving complete mixed-zoom interpolation in each worker arm: at most
   16 pixels per query, or 1 MiB sparse pixels plus 128 KiB f64 coordinates
   per 8,192-point request. Original height buffers are never cloned/detached.
-  Native packed pixels add at most 1 MiB plus 1,608 bytes of descriptors per
+  WASM packed pixels add at most 1 MiB plus 1,608 bytes of descriptors per
   batch; sparse snapshots are released after the job. Every live reply is
   also bit-compared with the exact saved page answers before cache admission.
   Page numeric state holds weak source references. Pending queries are bounded
   to 16,384, cached points to 131,072 and states to 512. Timeout or
-  worker failure retires the worker to page sampling. The Native report
+  worker failure retires the worker to page sampling. The WASM report
   separates cached results, page misses, copies and retained bytes.
 - **Google adapter.** Supported GLB geometry/JPEGs pass through a bounded
   worker (8 jobs/64 MiB, 15 s timeout), then a lazy renderer entry creates
@@ -582,23 +582,23 @@ Six app cores follow the startup selection in the Earth app, the UMN tour
 - **Inactive cores load nothing.** With `typescript`, no sky or terrain workers are created
   and no WASM is fetched.
 - **Report.**
-  - `app/src/app/nativeReport.ts` builds one row per core: requested (by which
+  - `app/src/app/wasmReport.ts` builds one row per core: requested (by which
     setting), resolved, placement, kernel, actual (from the core's own status,
     never the request), state, parity, fallback reason, plus jobs, round-trip
     and work time and copy bytes.
-  - The runtime registers its report in a WeakMap: `earthNativeCores(runtime)`.
-  - `nativePanel.ts` renders the Native tab table, refreshed each second while
-    shown. The Copy report gets a `Native cores: …` line, and
-    `window.__fossEarthPanoramaTest.nativeCores()` returns the rows.
-  - Hosts with their own overlay import `foss-earth/native`. Fly does this in
+  - The runtime registers its report in a WeakMap: `earthWasmCores(runtime)`.
+  - `wasmPanel.ts` renders the Component execution tab table, refreshed each second while
+    shown. The Copy report gets a WASM cores line, and
+    `window.__fossEarthPanoramaTest.wasmCores()` returns the rows.
+  - Hosts with their own overlay import `foss-earth/wasm`. Fly does this in
     `src/flight/createFlightSimApp.ts` and `hud/FlightControlPanel.tsx`
-    (`nativeSections`). It is a separate entry because fly's tests mock
+    (`wasmSections`). It is a separate entry because fly's tests mock
     `foss-earth/runtime` wholesale.
 - **Parity outside the browser.**
-  - `npm run check:sky` in native runs the actual `sky.wasm` against the sky package's TypeScript,
+  - `npm run check:sky` in the Rust workspace runs the actual `sky.wasm` against the sky package's TypeScript,
     through the evaluation the worker runs. It was bit-identical over 125 requests, 5 table cases and
-    1,070,250 dome values; see `native/build/sky-parity.json`.
-  - `npm run check:terrain` in native runs `terrain.wasm` against `@foss-earth/engine`'s
+    1,070,250 dome values; see `build/sky-parity.json` in the former Rust workspace.
+  - `npm run check:terrain` in the Rust workspace runs `terrain.wasm` against `@foss-earth/engine`'s
     `prepareTerrainNumericGeometry` reference across 97 test cases. All 172,908 vertex coordinates and
     172,908 target position values were bit-identical.
 - **Harness.** `app/build/wasm-profile/runtime/profile.mjs` is ignored, local,
@@ -609,11 +609,11 @@ Six app cores follow the startup selection in the Earth app, the UMN tour
   - `run.json` pins served-source fingerprints and 1,260 per-file receipts
     at start/end (`sourceUnchanged`), including actual binaries/wrappers,
     reference/worker source, config/public inputs and harness dependencies;
-  - each scenario records the native report.
+  - each scenario records the WASM report.
 
-  `lib/native-ab.mjs <dir>` summarizes paired arms; `lib/inclusive.mjs`
+  The A/B summarizer in `lib/` summarizes paired arms; `lib/inclusive.mjs`
   prints inclusive time per function. The ABBA script is
-  `runs/2026-10-17-native-ab/run-ab.sh`.
+  the 17 October paired run's `run-ab.sh`.
 
 ## Measured results
 
@@ -651,7 +651,7 @@ valid A/A controls.
   `2026-10-17-sky-placement/p7-page` and `p8-tsw` measured page task
   7455.14→5137.58 ms (−2317.56 ms / −31.1%) and frame callback p95
   6.0→2.9 ms. Earlier p1–p6 include changing-source arms or a CDP error;
-  their old A/A spread/confidence claim is not qualified. Native-ab's
+  their old A/A spread/confidence claim is not qualified. The paired run's
   `sky-1-tsw` and `sky-6-page` also changed source. The unchanged worker
   observations show no Rust advantage over TS in the same worker. Sky auto
   retains `typescript-worker`; the global default remains `typescript`.
@@ -670,7 +670,7 @@ valid A/A controls.
   whole-page WASM savings are unqualified. Late TS/WASM worker totals were
   365/581 ms; the page reference remained faster. Sparse WASM inputs were
   ~31 MB per full run, parity same, no drops/fallback and 11.9–13.4 million
-  admitted native cache hits; no full-grid copies or retained snapshots.
+  admitted WASM cache hits; no full-grid copies or retained snapshots.
   Imagery auto remains TS. Preliminary full-grid and larger-star-payload
   runs remain diagnostic evidence, not qualified gains.
 - **Ground after index invalidation fix.** A further six-arm matrix in
@@ -693,18 +693,18 @@ valid A/A controls.
 
   | Arm | Settings | Page task ms | Page script ms | FPS | Frame cb p95 | Terrain actual | Terrain mean ms (targets) |
   | --- | --- | ---: | ---: | ---: | ---: | --- | ---: |
-  | `terrain-1-ts` | `set.native.tier=typescript` | 13792.88 | 11137.23 | 59.80 | 16.9 | typescript (page) | – (–) |
-  | `terrain-2-tsw` | `set.native.tier=typescript set.native.core.terrain=typescript-worker` | 15639.61 | 11083.66 | 59.14 | 16.6 | typescript (worker) | 25.53 (1304) |
-  | `terrain-3-wasm` | `set.native.tier=typescript set.native.core.terrain=single` | 15463.49 | 10940.31 | 59.14 | 16.3 | wasm-single (worker) | 33.51 (1237) |
-  | `terrain-4-wasm` | `set.native.tier=typescript set.native.core.terrain=single` | 15698.55 | 11051.10 | 59.11 | 16.0 | wasm-single (worker) | 30.44 (1269) |
-  | `terrain-5-tsw` | `set.native.tier=typescript set.native.core.terrain=typescript-worker` | 15733.82 | 11166.05 | 59.03 | 16.8 | typescript (worker) | 28.31 (1151) |
-  | `terrain-6-ts` | `set.native.tier=typescript` | 13770.79 | 11228.80 | 59.77 | 16.9 | typescript (page) | – (–) |
+  | `terrain-1-ts` | `set.wasm.tier=typescript` | 13792.88 | 11137.23 | 59.80 | 16.9 | typescript (page) | – (–) |
+  | `terrain-2-tsw` | `set.wasm.tier=typescript set.wasm.core.terrain=typescript-worker` | 15639.61 | 11083.66 | 59.14 | 16.6 | typescript (worker) | 25.53 (1304) |
+  | `terrain-3-wasm` | `set.wasm.tier=typescript set.wasm.core.terrain=single` | 15463.49 | 10940.31 | 59.14 | 16.3 | wasm-single (worker) | 33.51 (1237) |
+  | `terrain-4-wasm` | `set.wasm.tier=typescript set.wasm.core.terrain=single` | 15698.55 | 11051.10 | 59.11 | 16.0 | wasm-single (worker) | 30.44 (1269) |
+  | `terrain-5-tsw` | `set.wasm.tier=typescript set.wasm.core.terrain=typescript-worker` | 15733.82 | 11166.05 | 59.03 | 16.8 | typescript (worker) | 28.31 (1151) |
+  | `terrain-6-ts` | `set.wasm.tier=typescript` | 13770.79 | 11228.80 | 59.77 | 16.9 | typescript (page) | – (–) |
 
   Key findings:
   1. **A/A stability:** The repeated on-page control (`terrain-1-ts` vs `terrain-6-ts`) showed only 22 ms difference in total page task duration (13792.88 vs 13770.79 ms, <0.2% variance). All arms verified `sourceUnchanged: true`.
   2. **WASM vs TypeScript in worker:** WASM single achieved bit-identical parity (`parity: "same"`) across all 1,237–1,269 targets with 0 losses, but work time was slightly higher (30.44–33.51 ms) than TypeScript in the worker (25.53–28.31 ms) due to buffer allocation/marshaling overhead for float vertex coordinates.
   3. **Page vs worker placement:** Offloading target preparation to workers increased total page task time from ~13.78 s to ~15.64 s (+1.8 s). For 1,200+ mesh chunks, the message-passing serialization (`postMessage`, `Transferable` buffers) and event loop scheduling overhead outweigh the arithmetic savings of computing the grid off-thread.
-  4. **Auto decision:** `NATIVE_CORES.terrain.auto` remains `"typescript"` (on-page reference), fully justified by the measured data.
+  4. **Auto decision:** `WASM_CORES.terrain.auto` remains `"typescript"` (on-page reference), fully justified by the measured data.
 - **Raster decode.** WASM in decode workers was 11.8–14.1 ms vs 8.9–10.7 ms for TypeScript. Page task time was unaffected since decoding is already worker-side.
 - **A/B tooling validation (`research/scripts/benchmarks/earth-compare/shared.mjs`).**
   Wrapped comparison execution in `try ... finally` to ensure worker disposal via `a.dispose?.() ?? a.measure?.dispose?.()`. Added `moduleReceipts` to `report.json` pinning module preparation digests and metadata. Validated with 12 paired trials in research (`candidate-faster`, -37.6% amortized batch decode throughput, clean exit 0).
@@ -748,15 +748,16 @@ valid A/A controls.
   included); tour typecheck and 75 tests / one skipped; sky typecheck/build/
   consumer/lint and 19 focused star tests; engine full typecheck/build and
   focused integration/parity tests. The sparse refinement passes 71 engine
-  tests, full engine typecheck/build/lint and 176 actual native dense/sparse
+  tests, full engine typecheck/build/lint and 176 actual WASM dense/sparse
   cases / 147,110 coordinates. RGB-only star replies pass 16 further focused
   tests, typecheck/build/lint and full-catalogue GPU byte parity. App production
   build, 19 focused app tests and tour typecheck pass after both revisions. Fly remains 14 failed / 2151 passed / one expected
-  failure across 203 files; preserve these independently of native results.
+  failure across 203 files; preserve these independently of WASM results.
 
 ## Toolchain, ABI and ownership decisions
 
-The local workspace is `foss-earth/native`, with six crates in `Cargo.toml`.
+The local workspace was one shared Rust workspace, with six crates in `Cargo.toml`;
+each core has since moved to its owner's `*-WASM/` folder.
 Rust and Cargo are **1.99.0**, through the installed `stable` alias, and
 Binaryen is **132**. The `wasm32-unknown-unknown` standard-library target was
 installed after the user instructed resumption. The target is present; older
@@ -764,14 +765,14 @@ notes saying it is missing are historical. There was no nightly/toolchain
 upgrade, wasm-bindgen installation, extra external Cargo dependency, sudo,
 remote repository creation, commit, push or deployment in this pass.
 
-`native/toolchain.lock.json`, `rust-toolchain.toml`, `Cargo.lock`, and the build
+Each `*-WASM/` folder's `toolchain.lock.json`, `rust-toolchain.toml`, `Cargo.lock`, and build
 scripts pin the installed tools. Builds run offline and serially with release
 LTO, `simd128`, Binaryen `-O3`, and at most **256 MiB linear memory**. SIMD is
 enabled, not a claim that each kernel was hand-vectorized. The sky also has a
 shared-memory build: atomics, imported fixed 4 MiB shared memory, no TLS or
 rayon, with the threads coordinated by its own JS runtime. Every other core
 remains single-worker with unshared memory. The app budgets its worker
-factories together via `native.workers`, including a threaded sky's helpers,
+factories together via `wasm.workers`, including a threaded sky's helpers,
 which it reserves only on an isolated page. WASM32 describes pointer
 width, not a ban on f64/i64; moving to memory64 is not an assumed speedup.
 
@@ -805,30 +806,30 @@ they must not gain an implicit dependency on app code or each other.
 
 ## Six implemented cores and exact remaining integration
 
-Source roots below are relative to `foss-earth/native`; corresponding JavaScript
+Source roots below were in the shared Rust workspace and are now each owner's `*-WASM/`; corresponding JavaScript
 references and host ports are in sibling checkouts.
 
 | Core | Implemented Rust numerical work | Current wiring and meaningful remainder |
 | --- | --- | --- |
-| `earth-raster`, `packages/native-raster` | Opaque Terrarium RGBA bytes to original Float32 height formula, dimensions/alpha validation. | App `terrainDecode.worker.ts` uses the injected core. Browser image decoding/canvas readback remains native browser work. This is a decoder slice, not all raster processing. |
-| `earth-terrain`, `packages/native-terrain` | Grid/ordered-neighbor interpolation, f64 geometry, f32 targets, bounds and retained batched f64 grid queries. | `native.core.terrain` targets at applyGrid; `native.core.imagery` batched adopted-grid queries/cache. Initial meshes and callback heights stay TS. Existing geometry parity plus 176 dense/sparse batch cases / 147,110 coordinates pass. |
-| `earth-ground`, `packages/native-ground` | Immutable BVH build, finite f64 ray batches and exported compact indices. | `native.core.ground` TS/WASM worker build connected to scene queries. Synchronous TS traversal preserves transforms/ties/normals, first-query admission and immediate geometry invalidation. Higher-precision CPU arrays, unsupported/morph/custom meshes retain Babylon. Raster samples keep cell walker; flight cache unchanged. 514 native/reference rays pass. |
-| `earth-google`, `packages/native-google` | Strict GLB2 envelope and owned positions/UV/u8/u16 index decode. | `native.core.google` TS/WASM worker connected through lazy renderer/google-preparation adapter. Matching hierarchy/material/texture/container lifetime; EXIF and WebGL ICC retain original loader explicitly. Chrome synthetic pixels pass 48 cases across WebGPU/WebGL2 (36 actual WASM, 12 original ICC fallback). |
-| `earth-sky`, `packages/native-sky` | Atmosphere marching, radiance fans, irradiance and three table builders. | Selectable sky worker, exact parity and earlier placement A/B. Full star color batches are TS in that same worker; synchronous current-frame billboards and stamped page fallback. Full 9,096-star GPU buffers match the original. |
-| `earth-projections`, `packages/native-projections` | Full linear-RGB reprojection, tiled/gutter regions, coordinate kernels and bounded source windows. | Actual sphere-image CLI worker consumes full 8192 sources through bounded exact windows. Codecs/pyramid/prefilter policy remain JS. 378 differential cases and 264 encoded outputs match. No Rust speedup measured. |
+| `earth-raster`, `engine/raster-WASM` | Opaque Terrarium RGBA bytes to original Float32 height formula, dimensions/alpha validation. | App `terrainDecode.worker.ts` uses the injected core. Browser image decoding/canvas readback remains native browser work. This is a decoder slice, not all raster processing. |
+| `earth-terrain`, `engine/terrain-WASM` | Grid/ordered-neighbor interpolation, f64 geometry, f32 targets, bounds and retained batched f64 grid queries. | `wasm.core.terrain` targets at applyGrid; `wasm.core.imagery` batched adopted-grid queries/cache. Initial meshes and callback heights stay TS. Existing geometry parity plus 176 dense/sparse batch cases / 147,110 coordinates pass. |
+| `earth-ground`, `engine/ground-WASM` | Immutable BVH build, finite f64 ray batches and exported compact indices. | `wasm.core.ground` TS/WASM worker build connected to scene queries. Synchronous TS traversal preserves transforms/ties/normals, first-query admission and immediate geometry invalidation. Higher-precision CPU arrays, unsupported/morph/custom meshes retain Babylon. Raster samples keep cell walker; flight cache unchanged. 514 WASM/reference rays pass. |
+| `earth-google`, `renderer/google-WASM` | Strict GLB2 envelope and owned positions/UV/u8/u16 index decode. | `wasm.core.google` TS/WASM worker connected through lazy renderer/google-preparation adapter. Matching hierarchy/material/texture/container lifetime; EXIF and WebGL ICC retain original loader explicitly. Chrome synthetic pixels pass 48 cases across WebGPU/WebGL2 (36 actual WASM, 12 original ICC fallback). |
+| `earth-sky`, `sky/sky-WASM` | Atmosphere marching, radiance fans, irradiance and three table builders. | Selectable sky worker, exact parity and earlier placement A/B. Full star color batches are TS in that same worker; synchronous current-frame billboards and stamped page fallback. Full 9,096-star GPU buffers match the original. |
+| `earth-projections`, `sphere-image/projections-WASM` | Full linear-RGB reprojection, tiled/gutter regions, coordinate kernels and bounded source windows. | Actual sphere-image CLI worker consumes full 8192 sources through bounded exact windows. Codecs/pyramid/prefilter policy remain JS. 378 differential cases and 264 encoded outputs match. No Rust speedup measured. |
 
 Useful source entry points:
 
-- `engine/src/browser/terrainNativeDecoder.ts`, `terrainDecodeWorkerKernel.ts`,
-  `terrainDecodeWorkers.ts`; `engine/src/settings/catalogue/native.ts`;
-  `app/src/app/{terrainDecode.worker,terrainNativeWorkerConfig,browserPolicy}.ts`.
+- `engine/src/browser/terrainWasmDecoder.ts`, `terrainDecodeWorkerKernel.ts`,
+  `terrainDecodeWorkers.ts`; `engine/src/settings/catalogue/wasm.ts`;
+  `app/src/app/{terrainDecode.worker,terrainWasmWorkerConfig,browserPolicy}.ts`.
 - `engine/src/terrain/terrainNumericGeometry.ts`;
   `engine/src/browser/terrainMeshWorker{Kernel,Protocol}.ts`,
   `terrainMeshWorkers.ts`; `engine/src/babylon/terrainMesh.ts`.
-- `native/packages/native-ground/{index,worker}.{js,d.ts}` and its README, plus
+- `engine/ground-WASM/{index,worker}.{js,d.ts}` and its README, plus
   `engine/src/babylon/{surfaceQuery,rasterSurfaceSampler}.ts` for the still-active
   scene behavior.
-- `native/packages/native-google/{index,worker}.js` and their declarations;
+- `renderer/google-WASM/{index,worker}.js` and their declarations;
   the loader contract in the program's Google gate must govern publication.
 - `sky/src/{atmosphere,atmosphereNumericKernel,skyState,stars}.ts`;
   `sky/src/babylon/{createSkyRuntime,createStarField}.ts`.
@@ -836,26 +837,26 @@ Useful source entry points:
   `sphere-cubemap/src/preparation.ts`,
   `sphere-tiled-cubemap/src/preparation.ts`, and `images/src/resample.ts`.
 
-`native.tier` offers `typescript`, `typescript-worker`, `single`, `auto` and
+`wasm.tier` offers `typescript`, `typescript-worker`, `single`, `auto` and
 `threaded` as a reload-only control, with per-core overrides; see
 [In-app A/B](#in-app-ab-what-exists-now). Its default is **single** since 19
-October 2026, with `native.sharedSky` on. For
+October 2026, with `wasm.sharedSky` on. For
 the Terrarium worker: forced single performs lazy startup and
-exact first-input native/reference comparison per worker; the first result is
+exact first-input WASM/reference comparison per worker; the first result is
 the reference's. Compile/start/decode failure or parity mismatch selects a
 permanent TS fallback for that worker, with requested/actual tier, reason and
 counters in diagnostics. Threaded reports an explicit unsupported TS fallback.
 The separate existing page-versus-worker first-tile readback comparison stays.
 
 The app owns selection, first-use admission and complete reference fallback for
-all six rows above. Raw native wrappers still report unvalidated themselves;
+all six rows above. Raw WASM wrappers still report unvalidated themselves;
 the host owns scoped validation evidence. Projections use an independent CLI
 selection so codecs/pyramid and one worker stay identical between arms. Sky's third factory argument
 accepts `{ execution: "worker", createKernel, createTables?, onStatus? }`.
-Each query operation checks its first output, and a first full native table set
+Each query operation checks its first output, and a first full WASM table set
 is compared with JS before admission. Reuse the same ports object per worker
 for later builds to skip JS precompute after that comparison; reference tables
-are returned for the first checked atmosphere. Dispose native atmospheres/BVHs
+are returned for the first checked atmosphere. Dispose WASM atmospheres/BVHs
 and old worker generations explicitly.
 
 ## Artifact snapshot and evidence
@@ -863,40 +864,40 @@ and old worker generations explicitly.
 These are real offline-compiled/optimized development artifacts, private version
 `0.1.0`, pinned by current per-package `build-metadata.json` on 18 October 2026.
 The older ignored `conversion-artifacts.json` aggregate describes an earlier build.
-Paths in this table are under `native/`. A rebuild must refresh the source and
+Paths in this table are the binaries' current homes; the hashes are of this snapshot's builds. A rebuild must refresh the source and
 output receipts together; hashes below describe this snapshot, not future code.
 
 | Binary | Bytes | SHA256 |
 | --- | ---: | --- |
-| `packages/native-raster/single/raster.wasm` | 16,459 | `533e6afcabf60238c41cf9ea6ebeeb7e84c571b810e1428dd69ee89240b3f8c3` |
-| `packages/native-terrain/single/terrain.wasm` | 33,297 | `24e02faab3dac2561ecc38a15cbaf88556ba9c9c79f743cea1dcd5ede853aba1` |
-| `packages/native-ground/single/ground.wasm` | 30,911 | `1fb1c9d0145b4b02b4b07d48f001ebb7018df181457062bd9cc0e15305a00e0a` |
-| `packages/native-google/single/google.wasm` | 18,316 | `f5ef0ee850a26a7bc729d9fb4aad2d7673d7d0bedcae22e1d8b765731b7e9955` |
-| `packages/native-sky/single/sky.wasm` | 34,810 | `e4b03a0b594130b3bf60f60149befe934c04fe5a7539cdf9b039bf5ec33cd687` |
-| `packages/native-projections/single/projections.wasm` | 33,660 | `30bf17b27df9002d00c38848cd437925e007995b883541ccbe538736bdca6aa2` |
+| `engine/raster-WASM/single/raster.wasm` | 16,459 | `533e6afcabf60238c41cf9ea6ebeeb7e84c571b810e1428dd69ee89240b3f8c3` |
+| `engine/terrain-WASM/single/terrain.wasm` | 33,297 | `24e02faab3dac2561ecc38a15cbaf88556ba9c9c79f743cea1dcd5ede853aba1` |
+| `engine/ground-WASM/single/ground.wasm` | 30,911 | `1fb1c9d0145b4b02b4b07d48f001ebb7018df181457062bd9cc0e15305a00e0a` |
+| `renderer/google-WASM/single/google.wasm` | 18,316 | `f5ef0ee850a26a7bc729d9fb4aad2d7673d7d0bedcae22e1d8b765731b7e9955` |
+| `sky/sky-WASM/single/sky.wasm` | 34,810 | `e4b03a0b594130b3bf60f60149befe934c04fe5a7539cdf9b039bf5ec33cd687` |
+| `sphere-image/projections-WASM/single/projections.wasm` | 33,660 | `30bf17b27df9002d00c38848cd437925e007995b883541ccbe538736bdca6aa2` |
 
 Every package has `build-metadata.json` containing toolchain, build commands,
-input source digests and output digests. `native/scripts/build-raster.mjs` and
-`build-cores.mjs` implement the serial offline builds. Build logs are
-`native/build/conversion-raster-build.log` and `conversion-cores-build.log`.
+input source digests and output digests. Each `*-WASM/scripts/build.mjs`
+implements the serial offline build. Build logs were `build/conversion-raster-build.log`
+and `conversion-cores-build.log` in the former Rust workspace.
 Successful compilation establishes an artifact, not numerical equivalence.
 
 Before the testing pause, the exact raster digest above passed differential
 checks against the engine's public TypeScript decoder: **263 cases and
 17,827,205 compared pixels**, including all **16,777,216 RGB values**, unaligned
 views, dimensions and alpha failures. Outputs were byte-identical and inputs
-unchanged. Evidence: `native/build/raster-parity.json`, `wasm-parity.log`,
+unchanged. Evidence: `build/raster-parity.json` in the former Rust workspace, `wasm-parity.log`,
 `wasm-build.log`, and `wasm-receipts.log`.
 
 A bounded local functional fixture then bundled the actual app worker and ran
 in installed **Chrome 155.0.8059.80** with generated PNGs, no Google/network-map,
 power or performance measurement. TS fetched no WASM; single fetched that exact
-binary, passed first-input parity, and used native output on the second tile;
+binary, passed first-input parity, and used WASM output on the second tile;
 threaded reported its explicit fallback. A deliberately missing owned-localhost
 WASM returned permanent startup fallback without retry. Height bits, malformed
 tile/alpha errors and recovery matched. Chrome/server exited and the isolated
-profile was deleted. Evidence: `app/build/native-worker-check/result.json` and
-`check.log` with the ignored fixture source beside them.
+profile was deleted. Evidence: `result.json` and
+`check.log` in the app's ignored worker-check build directory, with the ignored fixture source beside them.
 
 Prior focused engine/app/wrapper checks are recorded in the ignored handoff;
 they do not qualify later conversion code. The sky has since passed
@@ -907,7 +908,7 @@ since passed as described below. No power qualification is claimed.
 Historical source-check failures must be rechecked, not assumed current. The
 engine's broader typecheck reported an unrelated `previousCeiling` excess field
 in `tests/terrain/detailDistribution.test.ts`; its distributable build and
-focused native tests passed. App typecheck, focused lint and 29 settings/policy
+focused WASM tests passed. App typecheck, focused lint and 29 settings/policy
 tests passed before the testing pause. These are recorded observations at those
 revisions, not a claim that every dirty checkout currently passes or fails.
 
@@ -923,20 +924,20 @@ revisions, not a claim that every dirty checkout currently passes or fails.
    per-output-block UV/tap bounds copy only wrapped source windows into WASM;
    adaptive blocks stay below the existing 128 MiB payload / 256 MiB memory
    caps. All original samples, gutters, wrap/clamp and reduction order remain.
-   `native/scripts/check-projections.mjs --large`: 378 cases, 2,683,584 f32
+   `sphere-image/projections-WASM/scripts/check-projections.mjs --large`: 378 cases, 2,683,584 f32
    values bit-identical; peak payload 60,500,448 B, linear memory 95,551,488 B.
-   `sphere-image/node/prepare-cli.mjs --native-tier typescript-worker|single`
+   `sphere-image/node/prepare-cli.mjs --wasm-tier typescript-worker|single`
    actually runs preparation in one owning worker; single adds
-   `--projection-module ../native/packages/native-projections/index.js`.
-   `prepared.json.nativeCores` records actual/parity/fallback/copies/memory and
+   `--projection-module projections-WASM/index.js`.
+   `prepared.json.wasmCores` records actual/parity/fallback/copies/memory and
    hashes. 264 encoded PNG outputs matched exactly in
    `sphere-image/build/projections-window/consumer-parity.json`.
-   Native was slower in these observations; this is functional support, not
+   WASM was slower in these observations; this is functional support, not
    a gain. Direct browser photos use rectangle textures or GPU equirectangular
    sampling, with no CPU reprojection job to accelerate.
 
 3. **Current raster A/B adapters measure a batch.**
-   `native/scripts/{prepare-ab,worker-measurement,node-raster-worker}.mjs`
+   `engine/raster-WASM/scripts/{prepare-ab,worker-measurement,node-raster-worker}.mjs`
    prepare actual TS and WASM Node workers. Each timed job performs **64 hot
    decodes of a 256×256 tile**, with one input clone and one final output
    transfer. Startup, fixture creation and warmup are outside trial timing.
@@ -945,7 +946,7 @@ revisions, not a claim that every dirty checkout currently passes or fails.
 
 4. **A/B receipts/disposal: implemented.** The research shared runner records
    adapter module receipts and disposes both adapters/workers in `finally`.
-   Native preparation exports implementation hashes and explicit disposal.
+   WASM preparation exports implementation hashes and explicit disposal.
    The app profiler records source fingerprints, per-file implementation/
    config/harness receipts and its harness digest, runs `--no-watch`, and
    closes Chrome normally before its owned-process
@@ -1007,7 +1008,7 @@ require the full W0 battery study; absolute watts and the program's final
 Google Earth comparison remain separate tasks.
 
 The primary checkouts contain later fixes and unrelated dirty work. Do not
-restore stale research/fly worktrees or discard existing edits. Native is a
-local development repository, not a published remote package. Existing
+restore stale research/fly worktrees or discard existing edits. The shared Rust
+workspace was a local development repository, never a published remote package. Existing
 JSBSim/audio C++ WASM predates these Rust cores and is unchanged. Re-read each
 repository's AGENTS.md and the fresh task before continuing.

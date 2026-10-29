@@ -38,10 +38,11 @@ use the corresponding GitHub repo's README and public exports. Do not read every
 | Scenes, placements and image navigation | [foss-earth/scenes](https://github.com/foss-earth/scenes) |
 | Image viewer, structures, previews and common services | `foss-earth/sphere-image`, `sphere-equirectangular`, `sphere-cubemap`, `sphere-tiled-cubemap`, `rectangle-image`, `preview-sheets`, `images` |
 | Atmosphere / astronomy / manual wind | `foss-earth/sky`, `foss-earth/weather` |
-| Native/WASM integration | The app's `foss-earth/native` entry (`app/src/native/`); each core's `*-WASM/` stays with its component owner: `engine` (raster, terrain, ground), `renderer` (google), `sky`, `sphere-image` (projections) |
+| WASM integration | The app's `foss-earth/wasm` entry (`app/src/app/wasm.ts`); each core's `*-WASM/` stays with its component owner: `engine` (raster, terrain, ground), `renderer` (google), `sky`, `sphere-image` (projections) |
 | Reusable browser automation / screenshots | [foss-earth/browser-testing](https://github.com/foss-earth/browser-testing) |
 | Shared CI / install tools | `foss-earth/ci`, `foss-earth/dev_installer`; other orgs have their own wrappers |
 | Cross-repository guides / research | `foss-earth/docs`, `foss-earth/research`, `foss-earth/experiments` |
+| Shared sign-in and hosted Google 3D Tiles | [accounts and hosted basemaps](proposals/accounts-and-hosted-basemaps.md). Local packages `accounts/` and `auth/`. Not deployed. |
 | Flight app, routes, JSBSim composition and HUD | [0SFS/fly](https://github.com/0SFS/fly) |
 | Aircraft systems / aircraft assets | `0SFS/aircraft`; `C172`, `F-35B`, `SF-50` |
 | Engines and their assets | `0SFS/engines`; `F135`, `FJ33`, `IO320` |

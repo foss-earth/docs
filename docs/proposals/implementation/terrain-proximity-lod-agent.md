@@ -17,8 +17,8 @@ Read first, in order:
 1. ~/gh/foss-earth/.github/AGENTS.md and ~/gh/foss-earth/docs/docs/ui-layout.md.
 2. ~/gh/foss-earth/docs/docs/proposals/terrain-view-proximity-priority-lod.md
    (especially Sections 2.5, 4.2, 4.3, 4.4, 4.5, and 5).
-3. ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-native-state.md
-   (shared-memory terrain heights `native.sharedHeights` and worker pools).
+3. ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-state.md
+   (shared-memory terrain heights `wasm.sharedHeights` and worker pools).
 4. Current implementation files:
    - ~/gh/foss-earth/engine/src/settings/catalogue/loading.ts
    - ~/gh/foss-earth/engine/src/terrain/terrainSelector.ts
@@ -154,7 +154,7 @@ unchanged unless opted in):
    - In `rasterSurfaceSampler.ts` (or `createRasterTilesRuntime.ts`), allow
      `sample(latDeg, lonDeg)` to fall back to or query the finest resident decoded
      `TerrainGrid` (`sampleTerrainGrid`, backed by `SharedArrayBuffer` when
-     `native.sharedHeights = true`) whenever a finer decoded grid is already
+     `wasm.sharedHeights = true`) whenever a finer decoded grid is already
      resident for `(lat, lon)` than the currently displayed mesh vertex buffer.
    - In `cameraState.ts` (`stepEyeContact`), guard against transient coarse
      stand-in jolts: if `robustOrbitLOD` is enabled and the surface sample's

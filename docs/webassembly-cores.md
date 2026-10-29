@@ -16,12 +16,12 @@ page describes what exists.
 
 | Core | Repository | TypeScript | Rust/WebAssembly | Chosen by |
 | --- | --- | --- | --- | --- |
-| Terrarium tiles to heights | [engine](https://github.com/foss-earth/engine) | `raster-TS/` | [`raster-WASM/`](https://github.com/foss-earth/engine/blob/main/raster-WASM/README.md) | `native.core.raster` |
-| Terrain geometry and height batches | engine | `terrain-TS/` | [`terrain-WASM/`](https://github.com/foss-earth/engine/blob/main/terrain-WASM/README.md) | `native.core.terrain`, `native.core.imagery` |
-| Ground spatial index | engine | `ground-TS/` | [`ground-WASM/`](https://github.com/foss-earth/engine/blob/main/ground-WASM/README.md) | `native.core.ground` |
-| Sky atmosphere, with a shared-memory build | [sky](https://github.com/foss-earth/sky) | `sky-TS/` (re-exports `src/`) | [`sky-WASM/`](https://github.com/foss-earth/sky/blob/main/sky-WASM/README.md) | `native.core.sky`, `native.sharedSky`, `native.threads` |
-| Google tile geometry | [renderer](https://github.com/foss-earth/renderer) | `google-TS/` | [`google-WASM/`](https://github.com/foss-earth/renderer/blob/main/google-WASM/README.md) | `native.core.google` |
-| Panorama reprojection | [sphere-image](https://github.com/foss-earth/sphere-image) | `projections-TS/` (re-exports the three sphere libraries) | [`projections-WASM/`](https://github.com/foss-earth/sphere-image/blob/main/projections-WASM/README.md) | the preparation command's `--native-tier` |
+| Terrarium tiles to heights | [engine](https://github.com/foss-earth/engine) | `raster-TS/` | [`raster-WASM/`](https://github.com/foss-earth/engine/blob/main/raster-WASM/README.md) | `wasm.core.raster` |
+| Terrain geometry and height batches | engine | `terrain-TS/` | [`terrain-WASM/`](https://github.com/foss-earth/engine/blob/main/terrain-WASM/README.md) | `wasm.core.terrain`, `wasm.core.imagery` |
+| Ground spatial index | engine | `ground-TS/` | [`ground-WASM/`](https://github.com/foss-earth/engine/blob/main/ground-WASM/README.md) | `wasm.core.ground` |
+| Sky atmosphere, with a shared-memory build | [sky](https://github.com/foss-earth/sky) | `sky-TS/` (re-exports `src/`) | [`sky-WASM/`](https://github.com/foss-earth/sky/blob/main/sky-WASM/README.md) | `wasm.core.sky`, `wasm.sharedSky`, `wasm.threads` |
+| Google tile geometry | [renderer](https://github.com/foss-earth/renderer) | `google-TS/` | [`google-WASM/`](https://github.com/foss-earth/renderer/blob/main/google-WASM/README.md) | `wasm.core.google` |
+| Panorama reprojection | [sphere-image](https://github.com/foss-earth/sphere-image) | `projections-TS/` (re-exports the three sphere libraries) | [`projections-WASM/`](https://github.com/foss-earth/sphere-image/blob/main/projections-WASM/README.md) | the preparation command's `--wasm-tier` |
 
 Each `-WASM/` folder is its own Cargo workspace (`Cargo.toml`, `Cargo.lock`,
 `rust-toolchain.toml`, `toolchain.lock.json`) with its crates under `crates/`,
@@ -45,7 +45,7 @@ Parity reports go to the repository's ignored `build/<name>-WASM/`.
 
 ## In the apps
 
-`native.tier` chooses how every core runs, after a reload:
+`wasm.tier` chooses how every core runs, after a reload:
 
 - `typescript` keeps each core's original code and placement: the page, except
   raster decoding, which always ran in workers.
@@ -56,22 +56,22 @@ Parity reports go to the repository's ignored `build/<name>-WASM/`.
 - `threaded` runs the sky's shared-memory build on a cross-origin isolated
   page, and its single-threaded core elsewhere. The other cores have no shared
   build and report their fallback.
-- `custom` takes separate choices: `native.implementation=typescript|wasm`,
-  `native.placement=original|worker` and `native.parallelism=auto|serial`.
+- `custom` takes separate choices: `wasm.implementation=typescript|wasm`,
+  `wasm.placement=original|worker` and `wasm.parallelism=auto|serial`.
 
-Since 19 October 2026 the default is `single`, with `native.sharedSky` on, so a
+Since 19 October 2026 the default is `single`, with `wasm.sharedSky` on, so a
 WebAssembly sky runs its shared-memory build on an isolated page. That default
 was chosen because it worked well enough on a Mac and an Android phone; it is
 not a speed claim. Paired runs measured Terrain heights and Terrain geometry
 slower in WebAssembly than in TypeScript.
 
-`native.core.<core>` overrides the tier for one core (`raster`, `sky`,
-`terrain`, `imagery`, `google`, `ground`), and `native.core.<core>.<field>`
-overrides one manual field; each accepts `inherit`. `native.workers` caps all
-preparation workers together, and `native.threads` (1–8, the coordinator
+`wasm.core.<core>` overrides the tier for one core (`raster`, `sky`,
+`terrain`, `imagery`, `google`, `ground`), and `wasm.core.<core>.<field>`
+overrides one manual field; each accepts `inherit`. `wasm.workers` caps all
+preparation workers together, and `wasm.threads` (1–8, the coordinator
 included) sets the sky's shared-memory threads. A URL sets them for one load,
-for example `?set.native.tier=typescript-worker` or
-`?set.native.core.sky=threaded&set.native.threads=4`.
+for example `?set.wasm.tier=typescript-worker` or
+`?set.wasm.core.sky=threaded&set.wasm.threads=4`.
 
 The Component execution tab has Global defaults and Components. Each component
 shows its settings and what it is actually running: TypeScript or WebAssembly,
@@ -93,13 +93,13 @@ Do not assume Rust is faster. Measure the kernel and the whole copy and worker
 path separately, with paired A/B trials and an A/A control on the same
 machine, comparing `typescript-worker` with `single` for one core at a time.
 For a reproducible isolated comparison set
-`native.tier=typescript,native.workers=8,map.loader.decodeWorkers=2` and
+`wasm.tier=typescript,wasm.workers=8,map.loader.decodeWorkers=2` and
 override one core. Power needs its own agreed battery window. A kernel
 benchmark is not an app measurement either: in Node on an Apple M5, ground's
 Rust core builds the TypeScript index about 12 times faster than TypeScript
 (26 ms against 308 ms at 262,088 faces), but the in-app comparison has not been
 rerun for it. The
-[native state document](proposals/implementation/webassembly-native-state.md)
+[WebAssembly state document](proposals/implementation/webassembly-state.md)
 records the first in-app A/B and its method; the
 [18 October comparison guide](proposals/implementation/webassembly-ab-results-2026-10-18.md)
 has launch URLs for the app, the tour and 0SFS.
@@ -170,7 +170,7 @@ target documentation.
 
 ## History
 
-From 17 to 19 October 2026 the cores were built in one local workspace,
-`foss-earth/native`, which was never published. The implementation handoffs
-under `proposals/implementation/` describe that period and keep its paths
-(`native/packages/native-*`).
+From 17 to 19 October 2026 the cores were built in one local shared Rust
+workspace, which was never published. The implementation handoffs under
+`proposals/implementation/` describe that period; their paths now name each
+core's current `*-WASM/` folder.

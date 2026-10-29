@@ -122,7 +122,7 @@ the answer.
 | W1 | Pick each default that changes pixels (P1, P7, P4, T1, T3, T5) from screenshots. Vendor Babylon's runtime files into the apps? Retune `map.google.cacheBytes` once T2 makes it real bytes? |
 | W2 | Which JSBSim branch to build from. Commit in the fork, since only a clean build can be adopted. Ship `-msimd128`, which drops Safari before 16.4? |
 | W3 | Install Playwright's WebKit, or enable `safaridriver`? Deploy the report-only release, and later the enforcing one. Try the tour on the iPhone XS Max. |
-| W4 | Install the wasm32 target, a dated nightly with `rust-src`, and `wasm-bindgen-cli`. Create the `foss-earth/native` repository. |
+| W4 | Install the wasm32 target, a dated nightly with `rust-src`, and `wasm-bindgen-cli`. Create the shared Rust workspace (since split into each owner's `*-WASM/`). |
 | W7 | Accept or refuse stage B's packed vertices from screenshots. |
 | W10 | Pick P5's and P8's defaults from screenshots. |
 
@@ -249,14 +249,14 @@ For this program:
 | W1 | renderer, engine, app, 0sfs/fly |
 | W2 | the JSBSim fork; 0sfs/fly; 0sfs/research, for the adoption receipt |
 | W3 | ui, app, UMN-VR/tour, 0sfs/fly, docs |
-| W4 | native (new), engine, app |
+| W4 | the Rust workspace (new), engine, app |
 | W5 | engine, app |
 | W6 | engine, 0sfs/ground-contact, 0sfs/fly, research |
-| W7 | engine, app; native for stages B and C |
-| W8 | sky, native |
+| W7 | engine, app; the Rust workspace for stages B and C |
+| W8 | sky, the Rust workspace |
 | W9 | 0sfs/fly, and the SDK consumers: 0sfs/autopilot, sound, g-forces, fuel, engines, exhaust, controls, rc |
 | W10 | renderer, ui, engine, app, and the apps' composition |
-| W11 | sphere-cubemap, sphere-equirectangular, sphere-tiled-cubemap, sphere-image, native |
+| W11 | sphere-cubemap, sphere-equirectangular, sphere-tiled-cubemap, sphere-image, the Rust workspace |
 | W12 | research, docs |
 
 **Uncommitted at drafting, 16 October 2026.** Recheck rather than assume their
@@ -294,7 +294,7 @@ either stage only your own hunks, for example by applying a patch of them with
 `git apply --cached`, or ask the user to commit theirs first.
 
 **Child agents.** A gate can go to a child once its interfaces are fixed: W4's
-loader (`engine/src/native/`), W6's shared layout, W7's worker protocol.
+loader (each core's `*-WASM/index.js`), W6's shared layout, W7's worker protocol.
 
 - A child works in a worktree under that repository's `build/worktrees/`.
 - Only the primary agent edits the shared files: settings catalogues, app
@@ -804,16 +804,17 @@ Plan: [step 4](../webassembly.md#4-toolchain-packages-and-loader).
    `rustup toolchain install nightly-<YYYY-MM-DD> --component rust-src --target wasm32-unknown-unknown`.
    Pick the newest date that builds `-Z build-std` for wasm32 with atomics, and
    record it.
-3. In the native repository,
+3. In the Rust workspace,
    `cargo install wasm-bindgen-cli --version <the version in Cargo.lock> --locked --root build/tools`,
    so the CLI matches the crate exactly.
-4. Creating the GitHub repository `foss-earth/native`. Until it exists, work in
-   a local `~/gh/foss-earth/native` with `git init`.
+4. Creating a GitHub repository for the Rust workspace. Until it exists, work in
+   a local workspace with `git init`. It was never created; each core now lives
+   in its owner's `*-WASM/` folder.
 
 **Layout.**
 
 ```text
-native/
+rust-workspace/
   AGENTS.md, README.md, CONTRIBUTING.md
   LICENSE, NOTICE          AGPL-3.0-only, as engine has them
   Cargo.toml               the workspace; [profile.release] opt-level = 3,
@@ -824,7 +825,7 @@ native/
   crates/
     earth-core/  earth-raster/  earth-google/  earth-sky/  earth-projections/
   packages/
-    native-raster/  native-google/  native-sky/  native-projections/
+    raster-WASM/  google-WASM/  sky-WASM/  projections-WASM/
       package.json  threaded/  single/  build-metadata.json  glue/  types/
   scripts/
     build.mjs              builds both variants of a package, writes metadata
@@ -865,7 +866,7 @@ wasm32-unknown-unknown`) and the final binary's features. Validate the final
 glue and binary against the proposed Safari 16.4 SIMD floor. Feature detection
 must also catch unsupported compiler defaults.
 
-**The loader**, in `engine/src/native/`:
+**The loader**, in each core's `*-WASM/index.js`:
 
 - **`tier.ts`** chooses the page's capability ceiling, and records each core's
   actual tier when it is first used. The threaded tier needs
@@ -900,9 +901,9 @@ coordinator worker so its parallel calls never block the page. Version the
 protocol and layout; document job IDs, generations and payload bounds. Inject
 cores through library ports rather than adding a sky → engine dependency.
 
-**A setting.** `native.tier` goes in a new
-`engine/src/settings/catalogue/native.ts`: `auto`, `threaded`, `single` or
-`typescript`; `auto` by default; `appliesLive: false`. `?set.native.tier=`
+**A setting.** `wasm.tier` goes in a new
+`engine/src/settings/catalogue/wasm.ts`: `auto`, `threaded`, `single` or
+`typescript`; `auto` by default; `appliesLive: false`. `?set.wasm.tier=`
 then works as every setting's `?set.` does.
 
 **Glue.**
@@ -1005,7 +1006,7 @@ Plan: [step 6](../webassembly.md#6-ground-height-grids-and-bvhs).
    aircraft's size plus two steps of travel. Answer every ray of that frame
    from them.
 5. **Shared memory.** Grids and BVHs move into shared memory, in a layout
-   documented in the native repository (offsets and types), and are read in
+   documented in the Rust workspace (offsets and types), and are read in
    place. Publish immutable generations atomically and retain them until every
    reader releases them. A tile eviction cannot free a grid still in use by
    the physics worker.
@@ -1255,7 +1256,7 @@ Run each command from its repository's root. One heavy job at a time.
 | 0sfs/fly | `npm run typecheck`, `npm run test:changed -- <files>`, `npm run lint` | `npm run ci`; `npm run verify:jsbsim` |
 | UMN-VR/tour | `npm run typecheck`, `npm run test:changed -- <files>`, `npm run lint` | `npm run ci` |
 | JSBSim fork, `wasm/` | `npm test` | `npm run test:browser`; `npm run pack:build` |
-| native | `node scripts/check.mjs` | The same, with a rebuild |
+| Each `*-WASM/` owner | `npm run check:wasm` | The same, after `npm run build:wasm` |
 | foss-earth/docs, foss-earth/research | `npm run check:links` | `npm run ci` |
 | 0sfs/research | Check edited Markdown links and formatting; no package scripts exist | The same |
 

@@ -882,7 +882,7 @@ Use names people recognize from the work being configured. Sky, terrain and
 Google tiles are **components**; call their individual settings **Component
 overrides**. Reserve CPU core and thread for hardware/execution concepts. A
 user-facing name must explain the purpose without knowledge of an internal
-package name such as `native`.
+package name such as `wasm`.
 
 A control answers one question. Execution policy (Auto or Manual), implementation
 (TypeScript or WebAssembly), placement (main thread or background workers) and
@@ -908,7 +908,7 @@ when the new configuration is active. Report a fallback with its reason, and
 distinguish it from pending changes and a component with no work yet.
 
 The 18 October 2026 execution-settings feedback is recorded in the
-[native state document](proposals/implementation/webassembly-native-state.md#execution-settings-feedback-18-october-2026).
+[WebAssembly state document](proposals/implementation/webassembly-state.md#execution-settings-feedback-18-october-2026).
 The user selected **Component execution**. Its sections are Global defaults and
 Components. Each component combines its settings and real running status, with
 diagnostics behind the trailing **?** button. A collapsed component shows only
@@ -922,7 +922,7 @@ Sky is the one component with a shared-memory build:
 
 - **Shared memory [Off|On] ?** comes right after its Implementation.
 - While Shared memory is on, the standard **Shared-memory threads** count
-  (`native.threads`, which counts the coordinator) shows beside it.
+  (`wasm.threads`, which counts the coordinator) shows beside it.
 - The title comes from the report: **Sky: WASM (4 shared threads)**, or **WASM
   (3 of 4 shared threads)** when fewer are ready.
 - **A page that isn't cross-origin isolated** disables the slider, with the

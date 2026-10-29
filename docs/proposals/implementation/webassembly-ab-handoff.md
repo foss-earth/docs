@@ -23,9 +23,9 @@ references. This is a continuation of substantial uncommitted work.
 
 Read first:
 - ~/gh/foss-earth/.github/AGENTS.md and each affected repository's AGENTS.md.
-- ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-native-state.md
+- ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-state.md
 - ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-w0-state.md
-- ~/gh/foss-earth/native/README.md
+- the `*-WASM/` READMEs
 - ~/gh/foss-earth/docs/docs/proposals/webassembly.md
 - ~/gh/foss-earth/docs/docs/proposals/implementation/webassembly-agent.md
 
@@ -39,14 +39,14 @@ it does not request the full W0/Google Earth/power campaign.
 
 Starting state to verify, not redo:
 - Six real single-worker development binaries and ESM wrappers exist in
-  ~/gh/foss-earth/native: native-raster, native-terrain, native-ground,
-  native-google, native-sky, native-projections. They are not complete shipping
+  the `*-WASM/` folders: raster-WASM, terrain-WASM, ground-WASM,
+  google-WASM, sky-WASM, projections-WASM. They are not complete shipping
   family replacements. Sources have no external Cargo dependencies.
 - Rust/cargo1.99.0, wasm32-unknown-unknown and Binaryen132 are installed. Use
   the existing offline pinned build scripts. No nightly/threaded build or
   wasm-bindgen installation exists; do not reinstall tools already available.
 - Only Terrarium RGBA-to-height decoding is currently wired into the app's
-  native.tier selector. Its actual binary passed exhaustive RGB parity and a
+  wasm.tier selector. Its actual binary passed exhaustive RGB parity and a
   bounded Chrome worker check before the testing pause. The five other
   development binaries were compiled, not functionally validated.
 - The app still defaults to TypeScript. Optional terrain geometry worker/
@@ -92,7 +92,7 @@ Work that matters most:
      JSBSim or reduce fidelity.
 
 3. Connect the already-written Sky and projection kernels to actual consumers.
-   - Sky: native atmosphere tables, marching, radiance fans and irradiance in
+   - Sky: WASM atmosphere tables, marching, radiance fans and irradiance in
      workers; add useful bulk star/dome calculations if they remain important.
    - Projections: actual panorama preparation and directly opened photographs,
      including normal large inputs. The current128MiB payload/256MiB linear
@@ -114,7 +114,7 @@ Work that matters most:
    objects/uploads and resource scheduling generally remain JavaScript.
 
 Make A/B real and easy:
-- Extend the existing native.tier startup selection so the active converted
+- Extend the existing wasm.tier startup selection so the active converted
   cores actually follow it in Earth app, affected flight/tour consumers and
   panorama preparation. Provide equivalent JS and single-worker WASM modes;
   a reload is acceptable. Keep TypeScript as the default until I choose a
@@ -123,12 +123,12 @@ Make A/B real and easy:
   inputs, cache policy, geometry, images, simulation steps and quality settings.
   A separate legacy baseline may show gains from moving work off the page,
   but do not attribute those worker gains solely to Rust.
-- In the existing Native tab and Copy report, expose requested and actual
+- In the existing Component execution tab and Copy report, expose requested and actual
   backend per core, scope, first-use parity, fallback reason and useful job/
   copy/memory timings. Forced-but-unavailable tiers remain usable and explicit.
   A JS fallback is not a successful WASM sample. Inactive cores load nothing.
 - Keep the original complete JS path. First-use comparison precedes acceptance;
-  compile/fetch/startup/parity/timeout failures retire the affected native path
+  compile/fetch/startup/parity/timeout failures retire the affected WASM path
   cleanly. Bound startup, queue lengths, memory, cancellation and teardown.
   Discard stale map generations and close every unconsumed ImageBitmap.
 - Budget all pools together. Start with the installed single-worker builds and
@@ -165,10 +165,10 @@ Verification and completion:
   whole-path latency/copies/worker overhead as well as kernel time, frame-time
   distributions, long tasks and memory. Do not claim unmeasured watts or speed.
 - Final delivery must include working exact launch URLs/commands for JS and
-  WASM, repeatable equal-work scenarios, what is actually native in each,
+  WASM, repeatable equal-work scenarios, what is actually WASM in each,
   report locations, known fallbacks and remaining limitations. Make it easy
   for me to run the A/B myself, rather than handing me another porting plan.
-- Keep the state docs, native README and implementation Status current. Report
+- Keep the state docs, `*-WASM/` READMEs and implementation Status current. Report
   functional completion separately from measured gains. A core that is slower
   after overhead keeps JS in auto mode; it may remain force-selectable for A/B.
 
@@ -184,7 +184,7 @@ repository's ignored build/ and never expose credentials. No AI attribution.
 
 Retained context:
 
-- [Native implementation and remaining work](webassembly-native-state.md)
+- [WASM implementation and remaining work](webassembly-state.md)
 - [W0, flight controller and deferred live measurements](webassembly-w0-state.md)
 - [Program plan](../webassembly.md)
 - [Original executable brief](webassembly-agent.md)

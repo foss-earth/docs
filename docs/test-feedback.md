@@ -68,7 +68,7 @@ The app validates the link; malformed plans show a Test tab error.
 
 `diagnostics` is the existing app report: build/component identity, browser,
 renderer/GPU, settings, activity trail and errors. The other providers read the
-host's current native execution, scheduling or flight state. An unknown provider
+host's current WASM execution, scheduling or flight state. An unknown provider
 is recorded as unavailable; it never silently disappears from the file.
 
 Add feature-specific providers to `GlobeAppOptions.testProviders`, or to the

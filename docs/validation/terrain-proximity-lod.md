@@ -143,7 +143,7 @@ height cores. This change introduces no new numeric WASM kernel.
 The final pre-commit engine gate passed 1,285 tests across 120 files, typecheck,
 lint, build and the public consumer fixture. App checks passed 434 tests,
 12 browser assertion tests, typecheck, lint, production build and startup/chunk
-checks. The Fly consumer typecheck and native parity checks passed. The running
+checks. The Fly consumer typecheck and WASM parity checks passed. The running
 development link was also checked: WebGPU, isolated, robust mode enabled,
 visible terrain, no exceptions. The accompanying isolation asset test is app
 commit [`ceb308a`](https://github.com/foss-earth/app/commit/ceb308a).

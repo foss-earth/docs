@@ -1,4 +1,4 @@
-# Native app comparison, 18 October 2026
+# WASM app comparison, 18 October 2026
 
 The six app cores and the panorama preparation consumer are connected. The
 global default remains TypeScript. Functional parity and measured performance
@@ -32,24 +32,24 @@ Reload for each tier change.
 
 | App | TypeScript in workers | WASM in the same workers |
 | --- | --- | --- |
-| Earth | <http://127.0.0.1:5173/app/?set.native.tier=typescript-worker&set.native.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5173/app/?set.native.tier=single&set.native.workers=10&set.map.loader.decodeWorkers=2> |
-| UMN Minneapolis | <http://127.0.0.1:5174/tour/minneapolis/?set.native.tier=typescript-worker&set.native.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5174/tour/minneapolis/?set.native.tier=single&set.native.workers=10&set.map.loader.decodeWorkers=2> |
-| Fly | <http://127.0.0.1:5175/?set.native.tier=typescript-worker&set.native.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5175/?set.native.tier=single&set.native.workers=10&set.map.loader.decodeWorkers=2> |
+| Earth | <http://127.0.0.1:5173/app/?set.wasm.tier=typescript-worker&set.wasm.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5173/app/?set.wasm.tier=single&set.wasm.workers=10&set.map.loader.decodeWorkers=2> |
+| UMN Minneapolis | <http://127.0.0.1:5174/tour/minneapolis/?set.wasm.tier=typescript-worker&set.wasm.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5174/tour/minneapolis/?set.wasm.tier=single&set.wasm.workers=10&set.map.loader.decodeWorkers=2> |
+| Fly | <http://127.0.0.1:5175/?set.wasm.tier=typescript-worker&set.wasm.workers=10&set.map.loader.decodeWorkers=2> | <http://127.0.0.1:5175/?set.wasm.tier=single&set.wasm.workers=10&set.map.loader.decodeWorkers=2> |
 
-`?set.native.tier=auto` keeps the measured TS choices and enables only the
+`?set.wasm.tier=auto` keeps the measured TS choices and enables only the
 qualified sky worker placement; the global default itself remains unchanged.
-`?set.native.tier=typescript` selects the original placements. To isolate a
-core, keep that global tier and add `set.native.core.imagery=single` versus
-`set.native.core.imagery=typescript-worker`; the same form works for `raster`,
+`?set.wasm.tier=typescript` selects the original placements. To isolate a
+core, keep that global tier and add `set.wasm.core.imagery=single` versus
+`set.wasm.core.imagery=typescript-worker`; the same form works for `raster`,
 `sky`, `terrain`, `google` and `ground`. For stars, keep
-`set.native.core.sky=typescript-worker` and compare
+`set.wasm.core.sky=typescript-worker` and compare
 `set.sky.stars.atmosphere=page` versus `worker`.
 
 Inspect the Component execution tab or Copy report in each app. Earth and the tour also
-expose `window.__fossEarthPanoramaTest.nativeCores()` when their URL includes
+expose `window.__fossEarthPanoramaTest.wasmCores()` when their URL includes
 `&panoramaTest=1`; fly does not install that console hook. Check **actual**,
 parity and fallback reason. An inactive core says it has not started; a fallback does
-not qualify as a native sample. Google requires a Google map workload;
+not qualify as a WASM sample. Google requires a Google map workload;
 ground requires eligible scene meshes and finite surface queries.
 
 ## What actually runs
@@ -65,16 +65,16 @@ ground requires eligible scene meshes and finite surface queries.
 | Projection preparation | Exact bounded-window RGB reprojection in one preparation worker | Codecs, pyramid and preparation orchestration remain JS; direct browser photos already use GPU texture sampling |
 
 Only the sky has a shared-memory threaded build. Requested `threaded` runs it
-with `native.threads` cooperating threads on a cross-origin isolated page, and
+with `wasm.threads` cooperating threads on a cross-origin isolated page, and
 otherwise falls back to single WASM with `not-cross-origin-isolated`. Other
 cores report `threadedFallback: "no-shared-build"`. To compare it, start a dev
 server with `FOSS_EARTH_ISOLATION=enforce` and load:
 
 ```text
-http://127.0.0.1:5173/app/?set.native.tier=typescript&set.native.core.sky=threaded&set.native.threads=4&set.native.workers=10&set.map.loader.decodeWorkers=2
+http://127.0.0.1:5173/app/?set.wasm.tier=typescript&set.wasm.core.sky=threaded&set.wasm.threads=4&set.wasm.workers=10&set.map.loader.decodeWorkers=2
 ```
 
-Use `native.core.sky=single` or `typescript-worker` with the same server for
+Use `wasm.core.sky=single` or `typescript-worker` with the same server for
 the other arms. Results, commands and evidence are in the
 [shared-memory UI handoff](webassembly-shared-memory-ui-handoff.md). Startup, parity, timeout, worker-budget and unsupported-profile
 failures retain complete references. Ground excludes changing or unsupported
@@ -88,12 +88,12 @@ one Chrome/Vite job at a time. Choose a new output directory to retain earlier
 evidence:
 
 ```sh
-node build/wasm-profile/runtime/runs/2026-10-17-integrated-ab/run-ab.mjs --out=build/wasm-profile/runtime/runs/my-native-ab
-node build/wasm-profile/runtime/runs/2026-10-17-integrated-ab/summarize.mjs build/wasm-profile/runtime/runs/my-native-ab
+node build/wasm-profile/runtime/runs/2026-10-17-integrated-ab/run-ab.mjs --out=build/wasm-profile/runtime/runs/my-wasm-ab
+node build/wasm-profile/runtime/runs/2026-10-17-integrated-ab/summarize.mjs build/wasm-profile/runtime/runs/my-wasm-ab
 ```
 
 An optional positional `sky-matrix`, `imagery` or `ground` selects that group.
-The driver uses `--no-watch`, pinned time, `native.workers=8`, two elevation
+The driver uses `--no-watch`, pinned time, `wasm.workers=8`, two elevation
 decode workers and one changed core. It rejects changed-source or failed
 arms. Do not edit served sources while it runs.
 
@@ -108,7 +108,7 @@ arms. Do not edit served sources while it runs.
   200 times. All arms use the same mesh/rays. This tests the adapter, not an
   aircraft flight qualification.
 
-Each arm stores `run.json`, actual native status, frame/long-task/memory
+Each arm stores `run.json`, actual WASM status, frame/long-task/memory
 metrics, CPU profiles and source hashes. Ground also records a result hash.
 `integrated-summary.json` and `.md` collect the arms. Existing preliminary
 evidence is under `2026-10-17-integrated-ab/`; excessive full-grid imagery
@@ -122,11 +122,11 @@ From `~/gh/foss-earth/sphere-image`, create the deterministic fixture pose
 ```sh
 mkdir -p build/projections-window
 printf '%s\n' '{"headingDeg":0,"pitchDeg":0,"rollDeg":0,"provenance":"deterministic preparation parity fixture"}' > build/projections-window/pose.json
-node node/prepare-cli.mjs --input synthetic:cardinal:256 --pose build/projections-window/pose.json --preview-face-sizes 16,64 --tiles eac,cube --tile-size 16 --tile-face-size 64 --encoding png --attribution fixture --native-tier typescript-worker --out build/projections-window/js --replace
-node node/prepare-cli.mjs --input synthetic:cardinal:256 --pose build/projections-window/pose.json --preview-face-sizes 16,64 --tiles eac,cube --tile-size 16 --tile-face-size 64 --encoding png --attribution fixture --native-tier single --projection-module ../native/packages/native-projections/index.js --out build/projections-window/wasm --replace
+node node/prepare-cli.mjs --input synthetic:cardinal:256 --pose build/projections-window/pose.json --preview-face-sizes 16,64 --tiles eac,cube --tile-size 16 --tile-face-size 64 --encoding png --attribution fixture --wasm-tier typescript-worker --out build/projections-window/js --replace
+node node/prepare-cli.mjs --input synthetic:cardinal:256 --pose build/projections-window/pose.json --preview-face-sizes 16,64 --tiles eac,cube --tile-size 16 --tile-face-size 64 --encoding png --attribution fixture --wasm-tier single --projection-module projections-WASM/index.js --out build/projections-window/wasm --replace
 ```
 
-`prepared.json.nativeCores` records actual backend, parity, timing, copies,
+`prepared.json.wasmCores` records actual backend, parity, timing, copies,
 memory and hashes. The checked full 8192×4096 RGB f32 source is unchanged
 (384 MiB); adaptive windows keep tested peak WASM payload at 60,500,448 bytes
 and linear memory at 95,551,488 bytes, within the existing 128/256 MiB caps.
@@ -134,7 +134,7 @@ and linear memory at 95,551,488 bytes, within the existing 128/256 MiB caps.
 ## Evidence and limits
 
 Focused parity, consumer and browser checks are recorded in the
-[state document](webassembly-native-state.md). Google browser pixel evidence
+[state document](webassembly-state.md). Google browser pixel evidence
 is `renderer/build/google-browser/evidence/`; projection encoded parity is
 `sphere-image/build/projections-window/consumer-parity.json`; ground lifetime
 and finite-ray parity is `engine/build/ground-acceleration-2026-10-17/`.
@@ -165,10 +165,10 @@ uniform frame-tail improvement. All C arms stayed approximately 60 FPS,
 reported no page errors or long tasks, and had sampled page heaps of
 152–198 MiB. These are page heap readings, not total process memory or watts.
 
-Imagery's final WASM arms admitted native results with parity `same`, zero
-fallback/dropped queries and 11.9–13.4 million native cache hits. Per-run
+Imagery's final WASM arms admitted WASM results with parity `same`, zero
+fallback/dropped queries and 11.9–13.4 million WASM cache hits. Per-run
 input was about 31 MB; transient sparse snapshot peaks were 0.14–0.21 MB,
-with native snapshots below 84 KB and zero retained snapshot bytes after
+with WASM snapshots below 84 KB and zero retained snapshot bytes after
 jobs. Both worker arms memoize exact page misses too: none of that memoization
 is a Rust arithmetic gain. Late TS/WASM worker work totals were 365 versus
 581 ms; the page reference was faster than either late worker arm. Imagery,
@@ -184,7 +184,7 @@ and WASM-built indices 1.924/1.910 s: about 40% lower query cost with the
 spatial index. The reference A/A spread was 49 ms. Both accelerated arms
 perform the same synchronous TS traversal, so the query improvement belongs
 to the index, not Rust. WASM construction was slower (20.9–21.6 ms versus
-14.9–15.4 ms TS). One 229,312-byte index was admitted per arm; scene/native
+14.9–15.4 ms TS). One 229,312-byte index was admitted per arm; scene/WASM
 parity was `same`, with no fallback. The workload submits synchronous ray
 batches, so its incidental frame samples are not a flight-frame metric.
 Ground remains TS in auto pending representative flight/Google workloads.
