@@ -129,7 +129,11 @@ did for `osfs.world-detail-target`.
   rejected ones with the reason.
 - Any parameter can be set for one session from the URL:
   `?set.map.imagery.gpuBudget=256&set.renderer.resolutionScale=0.75`. URL values
-  are never saved unless the user presses **Keep these values**. The existing
+  are never saved unless the user presses **Keep these values**. A URL value
+  for a parameter with dynamic choices, such as an aircraft a mod adds, waits
+  for its option as a saved one does, and Keep leaves it waiting. A parameter
+  may declare short names (`urlNames`) read the same way, such as 0SFS's
+  `?aircraft=f-35b` for `osfs.aircraft.id`; `?set.<id>=` wins over them. The existing
   `mapSource`, `elevationSource`, `renderer`, `rasterImagery` and
   `terrainQuality` parameters keep working and map onto registry ids;
   `terrainQuality` is retired (see [Migration](#migration)).

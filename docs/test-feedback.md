@@ -10,13 +10,17 @@ is required. **Save note** records an observation and requests a diagnostic capt
 
 ## Create a link
 
-1. Choose the changed app's local HTTPS address. Give the user its startup command:
+Give a short, readable link such as `https://localhost:7470/fly/test/spawn-loading`,
+never a long encoded one.
+
+1. Choose the changed app's local HTTPS page. Give the user its startup command:
    `cd ~/gh/0sfs/fly && npm run dev`, `cd ~/gh/foss-earth/app && npm run dev`, or
    `cd ~/gh/UMN-VR/tour && npm run dev`. For a phone, use the reachable network
-   address printed by startup or its QR code. Production links need a build
-   containing this feature. Creating a link does not deploy anything or make a
-   local server public.
-2. Write a small plan to the target repo's ignored `build/test-plan.json`:
+   address printed by startup or its QR code. Creating a link does not deploy
+   anything or make a local server public.
+2. Write a small plan to the target repo's ignored `build/test-plans/<name>.json`.
+   The file name is the link's name: letters, digits, `-` and `_`, such as
+   `camera-drag`.
 
    ```json
    {
@@ -32,31 +36,40 @@ is required. **Save note** records an observation and requests a diagnostic capt
    }
    ```
 
-3. Build the shared UI package once, then generate the link with its validated helper:
+3. The link is the page followed by `test/<name>`: `https://localhost:7470/fly/test/camera-drag`,
+   `https://localhost:3600/app/test/camera-drag`, or a tour page such as
+   `https://localhost:8660/tour/minneapolis/test/camera-drag`. To validate the
+   plan and print the link, build the shared UI package once and run its helper:
 
    ```sh
    cd ~/gh/foss-earth/ui
    npm run build
-   node scripts/create-test-link.mjs https://localhost:3600/app/ /absolute/path/to/build/test-plan.json
+   node scripts/create-test-link.mjs https://localhost:7470/fly/ /absolute/path/to/build/test-plans/camera-drag.json
    ```
 
-   Or call `createTestLink(appUrl, plan)` from `@foss-earth/ui/diagnostics` in a
-   TypeScript-aware tool. The fragment contains versioned JSON, with no executable
-   code, remote script or arbitrary expression. Existing query parameters are kept.
-   Addresses with a different fragment are rejected so navigation is not overwritten.
+   The app's dev server (the `testPlans()` plugin from `@foss-earth/ui/vite`)
+   answers the link with the page at `?test=<name>` and puts the plan in it as
+   inert JSON data; the Test tab validates it. Other query parameters are kept.
+   The plan is read on each visit, so an edit shows on reload. An unknown name
+   returns a page listing the available links. A dev server started before
+   `testPlans()` was added needs one restart.
+
+   Short links need that dev server. For a build without one, such as a deployed
+   preview, a plan saved anywhere other than `build/test-plans/` makes the helper
+   print a self-contained `#test=` link instead (`createTestLink(appUrl, plan)`
+   from `@foss-earth/ui/diagnostics`). Use it only there.
 
 4. Verify the actual Test tab before handing over the link. If you need a server
    for this check, use `npm run llm-dev`; stop it and every child process
    you started before returning unless the user explicitly asked to keep it
    running. Never stop someone else's server. State which app it targets, give
    the startup command for the user's own terminal, and explain what to try once
-   it starts. Do not leave a background server as the handoff. The same plan
-   works with another device's app address; generate a link for that address or
-   retain the test fragment when opening the printed network URL.
+   it starts. Do not leave a background server as the handoff. On another
+   device, the same `test/<name>` path works after the printed network address.
 
 Keep checklists short. Plan limits are 30 steps, 16 distinct source names and
 16,000 JSON characters. IDs use letters, digits, dots, underscores and hyphens.
-The app validates the link; malformed plans show a Test tab error.
+The app validates the plan; malformed plans and unknown names show a Test tab error.
 
 ## Select useful diagnostics
 
