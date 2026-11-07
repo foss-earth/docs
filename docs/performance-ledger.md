@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-134). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-135). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -137,6 +137,7 @@ row here.
 | P-068 | 19 Oct | V8 explicit compile hints on the entry and startup chunks | No difference | [startup loading][startup] |
 | P-069 | 17 Oct | WebAssembly atmosphere tables | No faster; the tables ship precomputed instead (P-033) | [startup loading][startup] |
 | P-134 | 7 Nov | 0SFS audit prompt 08, step 1: a bounding-sphere pre-test before the exhaust depth pass projects each mesh's 8 corners | Not built (exhaust `838f4cf`, note only). On a 561-mesh flight-like `NullEngine` scene in Node 26: it rejected 344 of the 354 meshes the corners reject, with the same lists in 1,500 frames, yet saved only 4–6 µs of 112–115 a frame with the terrain frozen, and cost 6–9 µs more with it moving. About 45 % of the pass's time is world matrices that Babylon's own evaluation then skips (51–85 µs less with the pass on), so the October "projection" cost was mostly moved work | [depth sphere pre-test][x-depth-sphere] |
+| P-135 | 7 Nov | 0SFS audit prompt 09, step 1: optimistic-inclusion culling on the F-35B's parts | Not built (aircraft `270399c`, note only). Babylon 8.56.2's default is sphere-only and never tests the box; optimistic inclusion culls what the standard box test culls, so it would cull more, not the same. On the real airframe and installed F135 in a `NullEngine` in Node 26, 2,000 frames a path: parts kept 16.24 → 12.26 a frame in the cockpit view, 260 → 260 in chase, 240.99 → 239.07 in orbit; none of the dropped parts' 2,605,218 vertices inside the rejecting plane. `_evaluateActiveMeshes` 33.7 → 35.0 µs (cockpit) and 52.1 → 50.8 (chase), within about 1 µs. About 4 draws a frame in the cockpit view only, roughly 30 µs on the M5 (estimate) | [optimistic culling][a-optimistic-culling] |
 
 ## Held
 
@@ -292,6 +293,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [f-worker]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/flight-dynamics-worker-results.md
 [f-exhaust]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/exhaust-wasm-worker.md
 [x-depth-sphere]: https://github.com/0SFS/exhaust/blob/main/docs/performance/2026-11-07/depth-sphere-pretest.md
+[a-optimistic-culling]: https://github.com/0SFS/aircraft/blob/main/docs/performance/2026-11-07/optimistic-culling.md
 [f-lod]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/f35-model-lod.md
 [t-cont]: https://github.com/UMN-VR/tour/blob/main/docs/performance-continuation.md
 [t-next]: https://github.com/UMN-VR/tour/blob/main/docs/performance-next-agent.md
