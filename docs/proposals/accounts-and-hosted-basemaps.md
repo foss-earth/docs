@@ -1,6 +1,6 @@
 # Accounts and hosted basemaps
 
-Status: implemented in the working trees. The account service is `accounts/`, the browser client is `auth/`, and Earth, the campus tour, and flight use it. Nothing here is committed or deployed, and `https://login.foss.earth` is not running.
+Status: one way, the full proxy, in [Ways to offer Photorealistic 3D Tiles](https://github.com/foss-earth/research/blob/main/3D_tiles/implementation-options.md). The [session grant](tiles-session-grant.md) is another way. A local sketch of this proxy exists and is not deployed.
 Date: 2026-10-27.
 
 This replaces the identity and grant parts of

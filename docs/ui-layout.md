@@ -802,7 +802,7 @@ Every setting lives in exactly one place, a section of a tab.
   (only when editing is enabled), Orbs, Motion, Loading and memory, Tiled images, Saved images and Credits; the Controls tab is Input method,
   Camera, Orbit, Mouse and trackpad, Touch and Controller; the Interface tab
   is its theme and window controls, then Compass, Toolbar, Position readout and
-  Log; the Location tab is Search; and the Settings tab is Presets, Saved settings, App files and Diagnostics. About is
+  Log; the Location tab is Search; the Select area tab is each area's corners and an optional height above the ground; and the Settings tab is Presets, Saved settings, App files and Diagnostics. About is
   a tab of its own (`createAboutPanel`): which version runs and what it is built from, as a tree from the app
   down, where someone looking for the version looks for it, under +. Map and
   Renderer add a section for

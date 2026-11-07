@@ -63,10 +63,14 @@ Design records. A page stays here until a Current guide describes the behavior. 
 - [Adaptive CPU scheduling](docs/proposals/adaptive-cpu-scheduling.md): shared compute admission, optional topology hints, full-capacity recovery and energy qualification
 - [Tab inventory](docs/proposals/tab-inventory.md)
 - [VR](docs/proposals/vr.md)
-- [Accounts and hosted basemaps](docs/proposals/accounts-and-hosted-basemaps.md): shared sign-in for Earth, the tour, and flight, and Google 3D Tiles without a device key
+- [Ways to offer Photorealistic 3D Tiles](https://github.com/foss-earth/research/blob/main/3D_tiles/implementation-options.md): own key, session grant, proxy, a partner account, and which of those can ship together
+- [Tiles session grant](docs/proposals/tiles-session-grant.md): one way, a foss-earth sign-in spends a session and the device loads Google 3D Tiles directly. Billing is [How Google bills Photorealistic 3D Tiles](https://github.com/foss-earth/research/blob/main/3D_tiles/google-side-billing.md)
+- [Accounts and hosted basemaps](docs/proposals/accounts-and-hosted-basemaps.md): the proxy way, the key stays on a host and the meshes are forwarded
 - [JIT code download](docs/proposals/jit-code-download.md): bandwidth-gated download and prefetch that keeps the first frame ahead of later features; the canonical spec
 - [Scenes photograph grid](docs/proposals/scenes-photograph-grid.md): one photograph grid, a mini 360 viewer, and the opening look for the Scenes tab
 - [Terrain view, proximity, and priority LOD](docs/proposals/terrain-view-proximity-priority-lod.md): view-direction detail separated from proximity detail; proximity and line-of-sight are implemented, and the weighted-priority architecture remains proposed
+- [Hybrid map rendering](docs/proposals/hybrid-map-rendering.md): a second raster basemap on the same terrain mesh, outside the first basemap's coverage; Google 3D Tiles stay a whole-map mode
+- [Procedural ocean](docs/proposals/procedural-ocean.md): sea tiles leave the imagery atlas and the fine mesh, and a lit water colour takes their place
 
 Archive:
 

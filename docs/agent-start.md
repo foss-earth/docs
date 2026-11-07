@@ -42,7 +42,7 @@ use the corresponding GitHub repo's README and public exports. Do not read every
 | Reusable browser automation / screenshots | [foss-earth/browser-testing](https://github.com/foss-earth/browser-testing) |
 | Shared CI / install tools | `foss-earth/ci`, `foss-earth/dev_installer`; other orgs have their own wrappers |
 | Cross-repository guides / research | `foss-earth/docs`, `foss-earth/research`, `foss-earth/experiments` |
-| Shared sign-in and hosted Google 3D Tiles | [accounts and hosted basemaps](proposals/accounts-and-hosted-basemaps.md). Local packages `accounts/` and `auth/`. Not deployed. |
+| Shared sign-in and Google 3D Tiles | [Ways to offer the tiles](https://github.com/foss-earth/research/blob/main/3D_tiles/implementation-options.md). The session grant is [one way](proposals/tiles-session-grant.md). Billing is [How Google bills Photorealistic 3D Tiles](https://github.com/foss-earth/research/blob/main/3D_tiles/google-side-billing.md). The proxy spec is [accounts and hosted basemaps](proposals/accounts-and-hosted-basemaps.md). |
 | Flight app, routes, JSBSim composition and HUD | [0SFS/fly](https://github.com/0SFS/fly) |
 | Aircraft systems / aircraft assets | `0SFS/aircraft`; `C172`, `F-35B`, `SF-50` |
 | Engines and their assets | `0SFS/engines`; `F135`, `FJ33`, `IO320` |

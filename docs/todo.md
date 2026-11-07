@@ -25,6 +25,14 @@ The first two could be static builds of each library hosted at fixed URLs (for
 example on GitHub Pages, one per LTS release and one for `main`), which the app
 loads through an import map instead of from `node_modules`.
 
+## Hybrid map rendering
+
+A second raster basemap should fill ground outside the primary basemap's
+published coverage, on the same elevation mesh and the same imagery atlas.
+The default stays one source. Google Photorealistic 3D Tiles stay a whole
+view. Spec:
+[proposals/hybrid-map-rendering.md](proposals/hybrid-map-rendering.md).
+
 ## Terrain LOD priority and proximity decoupling
 
 When orbiting or looking toward the horizon, low-LOD tiles lingering on screen and
