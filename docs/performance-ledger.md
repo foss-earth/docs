@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-107). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-108). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -25,6 +25,7 @@ only. P-101, P-102 and P-106 are still uncommitted.
 
 | ID | Date | Commits | Change | Measured | Report |
 | --- | --- | --- | --- | --- | --- |
+| P-108 | 6 Nov | engine `c0403ca`, unpushed | The terrain loader remembers tiles that answered 404 (quadtree indices) and gives a tile under one its nearest existing ancestor's grid without a request, checked when asked for and when a queued tile starts (audit L21). Exact if no tile exists under a missing one, which held in every Mapterhorn probe | Differential harness, 200 seeds, 20,193 calls: same outcomes (digest `a8ab472f6eed400b`), requests 76,284 → 37,602, 404s 34,974 → 1,840. Browser, 2 km over 0°, 20°E, three interleaved pairs: first view's 404s 46 → 30; after moving 5 km, 15 → 0 requests. Not a frame-rate claim | [missing elevation][e-missing] |
 | P-107 | 6 Nov | app `46030d9`, unpushed | Preconnect hints for the default tile hosts (Mapterhorn, USGS), with `crossorigin`, first in `<head>` before the inline isolation script (audit L23). Exact: no pixel changes | Cold visits, headless Chrome, Fast 4G and 4× CPU, six interleaved pairs: first USGS tile's DNS + connect 88 → 0 ms (median), its headers about 90 ms sooner; Mapterhorn's first tile 0 of 6 paying setup, against 2 of 6 (80–121 ms). DevTools throttling does not slow connection setup, so the real-4G gain is unmeasured | [preconnect][a-preconnect] |
 | P-106 | 28 Oct | engine, uncommitted local work | `fillQueue()` skips its demand-order missing-image scan when the private missing map is empty. The nonempty path and P-102 stats cache are unchanged | Isolated paired Node, 30 rounds of 2,000 calls: 256 resident/no missing 4.172 → 2.663 ms; 4,000 resident/no missing 87.370 → 60.618 ms. Median paired savings 36.12% and 30.85%, each 30/30 faster, outside the complete unchanged-control range. Nonempty missing and public `pump()` timings are inconclusive. Not a frame-rate claim | [queue scan][e-res-queue] |
 | P-102 | 27 Oct | engine, uncommitted local work | `imageryResidency.stats()` keeps its counts until residency changes and returns a new object copied from those counts. A generation counter clears on writes that can change the result: entry state, slots and reserved bytes, demand, missing records, pins, overflow, unplaced, upload counters, in-flight uploads, upload refusals, and dispose. An idle `pump()`, an upload that places nothing, and `setPinned` with the same slots do not invalidate. A missing record is a change once `now()` reaches it. A reentered change notification does not store a half-updated pass, and mutating `limits` on a returned object does not leak | Node, 4,000 resident images and 200 missing: about 9.4 → 0.028 µs/call (median of five loops of 2,000). Not a frame-rate claim | [residency stats][e-res] |
@@ -227,6 +228,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [e-res-queue]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/residency-stats.md#p-106-empty-missing-set-queue-scan--28-october
 [e-resume]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/resume.md
 [a-preconnect]: https://github.com/foss-earth/app/blob/main/docs/performance/2026-11-06/preconnect.md
+[e-missing]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-11-06/missing-elevation.md
 [e-sel]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/selector.md
 [e-run]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/runtime.md
 [e-heights27]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-26/heights.md
