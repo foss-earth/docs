@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-112). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-113). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -137,6 +137,7 @@ the measurement.
 
 | ID | Since | Decision | Measured | Report |
 | --- | --- | --- | --- | --- |
+| P-113 | 7 Nov | renderer `d7fbefe`, unpushed: draw the main group's opaque meshes near to far (audit L24). Babylon orders them by material, which for map tiles is load order, close to far first. The renderer measures each opaque submesh from the camera before the group sorts; a draw whose picture depends on the order (the sky dome, which writes no depth) keeps Babylon's place, and the plain draws between such draws are sorted. `renderer.opaqueNearToFar`, off. Keep it off unless L25 accepts the pixels and a GPU without hidden-surface removal shows a gain | Minneapolis, 1280 × 800, on/off/on/off in one page: Google 61 (WebGPU) and 41 (WebGL2) of 1,024,000 pixels, up to 8 levels; default map 5 and 0; each arm against itself 0. Strict-depth tie check: WebGL2's 41 all at depth ties, WebGPU's 48 of 61. Dragging Google tiles at 4×: render 4.96–5.11 → 5.10–5.17 ms a frame on Metal (about +0.1 ms), 59.7–59.9 frames/s both; SwiftShader WebGL2 13.2–13.5 → 13.1–13.5 frames/s, no gain. 18 of 22 mutants caught, 4 change nothing | [opaque near to far][r-opaque-order] |
 | P-109 | 6 Nov | Google tile memory (audit L5). (a) 16-bit indices in the Google worker: index memory halves, but on WebGPU pixels change along tile edges, from the index format alone (same shader and pipeline; WebGL2 unchanged). Keep only if L25 accepts it. (b) Count real tile bytes so `map.google.cacheBytes` binds: needs a byte limit, since at 307–410 MiB a full cache refuses tiles in heavy views. Counting for the reading alone would be exact | Minneapolis, 1.5 km up, WebGPU 1280 × 800: index 1.88 → 0.94 MiB of 121 MiB held (textures 112). Pixels 32- vs 16-bit: 841 of 1,024,000 (0.08%), up to 31 levels; each width against itself 0–12. 250 m up at the horizon: 568 meshes, 311 MiB; 380–570 KiB a mesh, so 6,000 tiles is 2.2–3.3 GiB | [Google tile memory][r-google-memory] |
 | P-072 | 22 Oct | One raster update per frame in 0SFS: engine `setExternalViewState` calls `rasterTilesRuntime?.update()` again after `prepareFrame`. Proposed: `if (!simRunning) rasterTilesRuntime?.update();`. Tiles would arrive at different moments | Removing it (`c11`): frames/s 4× 26.5–28.1 → 36.4–37.2; p95 50 → 33.3 ms; raster 4× 538–566 → 465–472. A middle course with doubled budgets (`c11m`) was also measured | [flight frame][f-frame] |
 | P-073 | 20 Oct | Verify imagery heights only at admission, or make verification optional. The worker's double check never feeds the output; it is the WebAssembly design's safety net | Measured on 22 October, before P-003: flush and receive 1× 10.6–12.9, 4× 29.9–30.5. Height `flush` is now 7.3–8.0 at 1× and 19.0–20.4 at 4×, so re-measure. Keep packed queries and the revision cache in any arm | [flight frame][f-frame], [heights candidates][e-heights] |
@@ -237,6 +238,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [e-draw-changes]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-11-07/draw-only-changes.md
 [r-google-memory]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-06/google-tile-memory.md
 [r-hidden-meshes]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-07/hidden-mesh-candidates.md
+[r-opaque-order]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-07/opaque-near-to-far.md
 [u-tile-hosts]: https://github.com/foss-earth/ui/blob/main/docs/performance/2026-11-07/tile-hosts-past-the-worker.md
 [e-sel]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/selector.md
 [e-run]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/runtime.md
