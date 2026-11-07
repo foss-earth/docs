@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-109). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-110). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -25,6 +25,7 @@ only. P-101, P-102 and P-106 are still uncommitted.
 
 | ID | Date | Commits | Change | Measured | Report |
 | --- | --- | --- | --- | --- | --- |
+| P-110 | 7 Nov | renderer `001bd4c`, unpushed | Babylon is offered only enabled meshes each frame, in scene order, so the active-mesh walk skips tiles the caches keep hidden (audit L8). Lives beside the 360 presentation filter, which owns the same Babylon hook. `renderer.skipDisabledMeshes`, on by default. Exact: Babylon skips a disabled mesh before anything that draws; only the scene's vertex counter, read by nothing in FOSS Earth, now counts enabled meshes | 60-frame differential on a NullEngine scene with active lists equal in order; 13 of 13 mutants caught. Browser, setting on/off/on/off in one page: 0 differing pixels for Google and the default map, WebGPU and WebGL2. Drag at 4× CPU, frame profiler, six interleaved stretches: "render/active meshes" 48.6–52.1 → 30.7–33.7 ms/s with Google tiles (836 meshes, about 500 disabled), 12.6–14.2 → 9.4–10.5 ms/s on the default map (173, about 85 disabled); frames/s unchanged | [hidden meshes][r-hidden-meshes] |
 | P-108 | 6 Nov | engine `c0403ca`, unpushed | The terrain loader remembers tiles that answered 404 (quadtree indices) and gives a tile under one its nearest existing ancestor's grid without a request, checked when asked for and when a queued tile starts (audit L21). Exact if no tile exists under a missing one, which held in every Mapterhorn probe | Differential harness, 200 seeds, 20,193 calls: same outcomes (digest `a8ab472f6eed400b`), requests 76,284 → 37,602, 404s 34,974 → 1,840. Browser, 2 km over 0°, 20°E, three interleaved pairs: first view's 404s 46 → 30; after moving 5 km, 15 → 0 requests. Not a frame-rate claim | [missing elevation][e-missing] |
 | P-107 | 6 Nov | app `46030d9`, unpushed | Preconnect hints for the default tile hosts (Mapterhorn, USGS), with `crossorigin`, first in `<head>` before the inline isolation script (audit L23). Exact: no pixel changes | Cold visits, headless Chrome, Fast 4G and 4× CPU, six interleaved pairs: first USGS tile's DNS + connect 88 → 0 ms (median), its headers about 90 ms sooner; Mapterhorn's first tile 0 of 6 paying setup, against 2 of 6 (80–121 ms). DevTools throttling does not slow connection setup, so the real-4G gain is unmeasured | [preconnect][a-preconnect] |
 | P-106 | 28 Oct | engine, uncommitted local work | `fillQueue()` skips its demand-order missing-image scan when the private missing map is empty. The nonempty path and P-102 stats cache are unchanged | Isolated paired Node, 30 rounds of 2,000 calls: 256 resident/no missing 4.172 → 2.663 ms; 4,000 resident/no missing 87.370 → 60.618 ms. Median paired savings 36.12% and 30.85%, each 30/30 faster, outside the complete unchanged-control range. Nonempty missing and public `pump()` timings are inconclusive. Not a frame-rate claim | [queue scan][e-res-queue] |
@@ -231,6 +232,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [a-preconnect]: https://github.com/foss-earth/app/blob/main/docs/performance/2026-11-06/preconnect.md
 [e-missing]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-11-06/missing-elevation.md
 [r-google-memory]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-06/google-tile-memory.md
+[r-hidden-meshes]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-07/hidden-mesh-candidates.md
 [e-sel]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/selector.md
 [e-run]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/runtime.md
 [e-heights27]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-26/heights.md
