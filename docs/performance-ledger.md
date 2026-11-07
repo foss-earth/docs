@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-108). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-109). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -132,6 +132,7 @@ the measurement.
 
 | ID | Since | Decision | Measured | Report |
 | --- | --- | --- | --- | --- |
+| P-109 | 6 Nov | Google tile memory (audit L5). (a) 16-bit indices in the Google worker: index memory halves, but on WebGPU pixels change along tile edges, from the index format alone (same shader and pipeline; WebGL2 unchanged). Keep only if L25 accepts it. (b) Count real tile bytes so `map.google.cacheBytes` binds: needs a byte limit, since at 307–410 MiB a full cache refuses tiles in heavy views. Counting for the reading alone would be exact | Minneapolis, 1.5 km up, WebGPU 1280 × 800: index 1.88 → 0.94 MiB of 121 MiB held (textures 112). Pixels 32- vs 16-bit: 841 of 1,024,000 (0.08%), up to 31 levels; each width against itself 0–12. 250 m up at the horizon: 568 meshes, 311 MiB; 380–570 KiB a mesh, so 6,000 tiles is 2.2–3.3 GiB | [Google tile memory][r-google-memory] |
 | P-071 | 20 Oct | Activity outline Still by default, or a composited comet in the toolbar CSS (not pixel-identical). The `globe.css` comment that calls the spinner compositor-only and free of JavaScript cost is wrong | Still vs Spinning: style 1× 9.5–9.8 → 3.2–3.3; `applyWorldViewport` 1× 14.8–16.0 → 6.9–7.6; frames/s 4× 27.3–28.2 → 28.3–29.8; about 47 of style and paint at 4× | [flight frame][f-frame] |
 | P-072 | 22 Oct | One raster update per frame in 0SFS: engine `setExternalViewState` calls `rasterTilesRuntime?.update()` again after `prepareFrame`. Proposed: `if (!simRunning) rasterTilesRuntime?.update();`. Tiles would arrive at different moments | Removing it (`c11`): frames/s 4× 26.5–28.1 → 36.4–37.2; p95 50 → 33.3 ms; raster 4× 538–566 → 465–472. A middle course with doubled budgets (`c11m`) was also measured | [flight frame][f-frame] |
 | P-073 | 20 Oct | Verify imagery heights only at admission, or make verification optional. The worker's double check never feeds the output; it is the WebAssembly design's safety net | Measured on 22 October, before P-003: flush and receive 1× 10.6–12.9, 4× 29.9–30.5. Height `flush` is now 7.3–8.0 at 1× and 19.0–20.4 at 4×, so re-measure. Keep packed queries and the revision cache in any arm | [flight frame][f-frame], [heights candidates][e-heights] |
@@ -229,6 +230,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [e-resume]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/resume.md
 [a-preconnect]: https://github.com/foss-earth/app/blob/main/docs/performance/2026-11-06/preconnect.md
 [e-missing]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-11-06/missing-elevation.md
+[r-google-memory]: https://github.com/foss-earth/renderer/blob/main/docs/performance/2026-11-06/google-tile-memory.md
 [e-sel]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/selector.md
 [e-run]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-27/runtime.md
 [e-heights27]: https://github.com/foss-earth/engine/blob/main/docs/performance/2026-10-26/heights.md
