@@ -8,7 +8,7 @@ handoff is [28 October][e-resume]. The October 22
 
 Each item has a permanent ID. When an item changes status, move its row to the
 new section and keep its ID. Give a new item the next free ID (the last one
-used is P-133). Cite commits as `repo sha`. Numbers are the ranges from the
+used is P-134). Cite commits as `repo sha`. Numbers are the ranges from the
 named report, before → after, in ms/s of main-thread CPU unless the row says
 otherwise. Numbers from different methods are not comparable: see
 [Units and methods](#units-and-methods).
@@ -136,6 +136,7 @@ row here.
 | P-067 | 19 Oct | A head-script preload of Babylon's shader chunk | The first frame did not move (2.77 → 2.83 s on `/app/`, 3.58 → 3.59 s on `/fly/`), and the isolation reload came 0.08 s later | [startup loading][startup] |
 | P-068 | 19 Oct | V8 explicit compile hints on the entry and startup chunks | No difference | [startup loading][startup] |
 | P-069 | 17 Oct | WebAssembly atmosphere tables | No faster; the tables ship precomputed instead (P-033) | [startup loading][startup] |
+| P-134 | 7 Nov | 0SFS audit prompt 08, step 1: a bounding-sphere pre-test before the exhaust depth pass projects each mesh's 8 corners | Not built (exhaust `838f4cf`, note only). On a 561-mesh flight-like `NullEngine` scene in Node 26: it rejected 344 of the 354 meshes the corners reject, with the same lists in 1,500 frames, yet saved only 4–6 µs of 112–115 a frame with the terrain frozen, and cost 6–9 µs more with it moving. About 45 % of the pass's time is world matrices that Babylon's own evaluation then skips (51–85 µs less with the pass on), so the October "projection" cost was mostly moved work | [depth sphere pre-test][x-depth-sphere] |
 
 ## Held
 
@@ -290,6 +291,7 @@ In this repository, `9ccd2b6` became `f9b3551` and `c0acf77` became `51a517b`.
 [f-1021]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/README.md
 [f-worker]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/flight-dynamics-worker-results.md
 [f-exhaust]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/exhaust-wasm-worker.md
+[x-depth-sphere]: https://github.com/0SFS/exhaust/blob/main/docs/performance/2026-11-07/depth-sphere-pretest.md
 [f-lod]: https://github.com/0SFS/fly/blob/main/docs/performance/2026-10-21/f35-model-lod.md
 [t-cont]: https://github.com/UMN-VR/tour/blob/main/docs/performance-continuation.md
 [t-next]: https://github.com/UMN-VR/tour/blob/main/docs/performance-next-agent.md
