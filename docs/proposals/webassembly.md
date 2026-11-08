@@ -64,17 +64,18 @@ implemented behavior and fallbacks. This is not a measured speed or power claim.
 
 ### Where Google Earth's lead comes from
 
-Its internals aren't public. What is known comes from Google's
-[write-up](https://web.dev/case-studies/earth-webassembly) and the backlog's
-[reading](../optimization-backlog.md#why-google-earth-is-still-faster):
+The graded record is [Google Earth runtime](https://github.com/foss-earth/research/blob/main/google-earth/README.md).
+The left column is that record, shortened to the part each step can act on.
+A row whose Google-side mechanism is still unpublished stays in the plan as
+our own experiment, and W0 is what promotes it.
 
-| Google Earth | Here | Steps |
+| What is established | Here | Steps |
 | --- | --- | --- |
-| C++ compiled to WASM with threads. Streaming and decompression on background threads. | Isolation from our service worker, and Rust cores on worker pools that share memory. Until then, the TypeScript moves into workers. | 3 to 9 |
-| Tiles made for its renderer. | Google Photorealistic 3D Tiles arrive as glTF, which Babylon's loader turns into meshes on the main thread. The fix is a loader in a worker for exactly that format, with packed vertices. | 7 |
-| One engine for one data set. | 3d-tiles-renderer, Babylon, our raster terrain and the sky each keep their own memory and traversal. | 5, 7, 10 |
-| Less detail while moving, and little toward the horizon. | Resolution and detail while moving; horizon and haze culling. | 1, 10 |
-| Nothing drawn while nothing moves. | Done ([Render on demand](../render-on-demand.md)). Step 1 checks that nothing else runs at rest. | 1 |
+| C++ engine, compiled for the web. Fetch, decompress, and prepare leave the draw loop when the browser gives the build threads. Coverage was incomplete in the 2019 beta and still listed as increasing in January 2023. | Isolation from our service worker, and Rust cores on worker pools that share memory. Until then, the TypeScript moves into workers. | 3 to 9 |
+| Two deliveries. A third-party reading of the Earth client's 3D mode describes packed meshes and JPEG or crunched DXT1. The tiles step 7 loads were sampled on 16 October 2026: glTF, JPEG, float32, no Draco. | A worker loader for that glTF profile, then packed vertices. | 7 |
+| One C++ engine shared by Earth 9 on web, Android, and iOS. A single traversal is our inference. | 3d-tiles-renderer, Babylon, our raster terrain and the sky each keep their own memory and traversal. | 5, 7, 10 |
+| Altitude selects a stored level, and requests outside the view and the flight path are cancelled. A coarser view for the duration of a gesture is unpublished. | Resolution and detail while moving; horizon and haze culling. Our candidates, measured by step 0. | 1, 10 |
+| Whether drawing stops when the camera stops is unpublished. | Done on our side ([Render on demand](../render-on-demand.md)). Step 1 checks that nothing else runs at rest, and compares once step 0 has a baseline. | 1 |
 
 ## Decisions
 

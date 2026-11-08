@@ -60,6 +60,7 @@ Design records. A page stays here until a Current guide describes the behavior. 
 - [Settings](docs/proposals/settings.md)
 - [Startup loading](docs/proposals/startup-loading.md): instant feedback, a boot terminal, code on demand, renderer advice
 - [WebAssembly builds](docs/proposals/webassembly.md): shared memory, Rust cores per map family, ranked steps
+- [Google Earth runtime](https://github.com/foss-earth/research/blob/main/google-earth/README.md): what is published, measured, and unknown about the Earth web client's speed, kept separate from Photorealistic 3D Tiles
 - [Adaptive CPU scheduling](docs/proposals/adaptive-cpu-scheduling.md): shared compute admission, optional topology hints, full-capacity recovery and energy qualification
 - [Tab inventory](docs/proposals/tab-inventory.md)
 - [VR](docs/proposals/vr.md)

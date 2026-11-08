@@ -271,35 +271,29 @@ do not spend effort making it fast.
 
 ## Why Google Earth is still faster
 
-What is known, and what we can copy. Google Earth's internals are not public;
-the first two points come from Google's own write-up and the
-[earth-reverse-engineering](https://github.com/retroplasma/earth-reverse-engineering)
-project's reading of its tile format.
+The graded record is [Google Earth runtime](https://github.com/foss-earth/research/blob/main/google-earth/README.md).
+This list is only the part that already has a backlog item. The live comparison
+is still unqualified.
 
-1. **WASM threads.** Earth is C++ compiled to WebAssembly with threads, and
-   moves streaming and decompression to background threads (web.dev case study).
-   Threads need `SharedArrayBuffer`, which needs COOP and COEP headers. GitHub
-   Pages cannot send them, so our service worker adds them (built on 18 October
-   2026, not deployed). In Chrome and Firefox, every map, search and airports
-   loaded in the isolated page with nothing blocked
-   ([step 3](proposals/webassembly.md#3-isolation-from-the-service-worker)). The plan, its costs and one Rust
-   binary per map family are in [WebAssembly builds](proposals/webassembly.md) (C7). Until
-   then, message-passing workers get part of the effect: R3, C1, T13, C3.
-2. **A tile format made for its renderer.** Earth's own tiles carry packed
-   meshes and textures as JPEG or crunched DXT1, a GPU format. Google
-   Photorealistic 3D Tiles give us glTF whose images expand to uncompressed RGBA
-   on the GPU, four to eight times larger. B3 and T7 are the closest we can
-   get without a different source.
-3. **One engine with one data set.** Earth's selection, culling, caching and
-   drawing were written together. We join 3d-tiles-renderer, Babylon, our own
-   raster terrain and the sky. Each seam costs: a second traversal, per-tile
-   meshes and materials, separate memory budgets. T2, T6, R1 and B7 close some.
-4. **What it does not draw.** Earth does not stream the whole view at full
-   detail while it moves and then sharpens. P5, T1, T3 and T5 are that
-   behaviour.
-
-Earth also stops drawing when nothing moves. We already do
-([Render on demand](render-on-demand.md)).
+1. **Work off the draw loop.** Google's 2019 account puts fetch, decompress,
+   and prepare on background threads, and leaves the main loop to draw. Thread
+   coverage was incomplete in that beta and was still listed as increasing in
+   January 2023. The 2026 site's isolation mode is unmeasured. Our copy is C7,
+   and until a qualified run, R3, C1, T13, and C3. The plan is
+   [WebAssembly builds](proposals/webassembly.md).
+2. **Two tile paths.** A third-party reading of the Earth client's 3D mode
+   describes packed meshes and JPEG or crunched DXT1. The tiles we load are
+   Photorealistic 3D Tiles: glTF, JPEG, no Draco, sampled 16 October 2026.
+   B3 and T7 act on the files we receive.
+3. **One shared C++ engine** across Earth 9 on web, Android, and iOS is
+   published. A single traversal of one dataset is our inference. T2, T6, R1,
+   and B7 close seams on our side.
+4. **Level from altitude, cancel on the way.** That request policy is
+   published. A whole-view drop in detail for the duration of a gesture is
+   unpublished, so P5, T1, T3, and T5 stay our own candidates. Whether Earth
+   issues frames while the camera is still is unmeasured. We already skip
+   draws when nothing changes ([Render on demand](render-on-demand.md)); C6
+   is the comparison, once W0 has a baseline.
 
 ## Competitor precedent
 
@@ -307,8 +301,8 @@ What each product does that this list copies. Items marked "have" are done here.
 
 | Product | Technique | Here |
 | --- | --- | --- |
-| Google Earth (web) | WebAssembly with threads; background streaming and decode | R3, C1, C3, T13 |
-| Google Earth | GPU-compressed tile textures | B3, X6 |
+| Google Earth (web) | C++ in WebAssembly; fetch, decompress, and prepare off the draw loop when threads exist | R3, C1, C3, T13 |
+| Google Earth client, 3D mode as read by a third party | Packed meshes; JPEG or crunched DXT1 | B3, X6 |
 | CesiumJS | One pixel per CSS pixel; `resolutionScale` | P1, P2 |
 | CesiumJS | Dynamic and foveated screen-space error; cull requests while moving; fog culling | T1, T4, T5, T3 |
 | CesiumJS | Byte-bounded tile cache | T2 |
@@ -354,6 +348,7 @@ What each product does that this list copies. Items marked "have" are done here.
 
 ## Sources
 
+- [Google Earth runtime](https://github.com/foss-earth/research/blob/main/google-earth/README.md), the graded record this section points at
 - [How we're bringing Google Earth to the web](https://web.dev/case-studies/earth-webassembly), web.dev
 - [earth-reverse-engineering](https://github.com/retroplasma/earth-reverse-engineering), on Earth's tile format
 - CesiumJS `Cesium3DTileset`, `Viewer` and `Fog` reference, 1.145
